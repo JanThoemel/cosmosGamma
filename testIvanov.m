@@ -4,4 +4,4 @@ warning on verbose;
 close all; clear all; clc; %#ok<CLALL>
 cd ../beta-cosmos;
 
-iv = IvanovFormationFlight()
+obj = IvanovFormationFlight()
