@@ -65,7 +65,7 @@ classdef IvanovFormationFlight
 	methods
 		
 		function obj = IvanovFormationFlight()
-			% Constructor for Ivanov Formation Flight class
+			% Constructor for IvanovFormationFlight class
 			
 			obj.TimeTemp = 0 : obj.CompStep : obj.LengthControlLoop;
 			obj.SSTTemp = zeros(9, obj.Ns, size(obj.TimeTemp,2));
