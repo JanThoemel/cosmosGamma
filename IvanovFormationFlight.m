@@ -2,8 +2,9 @@
 %
 %  Priority:
 %  - check file matlabfunctions/orbitalproperties.m line 89: What is SMA? Is SMA equation right?
+%  - is var Tatmos the atmospheric temperature? if yes, is it 900K?
 %
-%  To do:
+%  To do at IvanovFormationFlightInitial.m:
 %  - check sstDesiredFunction property = @IvanovFormationFlightDesired
 %  - log.info('Original atmospheric density (rho = %1.3e) is overwritten by Ivanov\'s value (rho = %1.3e)',rho,1e-11)
 %  - check usage of variable r0 = radiusOfEarth + altitude
@@ -27,7 +28,7 @@ classdef IvanovFormationFlight
 		%
 		WindOn = 1                %
 		SunOn = 0                 %
-		DeltaAngle = 30           % Roll, pitch, yaw angle resolution
+		DeltaAngle = 30           % Roll, pitch, yaw angles resolution
 		Ns = 4                    %
 		SatelliteMass = 1         %
 		Altitude = 340e3          % [m]
@@ -39,7 +40,7 @@ classdef IvanovFormationFlight
 		
 		Rho = 1e-11               % Constant atmospheric density [kg/m^3]
 		Tatmos = 900              % This should be interpolated later [K]
-		V                         %
+		V                         % [m/s]
 		RadiusOfEarth = 6371e3    % [m]
 		Mu = 3.986004418e14       % Earth's standard gravitational parameter [m^3/s^2]
 		MeanMotion                % [rad/s]
@@ -84,6 +85,10 @@ classdef IvanovFormationFlight
 			obj.Inclination = acosd( -(sma/12352000)^(7/2) );
 			
 		end
+		
+% 		function [sstDesired] = IvanovFormationFlightDesired()
+% 			
+% 		end
 		
 	end
 end
