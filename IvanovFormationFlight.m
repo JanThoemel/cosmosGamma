@@ -3,14 +3,21 @@
 %  Priority:
 %  - check file matlabfunctions/orbitalproperties.m line 89: What is SMA? Is SMA equation right?
 %  - is var Tatmos the atmospheric temperature? if yes, is it 900K?
+%  -
 %
 %  To do at IvanovFormationFlightInitial.m:
-%  - check sstDesiredFunction property = @IvanovFormationFlightDesired
-%  - log.info('Original atmospheric density (rho = %1.3e) is overwritten by Ivanov\'s value (rho = %1.3e)',rho,1e-11)
-%  - check usage of variable r0 = radiusOfEarth + altitude
+%  - line 44 - check sstDesiredFunction and put IvanovFormationFlightDesired.m as function of this
+%  class
+%  - log.info('Original atmospheric density (rho = %1.3e) is overwritten by Ivanov\'s value (rho = 1.3e)',rho,1e-11)
+%  -
+%
+%  Done recently:
+%  - IvanovFormationFlightInitial.m line 65: checked usage of r0: it used in orbitalproperties.m for
+%  calculating V
+%  -
 %
 %  References:
-%  - create Doc for classes: https://nl.mathworks.com/help/matlab/matlab_prog/create-help-for-classes.html
+%  - create doc for classes: https://nl.mathworks.com/help/matlab/matlab_prog/create-help-for-classes.html
 
 classdef IvanovFormationFlight
 	% IvanovFormationFlight Summary of this class goes here
