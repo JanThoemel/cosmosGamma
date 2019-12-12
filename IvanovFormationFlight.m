@@ -1,23 +1,25 @@
 %% Ivanov Formation Flight class
+%___________________________________________________________________________________________________
 %
 %  Priority:
-%  - check file matlabfunctions/orbitalproperties.m line 89: What is SMA? Is SMA equation right?
-%  - is var Tatmos the atmospheric temperature? if yes, is it 900K?
-%  -
+%  - this line 95: Are SMA and inclination equations right?
+%___________________________________________________________________________________________________
 %
 %  To do at IvanovFormationFlightInitial.m:
 %  - line 44 - check sstDesiredFunction and put IvanovFormationFlightDesired.m as function of this
 %  class
 %  - log.info('Original atmospheric density (rho = %1.3e) is overwritten by Ivanov\'s value (rho = 1.3e)',rho,1e-11)
-%  -
+%___________________________________________________________________________________________________
 %
 %  Done recently:
+%  - orbitalproperties.m line 89: checked meaning of sma (semi-major axis)
 %  - IvanovFormationFlightInitial.m line 65: checked usage of r0: it used in orbitalproperties.m for
 %  calculating V
-%  -
+%___________________________________________________________________________________________________
 %
 %  References:
 %  - create doc for classes: https://nl.mathworks.com/help/matlab/matlab_prog/create-help-for-classes.html
+%___________________________________________________________________________________________________
 
 classdef IvanovFormationFlight
 	% IvanovFormationFlight Summary of this class goes here
@@ -63,6 +65,7 @@ classdef IvanovFormationFlight
 		SSParameters              %
 		
 		J2 = 0.00108263           % To be checked, from matlabfunctions/orbitalproperties.m
+		SemiMajorAxis             % []
 		
 	end
 	properties (Access = private)
@@ -88,8 +91,8 @@ classdef IvanovFormationFlight
 			obj.R0 = obj.RadiusOfEarth + obj.Altitude;
 			obj.V = sqrt( obj.Mu / obj.R0 );
 			obj.MeanMotion = sqrt( obj.Mu / obj.R0^3 );
-			sma = ( 1 / obj.MeanMotion^2 * obj.Mu )^(1/3);
-			obj.Inclination = acosd( -(sma/12352000)^(7/2) );
+			obj.SemiMajorAxis = ( 1 / obj.MeanMotion^2 * obj.Mu )^(1/3);
+			obj.Inclination = acosd( -(obj.SemiMajorAxis/12352000)^(7/2) );
 			
 		end
 		
