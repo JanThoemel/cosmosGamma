@@ -1,4 +1,4 @@
-%% Ivanov Formation Flight class
+%% Ivanov Formation Flight Class
 %___________________________________________________________________________________________________
 %
 %  Priority:
@@ -21,7 +21,7 @@
 %  - create doc for classes: https://nl.mathworks.com/help/matlab/matlab_prog/create-help-for-classes.html
 %___________________________________________________________________________________________________
 
-classdef IvanovFormationFlight
+classdef IvanovFormationFlight < handle
 	% IvanovFormationFlight Summary of this class goes here
 	%   Detailed explanation goes here
 	
@@ -67,6 +67,9 @@ classdef IvanovFormationFlight
 		J2 = 0.00108263           % To be checked, from matlabfunctions/orbitalproperties.m
 		SemiMajorAxis             % []
 		
+		Mode                      % From cosmosFS.m: function [goFoFli,batteryOK]=getMode(maxOrbits,orbitCounter,DQ)
+		Satellites                % Array of Satellite objects
+		
 	end
 	properties (Access = private)
 		
@@ -96,9 +99,12 @@ classdef IvanovFormationFlight
 			
 		end
 		
+		%%
 % 		function [sstDesired] = IvanovFormationFlightDesired()
 % 			
 % 		end
+	
+
 		
 	end
 end

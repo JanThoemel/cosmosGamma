@@ -1,7 +1,7 @@
 %% Test file for IvanovFormationFlight.m class
 %
 %  Priority:
-%  - go over all steps from MYcosmosFS.m (spmd loop)
+%  - go over all steps from MYcosmosFS.m (spmd loop): now at line 136
 %
 %  To do:
 %  - check usage of var wind
@@ -10,6 +10,9 @@
 %  - review @aeroDragLiftSentman.m
 %  - review @vectorRotation.m
 %  - review @solarPressureForce.m
+%
+%  Recently done:
+%  - added array of IvanovSatellite objects into IvanovFormationFlight
 %
 %  References:
 %  - https://nl.mathworks.com/help/parallel-computing/parallel.pool.dataqueue.html
@@ -48,9 +51,9 @@ TIME_PP         = 0;          % time for post processing
 
 %  Non-gravitational perturbations
 
-wind     = iv.WindOn * iv.Rho/2 * iv.V^2 * [-1 0 0]'
+wind     = iv.WindOn * iv.Rho/2 * iv.V^2 * [-1 0 0]';
 sunlight = iv.SunOn * 2 * 4.5e-6 * [0 -1 0]'; % only for dawn/dusk orbit
-refSurf  = iv.PanelSurface * iv.Panels(3)
+refSurf  = iv.PanelSurface * iv.Panels(3);
 
 %  Force vector determination and angular granulaty
 
@@ -67,6 +70,20 @@ aeroPressure = aeroPressureForce(wind, iv.PanelSurface, iv.Panels(1), ...
 solarPressure = solarPressureForce(sunlight, iv.PanelSurface, iv.Panels(1), ...
 	iv.Panels(2), iv.Panels(3), alphas, betas, gammas);
 
+%  Simulation object and parameters
+
+sim = Simulation();
+sim.MaxOrbits = 10;
+
+%  Creates array of IvanovSatellite objects
+
+iv.Satellites = IvanovSatellite.empty(iv.Ns,0);
+sat = iv.Satellites; % alias for iv.Satellites
+for i = 1 : iv.Ns
+	sat(i) = IvanovSatellite();
+end
+
+
 %% Creates and starts a parallel pool
 %
 clc
@@ -80,11 +97,16 @@ startTime = posixtime(datetime('now')); % posixtime, i.e. seconds
 
 spmd(iv.Ns) % creates satellites instances
 	
+	satID = labindex; % ID for each satellite, from 1 to 4
 	alive = true;
-	send(dq,['No. ',num2str(labindex),' is alive.']);
+	send(dq,['No. ',num2str(satID),' is alive.']);
 	
 	while alive
 		
+		[goFoFli, batteryOK, modeMsg] = sim.getMode();
+		if batteryOK
+			% switch on the GPS
+		end
 		
 		
 		alive = false;
