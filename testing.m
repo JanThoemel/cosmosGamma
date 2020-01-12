@@ -13,6 +13,7 @@
 %
 %  Recently done:
 %  - added array of IvanovSatellite objects into IvanovFormationFlight
+%  - added code to automatically update the working directory
 %
 %  References:
 %  - https://nl.mathworks.com/help/parallel-computing/parallel.pool.dataqueue.html
@@ -22,7 +23,11 @@
 
 warning on verbose;
 close all; clear all; clc; %#ok<CLALL>
-cd ../beta-cosmos;
+
+%  Change working directory to the directory of this matlab file
+
+[filepath, name, ext] = fileparts(matlab.desktop.editor.getActiveFilename);
+cd(filepath);
 
 MAX_ORBITS    = 10;
 ACCEL_FACTOR  = 10000;
