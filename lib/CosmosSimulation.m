@@ -13,13 +13,12 @@ classdef CosmosSimulation < handle
 		AccelFactor % Acceleration factor.
 		MaxOrbits % Maximum number of orbits to run.
 		SST % Satellite states.
-		Status % Simulation status.
 		
 	end
 	
 	properties (Access = private)
 		
-		OrbitCounter % Counter for number of orbits passed.
+		Status % Simulation status.
 		
 	end
 	
@@ -34,48 +33,40 @@ classdef CosmosSimulation < handle
 % - Acceleration factor.
 %
 % Set:
-% - Orbit counter to zero.
 % - Satellite states to zero.
 %_____________________________________________________________________
 			
 			this.MaxOrbits = max_orbits;
 			this.AccelFactor = accel_factor;
 			
-			this.OrbitCounter = 0;
 			this.SST = zeros(9,1); % Satellite states.
 			
 		end
 		
-		function [goFoFli, batteryOK, modeMsg] = getMode(this)
-%% Summary of this function goes here.
+		function [status, msg] = getStatus(this, current_orbit)
+%% Get updated simulation status.
 %_____________________________________________________________________
 %
-% Detailed explanation goes here.
+% Input:
+% - Current orbit of the satellite.
+%
+% Output:
+% - Simulation status: Stop (0) or Keep Running (1).
+% - Status message.
 %_____________________________________________________________________
 			
-			readModeFromFile = 10; % default: go to alive loop/mode
-			
-			if this.OrbitCounter >= this.MaxOrbits
-			%  if maximum number of orbits has been reached
-				goFoFli = 10; % mode: exit formation flight
-				modeMsg = ...
-					'leaving loop - reached maximum number of orbits.';
-			elseif readModeFromFile == 0
-			%  not implemented yet
-				goFoFli = 20;
-				modeMsg = 'leaving loop - filestop';
-			elseif this.OrbitCounter < 1000
-				goFoFli = 1; % mode: formation flight
-				modeMsg = '';
+			if current_orbit >= this.MaxOrbits
+				msg = 'Leaving loop - maximum number of orbits reached.';
+				status = 0; % Should stop.
 			else
-				goFoFli = 2;
-				modeMsg = '';
+				msg = '';
+				status = 1; % All good.
 			end
-			
-			batteryOK = 1;
 			
 		end
 		
+		
+%_____________________________________________________________________
 	end
 	
 end

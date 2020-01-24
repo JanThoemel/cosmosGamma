@@ -5,7 +5,6 @@
 % - go over all steps from MYcosmosFS.m (spmd loop): now at line 136
 %
 % To do:
-% - Add set and get methods for formation flight mode
 % - check usage of var wind
 % - check usage of var refSurf
 % - review @aeroPressureForce.m
@@ -14,11 +13,14 @@
 % - review @solarPressureForce.m
 %
 % Recently done:
-% - add class Orbit into IvanovFormationFlight
-% - add class CosmosSimulation to main file
-% - added lib folder under the same directory of the main file
-% - added code to automatically update the working directory
-% - added array of IvanovSatellite objects into IvanovFormationFlight
+% - Add getStatus() to class Simulation
+% - Add orbit counter to IvanovSatellite
+% - Add set and get methods for formation flight mode
+% - Add class Orbit into IvanovFormationFlight
+% - Add class CosmosSimulation to main file
+% - Add lib folder under the same directory of the main file
+% - Add code to automatically update the working directory
+% - Add array of IvanovSatellite objects into IvanovFormationFlight
 %
 % References:
 % - https://nl.mathworks.com/help/parallel-computing/parallel.pool.dataqueue.html
@@ -56,32 +58,57 @@ sat = iv.Satellites; % Aliases: sat(1) to sat(n).
 
 %% Section Break
 
-% Create data queue for parallel pool
+% Create data queue for parallel pool.
 dq = parallel.pool.DataQueue;
 
-% Define function to call when new data is received on the DataQueue
+% Define function to call when new data is received on the DataQueue.
 afterEach(dq, @disp);
 
-% Create and return pool with the specified number of workers
+% Create and return pool with the specified number of workers.
 parpool(number_of_satellites);
 
-% Set the start time for the parallel pool
-startTime = posixtime(datetime('now')); % Posixtime [seconds]
+% Set the start time for the parallel pool.
+startTime = posixtime(datetime('now')); % Posixtime [seconds].
 
-% Start parallel pool
-spmd(iv.Ns) % Execute code in parallel on workers of parallel pool
+% Start parallel pool.
+spmd(iv.Ns) % Execute code in parallel on workers of parallel pool.
 	
-	% Set satellite IDs (sid) for each of the satellites
-	sid = labindex;
+	% Set satellite IDs (id) for each of the satellites
+	id = labindex;
 	alive = true;
-	send(dq,['Satellite number ',num2str(sid),' is alive.']);
+	send(dq,['Satellite number ',num2str(id),' is alive.']);
 	
 	while alive
 		
-		[goFoFli, batteryOK, modeMsg] = sim.getMode();
-		if batteryOK
-			% switch on the GPS
+		% Get current orbit number of the satellite.
+		current_orbit = sat(id).OrbitCounter;
+		
+		% Get updated simulation status:
+		% 0 = Stop;
+		% 1 = Good.
+		[sim_status, msg] = sim.getStatus(current_orbit);
+% 	[goFoFli, batteryOK, modeMsg] = sim.getMode();
+		
+		% Get battery status from the satellite.
+		battery_status = 1;
+		if battery_status
+			% Switch on the GPS.
 		end
+		
+		
+		
+		sat(id).incrementOrbitCounter();
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		alive = false;
