@@ -23,9 +23,11 @@ classdef IvanovFormationFlight < handle
 	
 	properties (Access = public)
 		
+		FormationMode % Mode for the satellites formation flight.
 		Orbit % Object of class Orbit.
 		Satellites % Object array of class IvanovSatellite.
 		TotalSatellites % Total number of satellites in the formation.
+		
 		
 		
 		
@@ -94,13 +96,12 @@ classdef IvanovFormationFlight < handle
 %_____________________________________________________________________
 %
 % Receive:
-%
 % - Object of class Orbit.
 % - Number of satellites to set.
 %
 % Set:
-%
 % - Object array of class IvanovSatellite.
+% - Default formation mode.
 %_____________________________________________________________________
 			
 			this.Orbit = orbit;
@@ -114,6 +115,8 @@ classdef IvanovFormationFlight < handle
 				this.Satellites(i) = IvanovSatellite();
 			end
 			
+			% Set default formation mode.
+			this.FormationMode = 1;
 			
 			
 			
@@ -136,6 +139,31 @@ classdef IvanovFormationFlight < handle
 			this.MeanMotion = sqrt( this.Mu / this.R0^3 );
 			this.SemiMajorAxis = ( 1 / this.MeanMotion^2 * this.Mu )^(1/3);
 			this.Inclination = acosd(-(this.SemiMajorAxis/12352000)^(7/2));
+			
+		end
+		
+		function mode = getFormationMode(this)
+%% Get formation flight mode.
+%_____________________________________________________________________
+%
+% Details here.
+%_____________________________________________________________________
+			
+			mode = this.FormationMode;
+			
+		end
+		
+		function this = setFormationMode(this, new_mode)
+%% Set formation flight mode.
+%_____________________________________________________________________
+%
+% Details here.
+%_____________________________________________________________________
+			
+			if ~isnumeric(new_mode)
+				error('Formation flight mode must be numeric.');
+			end
+			this.FormationMode = new_mode;
 			
 		end
 		

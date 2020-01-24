@@ -1,29 +1,30 @@
 %% Main file for cosmosFS.
 %
 % Priority:
-%  - @MYcosmosFS line 53, 142: what is idx? idx in @whereInWhatOrbit?
-%  - go over all steps from MYcosmosFS.m (spmd loop): now at line 136
+% - @MYcosmosFS line 53, 142: what is idx? idx in @whereInWhatOrbit?
+% - go over all steps from MYcosmosFS.m (spmd loop): now at line 136
 %
 % To do:
-%  - check usage of var wind
-%  - check usage of var refSurf
-%  - review @aeroPressureForce.m
-%  - review @aeroDragLiftSentman.m
-%  - review @vectorRotation.m
-%  - review @solarPressureForce.m
+% - Add set and get methods for formation flight mode
+% - check usage of var wind
+% - check usage of var refSurf
+% - review @aeroPressureForce.m
+% - review @aeroDragLiftSentman.m
+% - review @vectorRotation.m
+% - review @solarPressureForce.m
 %
 % Recently done:
-%  - add class Orbit into IvanovFormationFlight
-%  - add class CosmosSimulation to main file
-%  - added lib folder under the same directory of the main file
-%  - added code to automatically update the working directory
-%  - added array of IvanovSatellite objects into IvanovFormationFlight
+% - add class Orbit into IvanovFormationFlight
+% - add class CosmosSimulation to main file
+% - added lib folder under the same directory of the main file
+% - added code to automatically update the working directory
+% - added array of IvanovSatellite objects into IvanovFormationFlight
 %
 % References:
-%  - https://nl.mathworks.com/help/parallel-computing/parallel.pool.dataqueue.html
-%  - https://nl.mathworks.com/help/parallel-computing/parpool.html
-%  - https://nl.mathworks.com/help/parallel-computing/spmd.html
-%  - https://stackoverflow.com/questions/12385534/spmd-vs-parfor
+% - https://nl.mathworks.com/help/parallel-computing/parallel.pool.dataqueue.html
+% - https://nl.mathworks.com/help/parallel-computing/parpool.html
+% - https://nl.mathworks.com/help/parallel-computing/spmd.html
+% - https://stackoverflow.com/questions/12385534/spmd-vs-parfor
 
 warning on verbose;
 close all; clear all; clc; %#ok<CLALL>
@@ -51,12 +52,6 @@ iv = IvanovFormationFlight(orbit,number_of_satellites);
 
 % Create aliases for satellite objects.
 sat = iv.Satellites; % Aliases: sat(1) to sat(n).
-
-
-
-
-
-
 
 
 %% Section Break

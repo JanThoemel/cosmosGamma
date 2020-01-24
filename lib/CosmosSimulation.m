@@ -10,9 +10,10 @@ classdef CosmosSimulation < handle
 	
 	properties (Access = public)
 		
-		MaxOrbits % Maximum number of orbits to run.
 		AccelFactor % Acceleration factor.
+		MaxOrbits % Maximum number of orbits to run.
 		SST % Satellite states.
+		Status % Simulation status.
 		
 	end
 	
@@ -29,12 +30,10 @@ classdef CosmosSimulation < handle
 %_____________________________________________________________________
 %
 % Receive:
-%
 % - Maximum number of orbits.
 % - Acceleration factor.
 %
 % Set:
-%
 % - Orbit counter to zero.
 % - Satellite states to zero.
 %_____________________________________________________________________
@@ -48,8 +47,11 @@ classdef CosmosSimulation < handle
 		end
 		
 		function [goFoFli, batteryOK, modeMsg] = getMode(this)
-		%% Summary of this function goes here.
-		%  Detailed explanation goes here.
+%% Summary of this function goes here.
+%_____________________________________________________________________
+%
+% Detailed explanation goes here.
+%_____________________________________________________________________
 			
 			readModeFromFile = 10; % default: go to alive loop/mode
 			
@@ -71,6 +73,7 @@ classdef CosmosSimulation < handle
 			end
 			
 			batteryOK = 1;
+			
 		end
 		
 	end
