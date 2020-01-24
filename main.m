@@ -13,6 +13,7 @@
 % - review @solarPressureForce.m
 %
 % Recently done:
+% - Add print checkpoints in main and end of files
 % - Add getStatus() to class Simulation
 % - Add orbit counter to IvanovSatellite
 % - Add set and get methods for formation flight mode
@@ -82,12 +83,14 @@ spmd(iv.Ns) % Execute code in parallel on workers of parallel pool.
 		
 		% Get current orbit number of the satellite.
 		current_orbit = sat(id).OrbitCounter;
+		send(dq,['Sat.:',num2str(id),': orbit counter = ',...
+			current_orbitnum2str()]);
 		
 		% Get updated simulation status:
 		% 0 = Stop;
 		% 1 = Good.
 		[sim_status, msg] = sim.getStatus(current_orbit);
-% 	[goFoFli, batteryOK, modeMsg] = sim.getMode();
+% 		[goFoFli, batteryOK, modeMsg] = sim.getMode();
 		
 		% Get battery status from the satellite.
 		battery_status = 1;
