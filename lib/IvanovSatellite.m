@@ -11,10 +11,15 @@ classdef IvanovSatellite < handle
 	properties (Access = public)
 		
 		Orbit % Object of class Orbit.
-		OrbitCounter % Counter for the number of orbits passed.
 		SST % Satellite state.
+		
+	end
+	
+	properties (Access = private)
+		
 		AvailableGPS % GPS availability [true/false].
 		AvailableTLE % TLE availability [true/false].
+		OrbitCounter % Counter for the number of orbits passed.
 		
 	end
 	
@@ -52,8 +57,18 @@ classdef IvanovSatellite < handle
 			
 		end
 		
-		function [altitude] = whereInWhatOrbit(altitude,...
-														endOfSectionsCycle)
+		function orbitNum = getCurrentOrbitNumber(this)
+%% Get current orbit number.
+%_____________________________________________________________________
+%
+% Details here.
+%_____________________________________________________________________
+			
+			orbitNum = this.OrbitCounter;
+			
+		end
+		
+		function this = whereInWhatOrbit(this,endOfSectionsCycle)
 %% Summary here.
 %_____________________________________________________________________
 %
@@ -64,12 +79,12 @@ classdef IvanovSatellite < handle
 			% TLE downloadable from web (American military).
 			% Compute meanAnomalyFromANGPS and altitudeGPS from available 
 			% past GPS or TLE/SGP4 data.
-			meanAnomalyFromANGPSTLE = 1;
 			altitudeGPSTLE = 1;
-			time = 1;
+			meanAnomalyFromANGPSTLE = 1;
+			%time = 1;
 			
 			if this.AvailableGPS || this.AvailableTLE
-				altitude = altitudeGPSTLE;
+				this.Orbit.Altitude = altitudeGPSTLE;
 				meanAnomalyFromAN = meanAnomalyFromANGPSTLE;
 				% Compute SST here, if possible.
 			elseif endOfSectionsCycle
@@ -81,8 +96,8 @@ classdef IvanovSatellite < handle
 			% Use sst, meanAnomalyFromAN and altitude either from GPS or 
 			% from input parameters, %! define rule
 			
-			
-			
+			% Update orbital parameters for the satellites
+			this.Orbit.updateOrbitalParams(this.Orbit.Altitude)
 			
 		end
 		

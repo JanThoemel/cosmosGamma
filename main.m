@@ -1,7 +1,10 @@
 %% Main file for cosmosFS.
 %
 % Priority:
-% - @MYcosmosFS line 53, 142: what is idx? idx in @whereInWhatOrbit?
+% - @cosmosFS.m, lines 39, 92: what is idx? idx in @whereInWhatOrbit?
+%   is it the ID for the section? why starts at 120?
+% - @cosmosFS.m, line 234: check possible values for if, does it
+%   make sense? does it always go if = true?
 % - go over all steps from MYcosmosFS.m (spmd loop): now at line 136
 %
 % To do:
@@ -11,10 +14,16 @@
 % - review @aeroDragLiftSentman.m
 % - review @vectorRotation.m
 % - review @solarPressureForce.m
+% - Change class IvanovFormationFlight to FormationFlight, add
+%   property 'case' and set property as 'Ivanov'
+% - Change class IvanovSatellite to Satellite, add
+%   property 'case' and set property as 'Ivanov'
 % - @orbitalproperties.m, line 89: Check function semi-major axis 
 %   for possible simplification
 %
 % Recently done:
+% - Add implementation of whereInWhatOrbit
+% - Add getCurrentOrbitNumber to class Satellite
 % - Remove redundant properties in class IvanovFormationFlight
 % - Check orbital properties
 % - Add function to update orbital parameters in class Orbit
@@ -48,7 +57,7 @@ current_path = path;
 path(current_path,strcat('.',filesep,'lib',filesep));
 
 % Create instance of class CosmosSimulation.
-max_number_of_orbits = 10;
+max_number_of_orbits = 2;
 acceleration_factor = 10000;
 available_GPS = false;
 available_TLE = false;
@@ -65,6 +74,11 @@ iv = IvanovFormationFlight(orbit,number_of_satellites,...
 
 % Create aliases for satellite objects.
 sat = iv.Satellites; % Aliases: sat(1) to sat(n).
+
+% Initial idx.
+idx = 120;
+orbitSectionSize = 2; % Size of each orbit section [deg].
+orbitSections = 1:orbitSectionSize:360;
 
 
 %% Section Break
@@ -89,19 +103,14 @@ spmd(number_of_satellites)
 	alive = true;
 	send(dq,['Satellite number ',num2str(id),' is alive.']);
 	
+	% Sattelites are alive but still doing nothing.
 	while alive
 		
-		% Increment the orbit counter of the satellites.
-		sat(id).incrementOrbitCounter();
+		% Get formation flight mode.
+		fofliMode = iv.getFormationFlightMode();
 		
-		% Get current orbit number of the satellite.
-		currentOrbit = sat(id).OrbitCounter;
-		
-		% Get updated simulation status:
-		% 0 = Stop;
-		% 1 = Good.
+		% Get updated simulation status: 0 = Stop; 1 = Good.
 		[sim_status, msg] = sim.getStatus(currentOrbit);
-% 		[goFoFli, batteryOK, modeMsg] = sim.getMode();
 		
 		% Log.
 		send(dq,['Sat.',num2str(id),': orbit counter = ',...
@@ -113,35 +122,61 @@ spmd(number_of_satellites)
 			% Switch on the GPS.
 		end
 		
-		% While simulation status is all good
+		% While simulation status is all good, keep in orbital loop.
 		while sim_status
+			
+			% Increment the orbit counter of the satellites.
+			sat(id).incrementOrbitCounter();
+			
+			% Get current orbit number of the satellite.
+			currentOrbit = sat(id).getCurrentOrbitNumber();
 			
 			% Set the start time for the current satellite orbit.
 			startTimeOrbit = posixtime(datetime('now')); % Posixtime [s].
 			
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			
+			% Calculate endOfSectionsCycle.
+			endOfSectionsCycle = (idx-1)/size(orbitSections,2);
+			
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			
+			% Update orbital parameters for the satellites.
+			sat(id).whereInWhatOrbit(endOfSectionsCycle);
 			
 			
 			
 			
 			
 			
-			%%%%%DELETE this after tests!
-			alive = false;
-			sim_status = 0;
+			
+			% Get updated simulation status: 0 = Stop; 1 = Good.
+			[sim_status, msg] = sim.getStatus(currentOrbit);
+			
+			% Log.
+			send(dq,['Sat.',num2str(id),': orbit counter = ',...
+			         num2str(currentOrbit),'. ',msg]);
 			
 		end % [while sim_status]
 		
+		% If orbit is broken, also break alive loop; this will change
+		% later with other conditions.
+		if sim_status == 0
+			alive = false;
+		end
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-			
+		% Log.
+		send(dq,['Sat.',num2str(id),' is dead.']);
 		
 	end % [while alive]
 	

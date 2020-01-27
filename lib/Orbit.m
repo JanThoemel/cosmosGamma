@@ -11,23 +11,23 @@ classdef Orbit < handle
 	properties (Access = public)
 		
 		Altitude % Height above sea level [m].
-		Rho % Atmospheric density [kg/m^3].
-		R0 % Mean Earth's radius plus altitude [m].
-		V % Velocity [m/s].
-		MeanMotion % Converted mean motion [deg/s].
-		SemiMajorAxis % Check function for possible simplification.
 		Inclination % Orbital inclination [deg].
+		MeanMotion % Converted mean motion [deg/s].
+		R0 % Mean Earth's radius plus altitude [m].
+		Rho % Atmospheric density [kg/m^3].
+		SemiMajorAxis % Check function for possible simplification.
+		V % Velocity [m/s].
 		
 	end
 	
 	properties (Access = private)
 		
+		F % Interpolation function created with fit().
+		J2 = 0.00108263 % To be checked.
 		MeanEarthRadius = 6371000 % Mean Earth's radius [m].
 		Mu = 3.986004418e14 % Earth's gravitational parameter [m^3/s^2].
 		RhoArray % Constant array set in constructor.
-		AtmosTemp = 900 % Temperature of the atmosphere [K].
-		J2 = 0.00108263 % To be checked.
-		F % From function fit().
+		TempAtmos = 900 % Temperature of the atmosphere [K].
 		
 	end
 	

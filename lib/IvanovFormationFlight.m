@@ -23,12 +23,12 @@ classdef IvanovFormationFlight < handle
 	
 	properties (Access = public)
 		
+		AvailableGPS % GPS availability [true/false].
+		AvailableTLE % TLE availability [true/false].
 		FormationMode % Mode for the satellites formation flight.
 		Orbit % Object of class Orbit.
 		Satellites % Object array of class IvanovSatellite.
 		TotalSatellites % Total number of satellites in the formation.
-		AvailableGPS % GPS availability [true/false].
-		AvailableTLE % TLE availability [true/false].
 		
 		
 		
@@ -123,7 +123,7 @@ classdef IvanovFormationFlight < handle
 			
 		end
 		
-		function mode = getFormationMode(this)
+		function mode = getFormationFlightMode(this)
 %% Get formation flight mode.
 %_____________________________________________________________________
 %
@@ -134,17 +134,17 @@ classdef IvanovFormationFlight < handle
 			
 		end
 		
-		function this = setFormationMode(this, new_mode)
+		function this = setFormationFlightMode(this, newMode)
 %% Set formation flight mode.
 %_____________________________________________________________________
 %
 % Details here.
 %_____________________________________________________________________
 			
-			if ~isnumeric(new_mode)
+			if ~isnumeric(newMode)
 				error('Formation flight mode must be numeric.');
 			end
-			this.FormationMode = new_mode;
+			this.FormationMode = newMode;
 			
 		end
 		
