@@ -13,6 +13,7 @@
 % - review @solarPressureForce.m
 %
 % Recently done:
+% - Fix orbit counter increment and checkpoint
 % - Add print checkpoints in main and end of files
 % - Add getStatus() to class Simulation
 % - Add orbit counter to IvanovSatellite
@@ -81,10 +82,13 @@ spmd(iv.Ns) % Execute code in parallel on workers of parallel pool.
 	
 	while alive
 		
+		% Increment the orbit counter of the satellites.
+		sat(id).incrementOrbitCounter();
+		
 		% Get current orbit number of the satellite.
 		current_orbit = sat(id).OrbitCounter;
-		send(dq,['Sat.:',num2str(id),': orbit counter = ',...
-			current_orbitnum2str()]);
+		send(dq,['Sat.',num2str(id),': orbit counter = ',...
+		         num2str(current_orbit)]);
 		
 		% Get updated simulation status:
 		% 0 = Stop;
@@ -100,7 +104,6 @@ spmd(iv.Ns) % Execute code in parallel on workers of parallel pool.
 		
 		
 		
-		sat(id).incrementOrbitCounter();
 		
 		
 		
@@ -112,15 +115,14 @@ spmd(iv.Ns) % Execute code in parallel on workers of parallel pool.
 		
 		
 		
-		
-		
+		%%%%%DELETE this after tests!
 		alive = false;
 		
 	end
 end
 
-%  Terminate the existing parallel pool session
-delete(gcp('nocreate')); 
+% Terminate the existing parallel pool session.
+delete(gcp('nocreate'));
 
 
 
