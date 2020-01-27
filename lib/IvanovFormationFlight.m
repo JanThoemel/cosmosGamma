@@ -47,7 +47,6 @@ classdef IvanovFormationFlight < handle
 		WindOn = 1                %
 		SunOn = 0                 %
 		DeltaAngle = 30           % Roll, pitch, yaw angles resolution
-% 		Ns = 4                    %
 		SatelliteMass = 1         %
 		Altitude = 340e3          % [m]
 		ArgumentOfPerigeeAtTe0    % Not used yet
@@ -55,16 +54,6 @@ classdef IvanovFormationFlight < handle
 		EjectionVelocity = 0.5    % [m/s]
 		TimeBetweenEjections = 10 % [s]
 		PanelSurface = 0.01       % [m^2]
-		
-% 		Rho = 1e-11               % Constant atmospheric density [kg/m^3]
-% 		Tatmos = 900              % This should be interpolated later [K]
-% 		V                         % [m/s]
-% 		RadiusOfEarth = 6371e3    % [m]
-% 		Mu = 3.986004418e14       % Earth's standard gravitational 
-		%parameter [m^3/s^2]
-% 		MeanMotion                % [rad/s]
-% 		R0                        % [m]
-% 		Inclination               % [deg]
 		
 		SSCoeff = 1               %
 		Panels = [0 0 2]          %
@@ -74,14 +63,6 @@ classdef IvanovFormationFlight < handle
 		%poles; for 0, satellite crosses at equator
 		NumberOfModes = 10        %
 		SSParameters              %
-		
-% 		J2 = 0.00108263           % To be checked, from matlabfunctions/
-		%orbitalproperties.m
-% 		SemiMajorAxis             % []
-		
-% 		Mode                      % From cosmosFS.m: function 
-		%[goFoFli,batteryOK]=getMode(maxOrbits,orbitCounter,DQ)
-		%Satellites                % Array of Satellite objects
 		
 	end
 	

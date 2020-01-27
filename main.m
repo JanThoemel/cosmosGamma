@@ -5,15 +5,18 @@
 % - go over all steps from MYcosmosFS.m (spmd loop): now at line 136
 %
 % To do:
-% - Check orbital properties
 % - check usage of var wind
 % - check usage of var refSurf
 % - review @aeroPressureForce.m
 % - review @aeroDragLiftSentman.m
 % - review @vectorRotation.m
 % - review @solarPressureForce.m
+% - @orbitalproperties.m, line 89: Check function semi-major axis 
+%   for possible simplification
 %
 % Recently done:
+% - Remove redundant properties in class IvanovFormationFlight
+% - Check orbital properties
 % - Add function to update orbital parameters in class Orbit
 % - Add variables to set GPS/TLE availability
 % - Fix orbit counter increment and checkpoint
@@ -78,8 +81,8 @@ parpool(number_of_satellites);
 % Set the start time for the parallel pool.
 startTimePool = posixtime(datetime('now')); % Posixtime [seconds].
 
-% Start parallel pool.
-spmd(iv.Ns) % Execute code in parallel on workers of parallel pool.
+% Execute parallel code on workers of parallel pool.
+spmd(number_of_satellites)
 	
 	% Set satellite IDs (id) for each of the satellites
 	id = labindex;

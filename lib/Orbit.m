@@ -137,6 +137,9 @@ classdef Orbit < handle
 			
 			% Use constant atmospheric density from Ivanov's case.
 			this.Rho = 1e-11; % [kg/m^3].
+			fprintf(2,['Original atmospheric density (rho) is ',...
+				'overwritten by rho from Ivanov''s case: %1.3e\n'],...
+				this.Rho);
 			
 		end
 		
