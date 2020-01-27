@@ -5,6 +5,7 @@
 % - go over all steps from MYcosmosFS.m (spmd loop): now at line 136
 %
 % To do:
+% - Check orbital properties
 % - check usage of var wind
 % - check usage of var refSurf
 % - review @aeroPressureForce.m
@@ -13,6 +14,8 @@
 % - review @solarPressureForce.m
 %
 % Recently done:
+% - Add function to update orbital parameters in class Orbit
+% - Add variables to set GPS/TLE availability
 % - Fix orbit counter increment and checkpoint
 % - Add print checkpoints in main and end of files
 % - Add getStatus() to class Simulation
@@ -44,6 +47,8 @@ path(current_path,strcat('.',filesep,'lib',filesep));
 % Create instance of class CosmosSimulation.
 max_number_of_orbits = 10;
 acceleration_factor = 10000;
+available_GPS = false;
+available_TLE = false;
 sim = CosmosSimulation(max_number_of_orbits,acceleration_factor);
 
 % Create instance of class Orbit.
@@ -52,7 +57,8 @@ orbit = Orbit(altitude);
 
 % Create instance of class IvanovFormationFlight.
 number_of_satellites = 4;
-iv = IvanovFormationFlight(orbit,number_of_satellites);
+iv = IvanovFormationFlight(orbit,number_of_satellites,...
+                           available_GPS,available_TLE);
 
 % Create aliases for satellite objects.
 sat = iv.Satellites; % Aliases: sat(1) to sat(n).
@@ -70,7 +76,7 @@ afterEach(dq, @disp);
 parpool(number_of_satellites);
 
 % Set the start time for the parallel pool.
-startTime = posixtime(datetime('now')); % Posixtime [seconds].
+startTimePool = posixtime(datetime('now')); % Posixtime [seconds].
 
 % Start parallel pool.
 spmd(iv.Ns) % Execute code in parallel on workers of parallel pool.
@@ -86,15 +92,17 @@ spmd(iv.Ns) % Execute code in parallel on workers of parallel pool.
 		sat(id).incrementOrbitCounter();
 		
 		% Get current orbit number of the satellite.
-		current_orbit = sat(id).OrbitCounter;
-		send(dq,['Sat.',num2str(id),': orbit counter = ',...
-		         num2str(current_orbit)]);
+		currentOrbit = sat(id).OrbitCounter;
 		
 		% Get updated simulation status:
 		% 0 = Stop;
 		% 1 = Good.
-		[sim_status, msg] = sim.getStatus(current_orbit);
+		[sim_status, msg] = sim.getStatus(currentOrbit);
 % 		[goFoFli, batteryOK, modeMsg] = sim.getMode();
+		
+		% Log.
+		send(dq,['Sat.',num2str(id),': orbit counter = ',...
+		         num2str(currentOrbit),'. ',msg]);
 		
 		% Get battery status from the satellite.
 		battery_status = 1;
@@ -102,6 +110,23 @@ spmd(iv.Ns) % Execute code in parallel on workers of parallel pool.
 			% Switch on the GPS.
 		end
 		
+		% While simulation status is all good
+		while sim_status
+			
+			% Set the start time for the current satellite orbit.
+			startTimeOrbit = posixtime(datetime('now')); % Posixtime [s].
+			
+			
+			
+			
+			
+			
+			
+			%%%%%DELETE this after tests!
+			alive = false;
+			sim_status = 0;
+			
+		end % [while sim_status]
 		
 		
 		
@@ -113,13 +138,11 @@ spmd(iv.Ns) % Execute code in parallel on workers of parallel pool.
 		
 		
 		
+			
 		
-		
-		%%%%%DELETE this after tests!
-		alive = false;
-		
-	end
-end
+	end % [while alive]
+	
+end % [spmd(iv.Ns)]
 
 % Terminate the existing parallel pool session.
 delete(gcp('nocreate'));

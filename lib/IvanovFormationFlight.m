@@ -27,6 +27,8 @@ classdef IvanovFormationFlight < handle
 		Orbit % Object of class Orbit.
 		Satellites % Object array of class IvanovSatellite.
 		TotalSatellites % Total number of satellites in the formation.
+		AvailableGPS % GPS availability [true/false].
+		AvailableTLE % TLE availability [true/false].
 		
 		
 		
@@ -45,7 +47,7 @@ classdef IvanovFormationFlight < handle
 		WindOn = 1                %
 		SunOn = 0                 %
 		DeltaAngle = 30           % Roll, pitch, yaw angles resolution
-		Ns = 4                    %
+% 		Ns = 4                    %
 		SatelliteMass = 1         %
 		Altitude = 340e3          % [m]
 		ArgumentOfPerigeeAtTe0    % Not used yet
@@ -54,15 +56,15 @@ classdef IvanovFormationFlight < handle
 		TimeBetweenEjections = 10 % [s]
 		PanelSurface = 0.01       % [m^2]
 		
-		Rho = 1e-11               % Constant atmospheric density [kg/m^3]
-		Tatmos = 900              % This should be interpolated later [K]
-		V                         % [m/s]
-		RadiusOfEarth = 6371e3    % [m]
-		Mu = 3.986004418e14       % Earth's standard gravitational 
+% 		Rho = 1e-11               % Constant atmospheric density [kg/m^3]
+% 		Tatmos = 900              % This should be interpolated later [K]
+% 		V                         % [m/s]
+% 		RadiusOfEarth = 6371e3    % [m]
+% 		Mu = 3.986004418e14       % Earth's standard gravitational 
 		%parameter [m^3/s^2]
-		MeanMotion                % [rad/s]
-		R0                        % [m]
-		Inclination               % [deg]
+% 		MeanMotion                % [rad/s]
+% 		R0                        % [m]
+% 		Inclination               % [deg]
 		
 		SSCoeff = 1               %
 		Panels = [0 0 2]          %
@@ -73,11 +75,11 @@ classdef IvanovFormationFlight < handle
 		NumberOfModes = 10        %
 		SSParameters              %
 		
-		J2 = 0.00108263           % To be checked, from matlabfunctions/
+% 		J2 = 0.00108263           % To be checked, from matlabfunctions/
 		%orbitalproperties.m
-		SemiMajorAxis             % []
+% 		SemiMajorAxis             % []
 		
-		Mode                      % From cosmosFS.m: function 
+% 		Mode                      % From cosmosFS.m: function 
 		%[goFoFli,batteryOK]=getMode(maxOrbits,orbitCounter,DQ)
 		%Satellites                % Array of Satellite objects
 		
@@ -91,13 +93,14 @@ classdef IvanovFormationFlight < handle
 	
 	methods
 		
-		function this = IvanovFormationFlight(orbit,ns)
+		function this = IvanovFormationFlight(orbit,ns,gps,tle)
 %% Constructor for class IvanovFormationFlight.
 %_____________________________________________________________________
 %
 % Receive:
 % - Object of class Orbit.
 % - Number of satellites to set.
+% - GPS and TLE availability.
 %
 % Set:
 % - Object array of class IvanovSatellite.
@@ -106,13 +109,15 @@ classdef IvanovFormationFlight < handle
 			
 			this.Orbit = orbit;
 			this.TotalSatellites = ns;
+			this.AvailableGPS = gps;
+			this.AvailableTLE = tle;
 			
 			% Allocate object array to property Satellites.
 			this.Satellites = IvanovSatellite.empty(ns,0);
 			
 			% Populate array with objects of class IvanovSatellite.
 			for i = 1 : ns
-				this.Satellites(i) = IvanovSatellite();
+				this.Satellites(i) = IvanovSatellite(orbit,gps,tle);
 			end
 			
 			% Set default formation mode.
@@ -124,8 +129,8 @@ classdef IvanovFormationFlight < handle
 			
 			
 			this.TimeTemp = 0 : this.CompStep : this.LengthControlLoop;
-			this.SSTTemp = zeros(9, this.Ns, size(this.TimeTemp,2));
-			for i = 1 : this.Ns
+			this.SSTTemp = zeros(9, ns, size(this.TimeTemp,2));
+			for i = 1 : ns
 				this.SSTTemp(1,i,1) = (i-1) * this.EjectionVelocity * ...
 					this.TimeBetweenEjections; % x position
 				this.SSTTemp(4,i,1) = 0; % u velocity
@@ -133,12 +138,7 @@ classdef IvanovFormationFlight < handle
 				this.SSTTemp(8,i,1) = 0; % beta
 				this.SSTTemp(9,i,1) = 0; % gamma
 			end
-			this.SSParameters = zeros(6, this.Ns, this.NumberOfModes);
-			this.R0 = this.RadiusOfEarth + this.Altitude;
-			this.V = sqrt( this.Mu / this.R0 );
-			this.MeanMotion = sqrt( this.Mu / this.R0^3 );
-			this.SemiMajorAxis = ( 1 / this.MeanMotion^2 * this.Mu )^(1/3);
-			this.Inclination = acosd(-(this.SemiMajorAxis/12352000)^(7/2));
+			this.SSParameters = zeros(6, ns, this.NumberOfModes);
 			
 		end
 		

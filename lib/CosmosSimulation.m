@@ -59,7 +59,7 @@ classdef CosmosSimulation < handle
 				msg = 'Leaving loop - maximum number of orbits reached.';
 				status = 0; % Should stop.
 			else
-				msg = '';
+				msg = 'All good.';
 				status = 1; % All good.
 			end
 			
