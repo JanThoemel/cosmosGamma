@@ -22,7 +22,7 @@
 %   for possible simplification
 %
 % Recently done:
-% - Add implementation of whereInWhatOrbit
+% - Fix implementation of whereInWhatOrbit
 % - Add getCurrentOrbitNumber to class Satellite
 % - Remove redundant properties in class IvanovFormationFlight
 % - Check orbital properties
@@ -109,6 +109,9 @@ spmd(number_of_satellites)
 		% Get formation flight mode.
 		fofliMode = iv.getFormationFlightMode();
 		
+		% Get current orbit number of the satellite.
+		currentOrbit = sat(id).getCurrentOrbitNumber();
+		
 		% Get updated simulation status: 0 = Stop; 1 = Good.
 		[sim_status, msg] = sim.getStatus(currentOrbit);
 		
@@ -127,9 +130,6 @@ spmd(number_of_satellites)
 			
 			% Increment the orbit counter of the satellites.
 			sat(id).incrementOrbitCounter();
-			
-			% Get current orbit number of the satellite.
-			currentOrbit = sat(id).getCurrentOrbitNumber();
 			
 			% Set the start time for the current satellite orbit.
 			startTimeOrbit = posixtime(datetime('now')); % Posixtime [s].
@@ -159,6 +159,17 @@ spmd(number_of_satellites)
 			
 			
 			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			% Get current orbit number of the satellite.
+			currentOrbit = sat(id).getCurrentOrbitNumber();
 			
 			% Get updated simulation status: 0 = Stop; 1 = Good.
 			[sim_status, msg] = sim.getStatus(currentOrbit);
