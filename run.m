@@ -1,4 +1,4 @@
-%% Main file for cosmosFS.
+%% File to run cosmosFS.
 %
 % Priority:
 % - @cosmos & @cosmosFS: first uses riccati outside the loop, another
@@ -15,13 +15,7 @@
 % - go over all steps from MYcosmosFS.m (spmd loop): now at line 136
 %
 % To do:
-% - Add mainClass.m file
-% - Show all variables in workspace
-% - Select variables from workspace that are objects
-% - Save object variables into a list
-% - Use the list of objects for showing docs of the classes
-% - Use the list of objects for finding the class names
-% - Put the class names into the automatic UML generator
+% - Put custom class names into the automatic UML generator
 % - check usage of var wind
 % - check usage of var refSurf
 % - review @aeroPressureForce.m
@@ -36,6 +30,9 @@
 %   for possible simplification
 %
 % Recently done:
+% - Add documentation tool that shows custom object classes used
+% - Change method to get full path of file run
+% - Add class Main and change main.m to run.m
 % - Check MeanAnomalyFromAN value
 % - Add riccati equation
 % - Add to class Orbit the property mean anomaly from ascending node
@@ -67,7 +64,9 @@ warning on verbose;
 close all; clear all; clc; %#ok<CLALL>
 
 % Change working directory to the directory of this matlab file.
-[filepath,~,~] = fileparts(matlab.desktop.editor.getActiveFilename);
+% [filepath,~,~] = fileparts(matlab.desktop.editor.getActiveFilename);
+% [filepath,~,~] = fileparts(which('run.m'));
+[filepath,~,~] = fileparts(mfilename('fullpath'));
 cd(filepath);
 
 % Add lib folder to the current matlab path.
@@ -99,7 +98,7 @@ orbitSectionSize = 2; % Size of each orbit section [deg].
 orbitSections = 1:orbitSectionSize:360;
 
 
-%% Section Break
+%% Section break
 
 % Create data queue for parallel pool.
 dq = parallel.pool.DataQueue;
@@ -225,6 +224,65 @@ end % [spmd(iv.Ns)]
 delete(gcp('nocreate'));
 
 
+%% Section break
+
+% Set MATLAB classes to ignore.
+classesToIgnore = {'Composite',...
+                   'parallel.pool.DataQueue'};
+
+% Save current MATLAB workspace variables.
+warning off parallel:lang:spmd:CompositeSave;
+save(fullfile(filepath,'workspace.mat'));
+
+% Get variables from saved workspace.
+varsWorkspace = who('-file',fullfile(filepath,'workspace.mat'));
+
+% Set counter for number of custom objects found.
+objCounter = 0;
+
+% Set cell array for object names.
+objectNames = {};
+
+% Set cell array for class names.
+classNames = {};
+
+% Go through all variables, one by one.
+for varnum = 1 : length(varsWorkspace)
+	
+	objectName = varsWorkspace{varnum};
+	className = class(eval(objectName));
+	
+	% Check if variable is a class object.
+	if isobject(eval(objectName)) && ...
+	   ~any(strcmp(classesToIgnore,className))
+		
+		% Increment counter.
+		objCounter = objCounter + 1;
+		
+		% Add object and class names to cell array.
+		objectNames{end+1} = objectName; %#ok<SAGROW>
+		classNames{end+1} = className; %#ok<SAGROW>
+		
+	end
+	
+end
+
+if objCounter > 0
+	
+	% Print variable names and their respective classes.
+	fprintf('\nCustom objects and respective classes:\n\n');
+	for n = 1 : objCounter
+		fprintf('%s : %s\n',objectNames{n},classNames{n});
+	end
+	
+	% Save only class names into file.
+	fid = fopen(fullfile(filepath,'lib','listCustomClasses'),'w');
+	fprintf(fid,'%s\n',classNames{:});
+	fclose(fid);
+	
+else
+	fprintf('\nNo custom object classes found.\n');
+end
 
 
 
