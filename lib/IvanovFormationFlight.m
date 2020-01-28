@@ -28,6 +28,7 @@ classdef IvanovFormationFlight < handle
 		FormationMode % Mode for the satellites formation flight.
 		Orbit % Object of class Orbit.
 		Satellites % Object array of class IvanovSatellite.
+		SSCoeff % Schweighart-Sedgwick coefficient.
 		TotalSatellites % Total number of satellites in the formation.
 		
 		
@@ -55,7 +56,7 @@ classdef IvanovFormationFlight < handle
 		TimeBetweenEjections = 10 % [s]
 		PanelSurface = 0.01       % [m^2]
 		
-		SSCoeff = 1               %
+		%SSCoeff = 1               %
 		Panels = [0 0 2]          %
 		SSTTemp                   %
 		
@@ -86,12 +87,14 @@ classdef IvanovFormationFlight < handle
 % Set:
 % - Object array of class IvanovSatellite.
 % - Default formation mode.
+% - Schweighart-Sedgwick coefficient.
 %_____________________________________________________________________
 			
 			this.Orbit = orbit;
 			this.TotalSatellites = ns;
 			this.AvailableGPS = gps;
 			this.AvailableTLE = tle;
+			this.SSCoeff = 1;
 			
 			% Allocate object array to property Satellites.
 			this.Satellites = IvanovSatellite.empty(ns,0);

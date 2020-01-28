@@ -85,19 +85,19 @@ classdef IvanovSatellite < handle
 			
 			if this.AvailableGPS || this.AvailableTLE
 				this.Orbit.Altitude = altitudeGPSTLE;
-				meanAnomalyFromAN = meanAnomalyFromANGPSTLE;
+				this.Orbit.MeanAnomalyFromAN = meanAnomalyFromANGPSTLE;
 				% Compute SST here, if possible.
 			elseif endOfSectionsCycle
-				meanAnomalyFromAN = 0.01;
+				this.Orbit.MeanAnomalyFromAN = 0.01;
 			else
-				meanAnomalyFromAN = 120;
+				this.Orbit.MeanAnomalyFromAN = 120;
 			end
 			
 			% Use sst, meanAnomalyFromAN and altitude either from GPS or 
 			% from input parameters, %! define rule
 			
 			% Update orbital parameters for the satellites
-			this.Orbit.updateOrbitalParams(this.Orbit.Altitude)
+			this.Orbit.updateOrbitalParams(this.Orbit.Altitude);
 			
 		end
 		

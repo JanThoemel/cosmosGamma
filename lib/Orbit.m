@@ -12,7 +12,9 @@ classdef Orbit < handle
 		
 		Altitude % Height above sea level [m].
 		Inclination % Orbital inclination [deg].
+		MeanAnomalyFromAN % Mean anomaly from ascending node [deg].
 		MeanMotion % Converted mean motion [deg/s].
+		MeanMotionRad % Mean motion [rad/s].
 		R0 % Mean Earth's radius plus altitude [m].
 		Rho % Atmospheric density [kg/m^3].
 		SemiMajorAxis % Check function for possible simplification.
@@ -164,10 +166,10 @@ classdef Orbit < handle
 			this.V = sqrt(this.Mu/this.R0); % [m/s].
 			
 			% Calculate mean motion.
-			this.MeanMotion = sqrt(this.Mu/this.R0^3); % [rad/s].
+			this.MeanMotionRad = sqrt(this.Mu/this.R0^3); % [rad/s].
 			
 			% Convert mean motion from [rad/s] to [deg/s].
-			this.MeanMotion = this.MeanMotion/pi*180; % [deg/s].
+			this.MeanMotion = this.MeanMotionRad*180/pi; % [deg/s].
 			
 			% Calculate semi-major axis and inclination in degrees.
 			this.SemiMajorAxis = (1/this.MeanMotion^2*this.Mu)^(1/3);

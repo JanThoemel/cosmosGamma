@@ -1,6 +1,13 @@
 %% Main file for cosmosFS.
 %
 % Priority:
+% - @cosmos & @cosmosFS: first uses riccati outside the loop, another
+%   uses riccati inside the loop
+% - @cosmosFS.m,
+%   line 241: orbitalproperties outputs mean motion in [rad/s]; 
+%   line 243: whereInWhatOrbit converts to [deg/s];
+%   line 95: converts back to [rad/s]
+%   @riccatiequation, line 7: mean motion should be in deg/s ?
 % - @cosmosFS.m, lines 39, 92: what is idx? idx in @whereInWhatOrbit?
 %   is it the ID for the section? why starts at 120?
 % - @cosmosFS.m, line 234: check possible values for if, does it
@@ -8,6 +15,13 @@
 % - go over all steps from MYcosmosFS.m (spmd loop): now at line 136
 %
 % To do:
+% - Add mainClass.m file
+% - Show all variables in workspace
+% - Select variables from workspace that are objects
+% - Save object variables into a list
+% - Use the list of objects for showing docs of the classes
+% - Use the list of objects for finding the class names
+% - Put the class names into the automatic UML generator
 % - check usage of var wind
 % - check usage of var refSurf
 % - review @aeroPressureForce.m
@@ -22,6 +36,9 @@
 %   for possible simplification
 %
 % Recently done:
+% - Add riccati equation
+% - Add to class Orbit the property mean anomaly from ascending node
+% - Add to class Orbit the property of mean motion in rad/s
 % - Fix implementation of whereInWhatOrbit
 % - Add getCurrentOrbitNumber to class Satellite
 % - Remove redundant properties in class IvanovFormationFlight
@@ -154,6 +171,8 @@ spmd(number_of_satellites)
 			% Update orbital parameters for the satellites.
 			sat(id).whereInWhatOrbit(endOfSectionsCycle);
 			
+			% Settings for control algorithm, is this necessary every orbit?
+			[P,IR,A,B] = riccatiequation(orbit.MeanMotionRad,iv.SSCoeff);
 			
 			
 			
@@ -165,8 +184,12 @@ spmd(number_of_satellites)
 			
 			
 			
-			
-			
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			
 			% Get current orbit number of the satellite.
 			currentOrbit = sat(id).getCurrentOrbitNumber();
