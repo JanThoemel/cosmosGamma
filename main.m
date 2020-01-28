@@ -36,6 +36,7 @@
 %   for possible simplification
 %
 % Recently done:
+% - Check MeanAnomalyFromAN value
 % - Add riccati equation
 % - Add to class Orbit the property mean anomaly from ascending node
 % - Add to class Orbit the property of mean motion in rad/s
@@ -170,6 +171,10 @@ spmd(number_of_satellites)
 			
 			% Update orbital parameters for the satellites.
 			sat(id).whereInWhatOrbit(endOfSectionsCycle);
+			
+			% Log.
+			send(dq,['Sat.',num2str(id),': MeanAnomalyFromAN = ',...
+			         num2str(sat(id).Orbit.MeanAnomalyFromAN)]);
 			
 			% Settings for control algorithm, is this necessary every orbit?
 			[P,IR,A,B] = riccatiequation(orbit.MeanMotionRad,iv.SSCoeff);
