@@ -30,7 +30,7 @@
 %   for possible simplification
 %
 % Recently done:
-% - Add publish function
+% - Add function publish to function docs as an optional parameter
 % - Fix function docs to work in both Windows and Mac
 % - Fix documentation tool that shows custom object classes used
 % - Fix change of working directory and path of the running m-file
@@ -310,19 +310,6 @@ else
 	fprintf('\nNo custom object classes found.\n');
 end
 
-% Set options to publish documentation.
-options = struct('format','html',... % [html], [pdf].
-                 'outputDir',fullfile(filepath,'doc'));
-
-% Publish documentation, i.e. save it in previously specified folder.
-% publish(strcat(THIS_FILE_NAME,'.m'),options);
-
-% Open published documentation.
-% if strcmp(options.format,'html')
-% 	web(strcat('doc',filesep,THIS_FILE_NAME,'.',options.format));
-% else
-% 	winopen(strcat('doc',filesep,THIS_FILE_NAME,'.',options.format));
-% end
 
 
 
