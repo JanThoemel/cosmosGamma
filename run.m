@@ -30,7 +30,8 @@
 %   for possible simplification
 %
 % Recently done:
-% - Add documentation tool that shows custom object classes used
+% - Fix documentation tool that shows custom object classes used
+% - Fix change of working directory and path of the running m-file
 % - Change method to get full path of file run
 % - Add class Main and change main.m to run.m
 % - Check MeanAnomalyFromAN value
@@ -63,28 +64,38 @@
 warning on verbose;
 close all; clear all; clc; %#ok<CLALL>
 
-% Change working directory to the directory of this matlab file.
-% [filepath,~,~] = fileparts(matlab.desktop.editor.getActiveFilename);
-% [filepath,~,~] = fileparts(which('run.m'));
-[filepath,~,~] = fileparts(mfilename('fullpath'));
-cd(filepath);
+if(~isdeployed)
+	
+	% Get directory of this m-file, i.e. the active file in Editor.
+	[filepath,~,~] = fileparts(matlab.desktop.editor.getActiveFilename);
+	% [filepath,~,~] = fileparts(mfilename('fullpath'));
+	% [filepath,~,~] = fileparts(which('run.m'));
+	
+	% Add directory of this m-file to the current MATLAB path.
+	current_path = path;
+	path(current_path,filepath);
+	
+	% Change working directory to the directory of this m-file.
+	cd(filepath);
+	
+	% Add lib folder to the current MATLAB path.
+	current_path = path;
+	path(current_path,strcat('.',filesep,'lib',filesep));
+	
+end
 
-% Add lib folder to the current matlab path.
-current_path = path;
-path(current_path,strcat('.',filesep,'lib',filesep));
-
-% Create instance of class CosmosSimulation.
+% Instantiate object of class CosmosSimulation.
 max_number_of_orbits = 2;
 acceleration_factor = 10000;
 available_GPS = false;
 available_TLE = false;
 sim = CosmosSimulation(max_number_of_orbits,acceleration_factor);
 
-% Create instance of class Orbit.
+% Instantiate object of class Orbit.
 altitude = 340000; % [meters].
 orbit = Orbit(altitude);
 
-% Create instance of class IvanovFormationFlight.
+% Instantiate object of class IvanovFormationFlight.
 number_of_satellites = 4;
 iv = IvanovFormationFlight(orbit,number_of_satellites,...
                            available_GPS,available_TLE);
@@ -98,7 +109,7 @@ orbitSectionSize = 2; % Size of each orbit section [deg].
 orbitSections = 1:orbitSectionSize:360;
 
 
-%% Section break
+%% Section break.
 
 % Create data queue for parallel pool.
 dq = parallel.pool.DataQueue;
@@ -115,7 +126,7 @@ startTimePool = posixtime(datetime('now')); % Posixtime [seconds].
 % Execute parallel code on workers of parallel pool.
 spmd(number_of_satellites)
 	
-	% Set satellite IDs (id) for each of the satellites
+	% Set satellite IDs (id) for each of the satellites.
 	id = labindex;
 	alive = true;
 	send(dq,['Satellite number ',num2str(id),' is alive.']);
@@ -205,9 +216,9 @@ spmd(number_of_satellites)
 			send(dq,['Sat.',num2str(id),': orbit counter = ',...
 			         num2str(currentOrbit),'. ',msg]);
 			
-		end % [while sim_status]
+		end % [while sim_status].
 		
-		% If orbit is broken, also break alive loop; this will change
+		% If orbit is broken, also break alive loop; this will change ...
 		% later with other conditions.
 		if sim_status == 0
 			alive = false;
@@ -216,18 +227,16 @@ spmd(number_of_satellites)
 		% Log.
 		send(dq,['Sat.',num2str(id),' is dead.']);
 		
-	end % [while alive]
+	end % [while alive].
 	
-end % [spmd(iv.Ns)]
+end % [spmd(iv.Ns)].
 
 % Terminate the existing parallel pool session.
 delete(gcp('nocreate'));
 
-
-%% Section break
-
 % Set MATLAB classes to ignore.
 classesToIgnore = {'Composite',...
+                   'parallel.Pool',...
                    'parallel.pool.DataQueue'};
 
 % Save current MATLAB workspace variables.
@@ -236,18 +245,21 @@ save(fullfile(filepath,'workspace.mat'));
 
 % Get variables from saved workspace.
 varsWorkspace = who('-file',fullfile(filepath,'workspace.mat'));
+varsLength = length(varsWorkspace);
+
+% Set empty cell array for object names.
+% objectNames = {};
+objectNames = cell(varsLength,1);
+
+% Set empty cell array for class names.
+% classNames = {};
+classNames = cell(varsLength,1);
 
 % Set counter for number of custom objects found.
 objCounter = 0;
 
-% Set cell array for object names.
-objectNames = {};
-
-% Set cell array for class names.
-classNames = {};
-
 % Go through all variables, one by one.
-for varnum = 1 : length(varsWorkspace)
+for varnum = 1 : varsLength
 	
 	objectName = varsWorkspace{varnum};
 	className = class(eval(objectName));
@@ -260,8 +272,8 @@ for varnum = 1 : length(varsWorkspace)
 		objCounter = objCounter + 1;
 		
 		% Add object and class names to cell array.
-		objectNames{end+1} = objectName; %#ok<SAGROW>
-		classNames{end+1} = className; %#ok<SAGROW>
+		objectNames{objCounter} = objectName;
+		classNames{objCounter} = className;
 		
 	end
 	
@@ -269,8 +281,14 @@ end
 
 if objCounter > 0
 	
+	% Remove empty cells from cell arrays.
+	index = cellfun(@isempty,objectNames) == 0;
+	objectNames = objectNames(index);
+	classNames = classNames(index);
+	
 	% Print variable names and their respective classes.
 	fprintf('\nCustom objects and respective classes:\n\n');
+	objectNames = pad(objectNames,'left');
 	for n = 1 : objCounter
 		fprintf('%s : %s\n',objectNames{n},classNames{n});
 	end
