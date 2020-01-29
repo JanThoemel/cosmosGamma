@@ -30,6 +30,7 @@
 %   for possible simplification
 %
 % Recently done:
+% - Add publish function
 % - Fix function docs to work in both Windows and Mac
 % - Fix documentation tool that shows custom object classes used
 % - Fix change of working directory and path of the running m-file
@@ -65,12 +66,15 @@
 warning on verbose;
 close all; clear all; clc; %#ok<CLALL>
 
+% Update this file name without extension "m".
+THIS_FILE_NAME = 'run';
+
 if(~isdeployed)
 	
 	% Get directory of this m-file, i.e. the active file in Editor.
 	[filepath,~,~] = fileparts(matlab.desktop.editor.getActiveFilename);
 	% [filepath,~,~] = fileparts(mfilename('fullpath'));
-	% [filepath,~,~] = fileparts(which('run.m'));
+	% [filepath,~,~] = fileparts(which(THIS_FILE_NAME));
 	
 	% Add directory of this m-file to the current MATLAB path.
 	current_path = path;
@@ -235,6 +239,9 @@ end % [spmd(iv.Ns)].
 % Terminate the existing parallel pool session.
 delete(gcp('nocreate'));
 
+
+%% Section break.
+
 % Set MATLAB classes to ignore.
 classesToIgnore = {'Composite',...
                    'parallel.Pool',...
@@ -303,6 +310,21 @@ else
 	fprintf('\nNo custom object classes found.\n');
 end
 
+% Set options to publish documentation.
+options = struct('format','html',... % [html], [pdf].
+                 'outputDir',fullfile(filepath,'doc'));
+
+% Publish documentation, i.e. save it in previously specified folder.
+% publish(strcat(THIS_FILE_NAME,'.m'),options);
+
+% Open published documentation.
+% if strcmp(options.format,'html')
+% 	web(strcat('doc',filesep,THIS_FILE_NAME,'.',options.format));
+% else
+% 	winopen(strcat('doc',filesep,THIS_FILE_NAME,'.',options.format));
+% end
+
+
 
 
 
@@ -366,18 +388,6 @@ solarPressure = solarPressureForce(sunlight, iv.PanelSurface, iv.Panels(1), ...
 % for i = 1 : iv.Ns
 % 	sat(i) = IvanovSatellite();
 % end
-
-
-%% Creates and starts a parallel pool
-%
-clc
-%
-
-% dq = parallel.pool.DataQueue;
-% afterEach(dq, @disp); % defines a function to call when new data is received on the DataQueue
-% parpool(iv.Ns); % creates and returns a pool with the specified number of workers
-% 
-% startTime = posixtime(datetime('now')); % posixtime, i.e. seconds
 
 
 
