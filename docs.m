@@ -47,7 +47,10 @@ parse(p,varargin{:});
 mode = p.Results.mode;
 
 % Check for parameter 'publish'.
-if any(validatestring(mode,modeOptions(1)))
+try
+	
+	% Validate string.
+	validatestring(mode,modeOptions(1));
 	
 	% Set options to publish documentation.
 	options = struct('format','html',... % [html], [pdf].
@@ -63,7 +66,7 @@ if any(validatestring(mode,modeOptions(1)))
 		winopen(strcat('doc',filesep,filesToPub{1},'.',options.format));
 	end
 	
-else
+catch
 	
 	fid = fopen(fullfile(filepath,'lib','listCustomClasses'));
 	classNames = textscan(fid,'%s');
