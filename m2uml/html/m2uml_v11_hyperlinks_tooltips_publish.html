@@ -1,0 +1,401 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>m2uml 1.1 - Hyper-links and tool-tips</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-02-05"><meta name="DC.source" content="m2uml_v11_hyperlinks_tooltips_publish.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>m2uml 1.1 - Hyper-links and tool-tips</h1><!--introduction--><p>m2uml 1.1 includes new feaures</p><div><ul><li>The class diagram can now be displayed in the web browser of Matlab - preferably on a second monitor.</li><li>The names of classes and methods are hyper-linked to appropriate lines in the m-file.</li><li>Hovering over the names of classes and methods shows the appropriate H1-line in a tool-tip.</li><li>The class box has an extra compartment with hyper-links and tool-tips of FIXME and TODO annotations in the code.</li></ul></div><p>Thus, m2uml 1.1</p><div><ul><li>shows a class diagram as did m2uml 1.0</li><li>supports navigation of the source code</li><li>provides a bit of documentation and backlog</li></ul></div><p>I think this will be helpful:</p><div><ul><li>The class diagram itself provides an overview of the program under development, which will remind the user of the design.</li><li>The hyper-links make the class diagram a navigation tool.</li><li>The tool-tips will make the H1-lines and likewise the TODO/FIXME annotations more accessible. That in turn makes it wortwhile to put more effort into writing and maintaining these texts.</li></ul></div><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Running m2uml together with PlantText</a></li><li><a href="#6">Shortcommings of PlantText</a></li><li><a href="#7">Local installations of PlantUML and Graphviz</a></li><li><a href="#9">Attempt to control the layout</a></li><li><a href="#13">Can m2uml help learning a new code-base?</a></li><li><a href="#16">User Interface</a></li></ul></div><h2>Running m2uml together with PlantText<a name="1"></a></h2><p>PlantText is a service on the Internet, which replaces a local installations of PlantUML and Graphviz. However, it takes several interactive steps to use it</p><p>1. run <tt>m2uml.run</tt> to create PlantUML-code in an editor document.</p><pre class="codeinput">   [~] = m2uml.run( <span class="string">'test of m2uml installation'</span> , <span class="keyword">...</span>
+                {   <span class="string">'m2uml.ScriptComposite'</span>
+                } , {
+                    <span class="string">'m2uml.ClassNode  --&gt; m2uml.Property'</span>
+                    <span class="string">'m2uml.ClassNode  --&gt; m2uml.Operation'</span>
+                    <span class="string">'m2uml.ClassNode  --&gt; m2uml.TodoFixme'</span>
+                }  );
+</pre><p>2. save the document with the extension <tt>.txt</tt> to the disk, e.g. <tt>temp1.txt</tt>. (PlantText doesn't accept <tt>.uml</tt>.)</p><p>3. open PlantText (https://www.planttext.com/) in a browser (other than Matlab's Web Browser).</p><p>4. import the file to PlantText, which instantly creates the diagram (or click Refresh). The text, <i>"Thanks to PlantUML [...] and your PlantUML has been saved to your computers local storage."</i> appears at the bottom of PlantText page. I assume that PlantText uses a PlantUML services and that <i>"local storage"</i> refers to the server, on which PlantText is running.</p><p><img vspace="5" hspace="5" src="PlantText_import_export_2.png" alt=""> </p><p>5. Save Link As the svg-file to a disk file, e.g. <tt>temp1.svg</tt></p><p><img vspace="5" hspace="5" src="PlantText_save_link_as_2.png" alt=""> </p><p>6. Open the svg-file in the Matlab's Web Browser.</p><pre class="codeinput">web(<span class="string">'h:\m\FEX\Upload\m2uml\pics\temp1.svg'</span>,<span class="string">'-new'</span>)
+</pre><p><img vspace="5" hspace="5" src="PlantText_Matlab_Web_2.png" alt=""> </p><p><b>Hotspots.</b> The hotspot areas of the properties and the methods are the extent of their text strings, respectively. The hotspot of the class name is the entire class box, but the hotspots of the properties and methods. There is no gaps between the hotspots. Thus, hovering over the right bottom corner of the box will show the tool-tip of the class name.</p><h2>Shortcommings of PlantText<a name="6"></a></h2><p>I had to cut down on the above test to make it pass. That's because PlantText revealed some shortcommings (2017-01-11)</p><div><ul><li>PlantText cannot handle <b>the long lines</b>, which results from including hyper-links and tool-tips. (These features were added to PlantUML late last autumn.)</li><li>PlantText is picky regarding <b>the extension of the file</b> containing the PlantUML-code. <tt>.txt</tt> is ok.</li><li><tt>Save</tt> and <tt>Load</tt> seems to be greyed out. That doesn't affect this test.</li></ul></div><h2>Local installations of PlantUML and Graphviz<a name="7"></a></h2><p>Two reasons to install PlantUML are</p><div><ol><li>capacity to handle long lines</li><li>speed</li></ol></div><p>PlantUML, <a href="http://plantuml.com/starting">http://plantuml.com/starting</a>, describes how to make a local installation. My installation is</p><pre>   H:\&gt;java -jar c:\_MyPrg\PlantUML\plantuml.jar -version
+   PlantUML version 8049beta6 (8049beta6)
+   (GPL source distribution)
+   Java(TM) SE Runtime Environment
+   Java HotSpot(TM) Client VM
+   1.8.0_111-b14
+   ...
+   The environment variable GRAPHVIZ_DOT has not been set
+   Dot executable is c:\Program Files (x86)\Graphviz2.38\bin\dot.exe
+   Dot version: dot - graphviz version 2.38.0 (20140413.2041)
+   Installation seems OK. File generation OK</pre><p>Run with the local installation of PlantUML</p><pre class="codeinput">    m2uml.call_local_PlantUML                               <span class="keyword">...</span>
+        (   <span class="string">'Title'</span>     ,   <span class="string">'local PlantUML-installation'</span>   <span class="keyword">...</span>
+        ,   <span class="string">'Classes'</span>   ,   {
+                                <span class="string">'m2uml.ScriptComposite'</span>
+                                <span class="string">'m2uml.ClassNode'</span>
+                                <span class="string">'m2uml.Property'</span>
+                                <span class="string">'m2uml.Operation'</span>
+                                <span class="string">'m2uml.TodoFixme'</span>
+                            }   <span class="keyword">...</span>
+        ,   <span class="string">'Arrows'</span>    ,   {
+                                <span class="string">'m2uml.ClassNode  --&gt; m2uml.Property'</span>
+                                <span class="string">'m2uml.ClassNode  --&gt; m2uml.Operation'</span>
+                                <span class="string">'m2uml.ClassNode  --&gt; m2uml.TodoFixme'</span>
+                            }   <span class="keyword">...</span>
+        );
+<span class="comment">%</span>
+</pre><p><img vspace="5" hspace="5" src="local_PlantUML_installation.png" alt=""> </p><h2>Attempt to control the layout<a name="9"></a></h2><p>The PlanUML says <i>"Help on layout. Sometimes, the default layout is not perfect..."</i> (<a href="http://plantuml.com/class-diagram#layout">http://plantuml.com/class-diagram#layout</a>). The layout is affected by</p><div><ol><li>The order in which the classes are defined in the PlantUML-script. The order given in the input to m2uml is carried over to the PlantUML-script and to the diagram: top-down and left-right.</li><li>The direction of the arrows play a major role.</li></ol></div><p>However, accept that in the end DOT rules. The Grapviz documentation says:</p><pre>   2.6 Node and Edge Placement
+   [...]
+   Fine-tuning should be approached cautiously. dot works best when it can makes a
+   layout without much &#8220;help&#8221; or interference in its placement of individual nodes and
+   edges. Layouts can be adjusted somewhat by increasing the weight of certain edges,
+   or by creating invisible edges or nodes using style=invis, and sometimes even by
+   rearranging the order of nodes and edges in the file. But this can backfire because
+   the layouts are not necessarily stable with respect to changes in the input graph.
+   One last adjustment can invalidate all previous changes and make a very bad
+   drawing.</pre><p>Let PlantUML take care of the layout and see what happens.</p><pre class="codeinput">    m2uml.call_local_PlantUML                               <span class="keyword">...</span>
+        (   <span class="string">'Title'</span>     ,   <span class="string">'layout controlled by DOT'</span>      <span class="keyword">...</span>
+        ,   <span class="string">'Classes'</span>   ,   {   <span class="string">'m2uml.ClassStructure'</span>
+                                <span class="string">'m2uml.ClassNode'</span>
+                                <span class="string">'m2uml.Property'</span>
+                                <span class="string">'m2uml.Operation'</span>
+                                <span class="string">'m2uml.TodoFixme'</span>
+                                <span class="string">'m2uml.PlantUmlAdapter'</span>
+                                <span class="string">'m2uml.Relationship'</span>
+                                <span class="string">'m2uml.ScriptComposite'</span>
+                                <span class="string">'m2uml.UmlScript'</span>
+                            }   <span class="keyword">...</span>
+        ,   <span class="string">'Arrows'</span>    ,   {
+                                <span class="string">'m2uml.ClassStructure "1" --&gt; "*" m2uml.ClassNode'</span>
+                                <span class="string">'m2uml.ClassStructure "1" --&gt; "*" m2uml.Relationship'</span>
+                                <span class="string">'m2uml.ClassNode  --&gt; m2uml.Property'</span>
+                                <span class="string">'m2uml.ClassNode  --&gt; m2uml.Operation'</span>
+                                <span class="string">'m2uml.ClassNode  --&gt; m2uml.TodoFixme'</span>
+                                <span class="string">'m2uml.PlantUmlAdapter --&gt; m2uml.ClassStructure'</span>
+                                <span class="string">'m2uml.PlantUmlAdapter --&gt; m2uml.UmlScript'</span>
+                            } <span class="keyword">...</span>
+        );
+</pre><p><img vspace="5" hspace="5" src="m2uml_full.png" alt=""> </p><p>And next try to help PlantUML a bit by adding a hidden arrow, <tt>'m2uml.ClassNode -[hidden]left-&gt; m2uml.UmlScript'</tt>.</p><pre class="codeinput">    m2uml.call_local_PlantUML                                   <span class="keyword">...</span>
+        (   <span class="string">'Title'</span>     ,   <span class="string">'layout modified by a hidden arrow'</span> <span class="keyword">...</span>
+        ,   <span class="string">'Classes'</span>   ,   {   <span class="string">'m2uml.ClassNode'</span>
+                                <span class="string">'m2uml.ClassStructure'</span>
+                                <span class="string">'m2uml.Operation'</span>
+                                <span class="string">'m2uml.PlantUmlAdapter'</span>
+                                <span class="string">'m2uml.Property'</span>
+                                <span class="string">'m2uml.Relationship'</span>
+                                <span class="string">'m2uml.ScriptComposite'</span>
+                                <span class="string">'m2uml.UmlScript'</span>
+                            }   <span class="keyword">...</span>
+        ,   <span class="string">'Arrows'</span>    ,   {
+                                <span class="string">'m2uml.ClassStructure "1" --&gt; "*" m2uml.ClassNode'</span>
+                                <span class="string">'m2uml.ClassStructure "1" --&gt; "*" m2uml.Relationship'</span>
+                                <span class="string">'m2uml.ClassNode  --&gt; m2uml.Property'</span>
+                                <span class="string">'m2uml.ClassNode  --&gt; m2uml.Operation'</span>
+                                <span class="string">'m2uml.PlantUmlAdapter --&gt; m2uml.ClassStructure'</span>
+                                <span class="string">'m2uml.PlantUmlAdapter --&gt; m2uml.UmlScript'</span>
+                                <span class="string">'m2uml.ClassNode -[hidden]left-&gt; m2uml.UmlScript'</span>
+                            } <span class="keyword">...</span>
+        );
+</pre><p><img vspace="5" hspace="5" src="m2uml_full_hidden.png" alt=""> </p><h2>Can m2uml help learning a new code-base?<a name="13"></a></h2><p>This is just a quick test with the File Exchange contribution, GUI Layout Toolbox by David Sampson.</p><p><img vspace="5" hspace="5" src="GuiLayoutToolbox.png" alt=""> </p><p>And without arrows (done with a trick)</p><p><img vspace="5" hspace="5" src="GuiLayoutToolboxClassNodes.png" alt=""> </p><h2>User Interface<a name="16"></a></h2><p>m2uml asks for a GUI, but I'm postponing making one and run m2uml from scripts like <tt>m2uml_v11_user_interface.m</tt>.</p><div><ol><li>Select a section and</li><li>press the button, Run Selection.</li></ol></div><p><img vspace="5" hspace="5" src="m2uml_v11_user_interface.png" alt=""> </p><p>The specific layout of the call makes it easy to</p><div><ol><li>copy&amp;paste input strings</li><li>comment out input strings with <tt>...</tt></li><li>add comments</li></ol></div><p>And <b>Collapse All</b> turns the script into a table of content.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%%  m2uml 1.1 - Hyper-links and tool-tips
+% m2uml 1.1 includes new feaures
+%
+% * The class diagram can now be displayed in the web browser of Matlab - preferably on a 
+% second monitor.
+% * The names of classes and methods are hyper-linked to appropriate lines in the m-file. 
+% * Hovering over the names of classes and methods shows the appropriate H1-line in a 
+% tool-tip. 
+% * The class box has an extra compartment with hyper-links and tool-tips of FIXME and
+% TODO annotations in the code.
+%
+% Thus, m2uml 1.1   
+%
+% * shows a class diagram as did m2uml 1.0
+% * supports navigation of the source code
+% * provides a bit of documentation and backlog
+%
+% I think this will be helpful: 
+%
+% * The class diagram itself provides an overview of the program under development, which
+% will remind the user of the design.
+% * The hyper-links make the class diagram a navigation tool.
+% * The tool-tips will make the H1-lines and likewise the TODO/FIXME annotations more
+% accessible. That in turn makes it wortwhile to put more effort into writing and
+% maintaining these texts. 
+%
+
+%% Running m2uml together with PlantText
+% PlantText is a service on the Internet, which replaces a local installations of PlantUML
+% and Graphviz. However, it takes several interactive steps to use it
+%
+% 1. run |m2uml.run| to create PlantUML-code in an editor document.
+%
+   [~] = m2uml.run( 'test of m2uml installation' , ...
+                {   'm2uml.ScriptComposite'
+                } , {
+                    'm2uml.ClassNode  REPLACE_WITH_DASH_DASH> m2uml.Property'
+                    'm2uml.ClassNode  REPLACE_WITH_DASH_DASH> m2uml.Operation'
+                    'm2uml.ClassNode  REPLACE_WITH_DASH_DASH> m2uml.TodoFixme'
+                }  );
+
+%%
+% 2. save the document with the extension |.txt| to the disk, e.g. |temp1.txt|.
+% (PlantText doesn't accept |.uml|.)
+%
+% 3. open PlantText (https://www.planttext.com/) in a browser (other than Matlab's Web
+% Browser).
+%
+% 4. import the file to PlantText, which instantly creates the diagram (or click Refresh).
+% The text, _"Thanks to PlantUML [...] and your PlantUML has been saved to your computers
+% local storage."_ appears at the bottom of PlantText page. I assume that PlantText uses a
+% PlantUML services and that _"local storage"_ refers to the server, on which PlantText is
+% running.
+%
+% <<PlantText_import_export_2.png>>
+
+%%
+% 5. Save Link As the svg-file to a disk file, e.g. |temp1.svg| 
+%
+% <<PlantText_save_link_as_2.png>>
+
+%%
+% 6. Open the svg-file in the Matlab's Web Browser.
+%
+web('h:\m\FEX\Upload\m2uml\pics\temp1.svg','-new')   
+ 
+%%
+% <<PlantText_Matlab_Web_2.png>>
+%
+% *Hotspots.* The hotspot areas of the properties and the methods are the extent of their
+% text strings, respectively. The hotspot of the class name is the entire class box, but
+% the hotspots of the properties and methods. There is no gaps between the hotspots. Thus,
+% hovering over the right bottom corner of the box will show the tool-tip of the class
+% name.
+
+%% Shortcommings of PlantText
+% I had to cut down on the above test to make it pass. That's because PlantText revealed
+% some shortcommings (2017-01-11)
+%
+% * PlantText cannot handle *the long lines*, which results from including hyper-links
+% and tool-tips. (These features were added to PlantUML late last autumn.)
+% * PlantText is picky regarding *the extension of the file* containing the PlantUML-code. 
+% |.txt| is ok.
+% * |Save| and |Load| seems to be greyed out. That doesn't affect this test. 
+
+%% Local installations of PlantUML and Graphviz
+% Two reasons to install PlantUML are 
+%
+% # capacity to handle long lines
+% # speed
+%
+% PlantUML, http://plantuml.com/starting, describes how to make a local installation.
+% My installation is
+%
+%     H:\>java -jar c:\_MyPrg\PlantUML\plantuml.jar -version
+%     PlantUML version 8049beta6 (8049beta6)
+%     (GPL source distribution)
+%     Java(TM) SE Runtime Environment
+%     Java HotSpot(TM) Client VM
+%     1.8.0_111-b14
+%     ... 
+%     The environment variable GRAPHVIZ_DOT has not been set
+%     Dot executable is c:\Program Files (x86)\Graphviz2.38\bin\dot.exe
+%     Dot version: dot - graphviz version 2.38.0 (20140413.2041)
+%     Installation seems OK. File generation OK
+%
+% Run with the local installation of PlantUML  
+%
+    m2uml.call_local_PlantUML                               ...
+        (   'Title'     ,   'local PlantUML-installation'   ...
+        ,   'Classes'   ,   {   
+                                'm2uml.ScriptComposite' 
+                                'm2uml.ClassNode' 
+                                'm2uml.Property'        
+                                'm2uml.Operation' 
+                                'm2uml.TodoFixme'
+                            }   ...
+        ,   'Arrows'    ,   {
+                                'm2uml.ClassNode  REPLACE_WITH_DASH_DASH> m2uml.Property'
+                                'm2uml.ClassNode  REPLACE_WITH_DASH_DASH> m2uml.Operation'
+                                'm2uml.ClassNode  REPLACE_WITH_DASH_DASH> m2uml.TodoFixme'
+                            }   ...
+        );
+%
+
+%% 
+% <<local_PlantUML_installation.png>>
+
+%% Attempt to control the layout
+% The PlanUML says _"Help on layout. Sometimes, the default layout is not perfect..."_
+% (http://plantuml.com/class-diagram#layout). The layout is affected by 
+%
+% # The order in which the classes are defined in the PlantUML-script. The order given in
+% the input to m2uml is carried over to the PlantUML-script and to the diagram: top-down
+% and left-right.
+% # The direction of the arrows play a major role.
+%
+% However, accept that in the end DOT rules. The Grapviz documentation says: 
+%
+%     2.6 Node and Edge Placement
+%     [...]
+%     Fine-tuning should be approached cautiously. dot works best when it can makes a
+%     layout without much “help” or interference in its placement of individual nodes and
+%     edges. Layouts can be adjusted somewhat by increasing the weight of certain edges,
+%     or by creating invisible edges or nodes using style=invis, and sometimes even by
+%     rearranging the order of nodes and edges in the file. But this can backfire because
+%     the layouts are not necessarily stable with respect to changes in the input graph.
+%     One last adjustment can invalidate all previous changes and make a very bad
+%     drawing.
+%
+% Let PlantUML take care of the layout and see what happens.   
+
+    m2uml.call_local_PlantUML                               ...
+        (   'Title'     ,   'layout controlled by DOT'      ...
+        ,   'Classes'   ,   {   'm2uml.ClassStructure'
+                                'm2uml.ClassNode' 
+                                'm2uml.Property'        
+                                'm2uml.Operation' 
+                                'm2uml.TodoFixme'
+                                'm2uml.PlantUmlAdapter'
+                                'm2uml.Relationship'
+                                'm2uml.ScriptComposite'
+                                'm2uml.UmlScript' 
+                            }   ...
+        ,   'Arrows'    ,   {
+                                'm2uml.ClassStructure "1" REPLACE_WITH_DASH_DASH> "*" m2uml.ClassNode'
+                                'm2uml.ClassStructure "1" REPLACE_WITH_DASH_DASH> "*" m2uml.Relationship'
+                                'm2uml.ClassNode  REPLACE_WITH_DASH_DASH> m2uml.Property'
+                                'm2uml.ClassNode  REPLACE_WITH_DASH_DASH> m2uml.Operation'
+                                'm2uml.ClassNode  REPLACE_WITH_DASH_DASH> m2uml.TodoFixme'
+                                'm2uml.PlantUmlAdapter REPLACE_WITH_DASH_DASH> m2uml.ClassStructure'
+                                'm2uml.PlantUmlAdapter REPLACE_WITH_DASH_DASH> m2uml.UmlScript'
+                            } ...
+        );
+
+%%
+% <<m2uml_full.png>>
+
+%%
+% And next try to help PlantUML a bit by adding a hidden arrow, |'m2uml.ClassNode
+% -[hidden]left-> m2uml.UmlScript'|.
+
+    m2uml.call_local_PlantUML                                   ...
+        (   'Title'     ,   'layout modified by a hidden arrow' ...
+        ,   'Classes'   ,   {   'm2uml.ClassNode' 
+                                'm2uml.ClassStructure'
+                                'm2uml.Operation'  
+                                'm2uml.PlantUmlAdapter'
+                                'm2uml.Property'        
+                                'm2uml.Relationship'
+                                'm2uml.ScriptComposite'
+                                'm2uml.UmlScript' 
+                            }   ...
+        ,   'Arrows'    ,   {
+                                'm2uml.ClassStructure "1" REPLACE_WITH_DASH_DASH> "*" m2uml.ClassNode'
+                                'm2uml.ClassStructure "1" REPLACE_WITH_DASH_DASH> "*" m2uml.Relationship'
+                                'm2uml.ClassNode  REPLACE_WITH_DASH_DASH> m2uml.Property'
+                                'm2uml.ClassNode  REPLACE_WITH_DASH_DASH> m2uml.Operation'
+                                'm2uml.PlantUmlAdapter REPLACE_WITH_DASH_DASH> m2uml.ClassStructure'
+                                'm2uml.PlantUmlAdapter REPLACE_WITH_DASH_DASH> m2uml.UmlScript'
+                                'm2uml.ClassNode -[hidden]left-> m2uml.UmlScript'
+                            } ...
+        );
+
+%%
+% <<m2uml_full_hidden.png>>
+
+%% Can m2uml help learning a new code-base?
+% This is just a quick test with the File Exchange contribution, GUI Layout Toolbox by
+% David Sampson. 
+
+%%
+% <<GuiLayoutToolbox.png>>
+
+%%
+% And without arrows (done with a trick)
+%
+% <<GuiLayoutToolboxClassNodes.png>>
+
+%% User Interface
+% m2uml asks for a GUI, but I'm postponing making one and run m2uml from scripts like
+% |m2uml_v11_user_interface.m|. 
+%
+% # Select a section and 
+% # press the button, Run Selection.
+%
+% <<m2uml_v11_user_interface.png>>
+
+%%
+% The specific layout of the call makes it easy to 
+%
+% # copy&paste input strings 
+% # comment out input strings with |...|
+% # add comments
+%
+% And *Collapse All* turns the script into a table of content. 
+
+
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>

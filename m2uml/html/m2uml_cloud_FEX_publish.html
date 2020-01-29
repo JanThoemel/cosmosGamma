@@ -1,0 +1,374 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>m2uml generates UML Class Diagrams       .</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-10-14"><meta name="DC.source" content="m2uml_cloud_FEX_publish.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>m2uml generates UML Class Diagrams       .</h1><!--introduction--><p>I'm positive that some simple UML-diagrams could help us organizing our Matlab code. See <a href="http://martinfowler.com/bliki/UmlAsSketch.html">UmlAsSketch</a> by Martin Fowler.</p><p>Five years ago I started to make m2uml, which reverse engineer Matlab code to make a UML class diagram. I still run it from my unit testing framework. The main reason why I didn't complete it was that it provides to little control over the layout of the class diagram. It happens that a minor change in the input results in a major change in the layout of the diagram. However, now that might change: <a href="http://plantuml.sourceforge.net/qa/?qa=4842/graphviz-is-not-good-enough">GraphViz is not good enough</a>. That together with more than five hundred views of <a href="http://uk.mathworks.com/matlabcentral/answers/28195-automatic-tool-to-generate-sequence-and-class-diagrams-uml">my five years old question on MATLAB Answers</a> during the last thirty days triggered me to upload m2uml to File Exchange.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Requirements on m2uml                    .</a></li><li><a href="#2">m2uml in short                           .</a></li><li><a href="#3">PlantUML                                 .</a></li><li><a href="#4">How I currently use m2uml                .</a></li><li><a href="#5">Examples                                 .</a></li><li><a href="#6">Singleton                                .</a></li><li><a href="#8">Iterator                                 .</a></li><li><a href="#10">Animated traffic lights                  .</a></li><li><a href="#12">youemel                                  .</a></li><li><a href="#15">Local installation of PlantUML           .</a></li></ul></div><h2>Requirements on m2uml                    .<a name="1"></a></h2><div><ul><li>easy to keep the diagrams in sync with the code</li><li>show the important information, i.e. deliberately incomplete</li><li>show all dependencies between the displayed classes</li><li>the diagrams shall be easy to read</li></ul></div><h2>m2uml in short                           .<a name="2"></a></h2><div><ul><li>m2uml retrieves information from the code and from the Matlab meta.class object</li><li>m2uml outputs code in a simple domain specific language of PlantUML</li><li>PlantUML uses GraphViz to make the layout and</li><li>PlantUML draws the class diagram</li></ul></div><p>A list of classes is part of the m2uml input. This gives the user control of the scope of the diagram.</p><p>m2uml automatically generates the PlantUML code to depict the classes and the hierarchies of classes. Only the "subclassing-arrows" are added automatically.</p><p>Regarding <b>other relations between the classes</b> there are some different options. I've considered</p><div><ul><li>to extract information from the Matlab code</li><li>PlantUML code fragments in the Matlab code</li><li>PlantUML code as part of the m2uml input</li></ul></div><p>Skipping the other relations is not an option. The two first options appear not to be feasible, considering that any given class will be included in diagrams of different degree of detail. Remains the third option.</p><p>The abstract class, handle, is not depicted explicitly. Instead handle-classes are tagged with a capital H in a circle. This often simplifies the diagram significantly.</p><p>The easy-to-read-requirement is where the diagrams that are generated by m2uml needs to be improved. The diagrams in a series of versions shall look similar. They shall easily be identified as belonging to the same series. However, adding (or removing) an entity will often change the layout of the entire diagram resulting in problems to recognize before and after as versions of the same diagram.</p><h2>PlantUML                                 .<a name="3"></a></h2><p>PlantUML takes text as input and creates all important UML-diagrams. See <a href="http://plantuml.com/">PlantUML in a nutshell</a> and <a href="http://modeling-languages.com/plantuml-textual-uml-online/">PlantUML &#8211; Rendering textual UML diagrams</a> PlantUML has an active web-site and many users. New releases appears regularly. See: <a href="http://modeling-languages.com/interview-plantuml/">A coffee with Arnaud Roques (creator of PlantUML)</a></p><p>The documentation of PlantUML is good and includes lots of examples. There is <a href="http://plantuml.com/class-diagram">an on-line help</a> and the <a href="http://plantuml.com/PlantUML_Language_Reference_Guide.pdf">PlantUML Language Reference Guide</a>, which is a pdf-file.</p><p>There are alternatives to PlantUML, but I think I made a good choice five years ago.</p><h2>How I currently use m2uml                .<a name="4"></a></h2><p>Some sketchy UML-diagrams helps me to put some real thought into the high level design and forget about Matlab functions and one-liners for a while. I've applied that seriously a few times and it definately helps me come up with better designs. I use <a href="http://www.planttext.com/planttext">PlantText</a> and make only selected Class and Sequence diagrams. (Speculation: a function, uml2m, would keep me away from Matlab functions and one-liners even longer.)</p><p>The design process continuous in parallel with coding. m2uml comes into play when I have some code.</p><p>My use of m2uml is a bit clumsy:</p><div><ul><li>prepare Matlab code to call m2uml</li><li>run m2uml to generate PlantUML code</li><li>copy&amp;paste the PlantUML code to PlantText running in my browser</li><li>run PlantUML to produce a diagram (click the Refresh button of PlantText)</li><li>modify the PlantUML code to improve the layout of the diagram and click Refresh</li><li>copy&amp;paste the modified lines back to the input of m2uml</li><li>download the png-file</li></ul></div><p>I assume this could be automated to some extent. However, because of the limitations of Graphviz it must be easy to "modify the PlantUML code" in a trial and error process.</p><p>Initially, I installed PlantUML, Graphviz and a PlantUML editor on my PC. Now, I don't think that's worth the trouble. However, the <a href="http://plantuml.com/eclipse">Integration with Eclipse</a> looks nice.</p><h2>Examples                                 .<a name="5"></a></h2><p>For this demo I've copy&amp;pasted four examples from a testsuite. All of them are based on contributions to the File Exchange.</p><p>Prerequisites for running the examples in this script are</p><div><ul><li>m2uml is installed</li><li>the File Exchange contributions, respectively, are installed</li></ul></div><p>and the paths to the File Exchange contributions shall be edited to match your system</p><pre class="codeinput">path_to_BN_Singleton = <span class="string">'h:\m\FEX\oop\BN\Singleton'</span>;
+path_to_BN_Iterator  = <span class="string">'h:\m\FEX\oop\BN\Iterator'</span>;
+path_to_TrafficSigns = <span class="string">'h:\m\FEX\oop\TrafficSigns'</span>;
+path_to_youemel      = <span class="string">'h:\m\FEX\UML\youemel'</span>;
+<span class="comment">%</span>
+</pre><h2>Singleton                                .<a name="6"></a></h2><p><a href="http://uk.mathworks.com/matlabcentral/fileexchange/24911-design-pattern--singleton--creational-">Design Pattern: Singleton (Creational)by Bobby Nedelkovski</a></p><pre class="codeinput">addpath( path_to_BN_Singleton )
+[~] = m2uml.run( <span class="string">'BN_Singleton'</span>  <span class="keyword">...</span>
+    ,   {
+        <span class="string">'Singleton'</span>
+        <span class="string">'SingletonImpl'</span>
+        }, {
+        } );
+
+rmpath( path_to_BN_Singleton )
+</pre><img vspace="5" hspace="5" src="m2uml_cloud_FEX_publish_01.png" alt=""> <p><img vspace="5" hspace="5" src="BN_Singleton_PlantText.png" alt=""> </p><h2>Iterator                                 .<a name="8"></a></h2><p><a href="http://uk.mathworks.com/matlabcentral/fileexchange/25225-design-pattern--iterator--behavioural-">Design Pattern: Iterator (Behavioural) by Bobby Nedelkovski</a></p><pre class="codeinput">    addpath( path_to_BN_Iterator )
+    [~] = m2uml.run( <span class="string">'BN_Iterator'</span>  <span class="keyword">...</span>
+        ,   {
+            <span class="string">'List'</span>
+            <span class="string">'CellArrayList'</span>
+            <span class="string">'Iterator'</span>
+            <span class="string">'CellArrayListIterator'</span>
+            }, {
+            <span class="string">'CellArrayList "1" &lt;-left-o "1 " CellArrayListIterator : "  "'</span>
+            } );
+    rmpath( path_to_BN_Iterator )
+</pre><img vspace="5" hspace="5" src="m2uml_cloud_FEX_publish_02.png" alt=""> <p><img vspace="5" hspace="5" src="BN_Iterator.png" alt=""> </p><h2>Animated traffic lights                  .<a name="10"></a></h2><p><a href="http://uk.mathworks.com/matlabcentral/fileexchange/38316-object-oriented-program-example--animated-traffic-lights-on-road-intersection">Object oriented program example: animated traffic lights on road intersection by Bogumila &amp; Zbigniew MROZEK</a></p><p>This example exposed a fundamental problem. A Matlab program typically consists of a mixure of classes, functions and sometimes even scripts. Currently, m2uml only handles classes and will not catch depencencies between classes that occur via functions. For this example I transformed the script, start, to a class to make m2uml display it.</p><pre class="codeinput">    addpath( path_to_TrafficSigns )
+    [~] = m2uml.run( <span class="string">'Animated Traffic Lights'</span>  <span class="keyword">...</span>
+        ,   {
+            <span class="string">'start_poi'</span>
+            <span class="string">'map'</span>
+            <span class="string">'trafficLamp'</span>
+            <span class="string">'tLamps'</span>
+            }, {
+            <span class="string">'start_poi -right-&gt; map'</span>
+            <span class="string">'start_poi -down-&gt; tLamps'</span>
+            <span class="string">'tLamps "1" -right-&gt; "4" trafficLamp : "  "'</span>
+            } );
+    rmpath( path_to_TrafficSigns )
+</pre><img vspace="5" hspace="5" src="m2uml_cloud_FEX_publish_03.png" alt=""> <p><img vspace="5" hspace="5" src="TrafficSigns.png" alt=""> </p><h2>youemel                                  .<a name="12"></a></h2><p><a href="http://uk.mathworks.com/matlabcentral/fileexchange/47717-youemel">youemel by Nicholas</a> The "main" of the program is the funciton, youemel. I've transformed this function to a class, youemel_poi.</p><pre class="codeinput">    addpath( path_to_youemel )
+    [~] = m2uml.run( <span class="string">'youemel'</span>  <span class="keyword">...</span>
+        ,   {
+            <span class="string">'youemel_poi'</span>
+            <span class="string">'UmlClass'</span>
+            <span class="string">'UmlDiagram'</span>
+            <span class="string">'UmlDirectedRelationship'</span>
+            <span class="string">'UmlGeneralization'</span>
+            <span class="string">'UmlRelationship'</span>
+            }, {
+            <span class="string">'youemel_poi        --&gt;          UmlDiagram'</span>
+            <span class="string">'UmlDiagram     "1" -right-&gt; "*" UmlClass'</span>
+            <span class="string">'UmlDiagram     "1" -left-&gt;  "*" UmlGeneralization : "  "'</span>
+            } );
+    rmpath( path_to_youemel )
+</pre><img vspace="5" hspace="5" src="m2uml_cloud_FEX_publish_04.png" alt=""> <p><img vspace="5" hspace="5" src="youemel.png" alt=""> </p><h2>Local installation of PlantUML           .<a name="15"></a></h2><p>A local installation of PlantUML may after all be worth the trouble. (I assume it's possible to use an on-line service automatically, I have not done it.) I made a local installation for two reasons.</p><div><ul><li>An issue with PlantUML, which I reported. In a couple of days I received a new version. PlantUML is indeed supported!</li><li>Graphviz is needed to run youemel and I didn't find on-line support.</li></ul></div><p>I made a function, m2uml.call_local_PlantUML, which creates a svg-file and displays the it in the Matlab Web Browser. Next, I tested this function with <a href="http://uk.mathworks.com/matlabcentral/fileexchange/47717-youemel">youemel by Nicholas</a></p><pre class="codeinput">    addpath( path_to_youemel )
+    m2uml.call_local_PlantUML       <span class="keyword">...</span>
+        ( <span class="string">'Title'</span>   , <span class="string">'youemel'</span>     <span class="keyword">...</span>
+        , <span class="string">'Classes'</span> , {
+                        <span class="string">'youemel_poi'</span>
+                        <span class="string">'UmlClass'</span>
+                        <span class="string">'UmlDiagram'</span>
+                        <span class="string">'UmlDirectedRelationship'</span>
+                        <span class="string">'UmlGeneralization'</span>
+                        <span class="string">'UmlRelationship'</span>
+                    }    <span class="keyword">...</span>
+        , <span class="string">'Arrows'</span>  , {
+                        <span class="string">'youemel_poi     --&gt;          UmlDiagram'</span>
+                        <span class="string">'UmlDiagram  "1" -right-&gt; "*" UmlClass'</span>
+                        <span class="string">'UmlDiagram  "1" -left-&gt;  "*" UmlGeneralization : "  "'</span>
+                    } )
+    rmpath( path_to_youemel )
+</pre><img vspace="5" hspace="5" src="m2uml_cloud_FEX_publish_05.png" alt=""> <p><img vspace="5" hspace="5" src="local_youemel_svg.png" alt=""> </p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% m2uml generates UML Class Diagrams       .
+% I'm positive that some simple UML-diagrams could help us organizing our Matlab code. 
+% See <http://martinfowler.com/bliki/UmlAsSketch.html UmlAsSketch> by Martin
+% Fowler.
+% 
+% Five years ago I started to make m2uml, which reverse engineer Matlab code to make a UML
+% class diagram. I still run it from my unit testing framework. The main reason why I
+% didn't complete it was that it provides to little control over the layout of the class
+% diagram. It happens that a minor change in the input results in a major change in the
+% layout of the diagram. However, now that might change:
+% <http://plantuml.sourceforge.net/qa/?qa=4842/graphviz-is-not-good-enough GraphViz is not
+% good enough>. That together with more than five hundred views of
+% <http://uk.mathworks.com/matlabcentral/answers/28195-automatic-tool-to-generate-sequence-and-class-diagrams-uml
+% my five years old question on MATLAB Answers> during the last thirty days triggered me
+% to upload m2uml to File Exchange.
+%
+%% Requirements on m2uml                    .
+% * easy to keep the diagrams in sync with the code
+% * show the important information, i.e. deliberately incomplete
+% * show all dependencies between the displayed classes
+% * the diagrams shall be easy to read 
+%
+%% m2uml in short                           .
+% * m2uml retrieves information from the code and from the Matlab meta.class object   
+% * m2uml outputs code in a simple domain specific language of PlantUML
+% * PlantUML uses GraphViz to make the layout and
+% * PlantUML draws the class diagram
+%
+% A list of classes is part of the m2uml input. This gives the user control of the scope
+% of the diagram. 
+%
+% m2uml automatically generates the PlantUML code to depict the classes and the
+% hierarchies of classes. Only the "subclassing-arrows" are added automatically.
+%
+% Regarding *other relations between the classes* there are some different options. I've
+% considered
+%   
+% * to extract information from the Matlab code 
+% * PlantUML code fragments in the Matlab code
+% * PlantUML code as part of the m2uml input
+%
+% Skipping the other relations is not an option. The two first options appear not to be
+% feasible, considering that any given class will be included in diagrams of different
+% degree of detail. Remains the third option. 
+%
+% The abstract class, handle, is not depicted explicitly. Instead handle-classes are
+% tagged with a capital H in a circle. This often simplifies the diagram significantly. 
+%
+% The easy-to-read-requirement is where the diagrams that are generated by m2uml needs to
+% be improved. The diagrams in a series of versions shall look similar. They shall easily
+% be identified as belonging to the same series. However, adding (or removing) an entity
+% will often change the layout of the entire diagram resulting in problems to recognize
+% before and after as versions of the same diagram.
+%
+%% PlantUML                                 .
+% PlantUML takes text as input and creates all important UML-diagrams. See
+% <http://plantuml.com/ PlantUML in a nutshell> and
+% <http://modeling-languages.com/plantuml-textual-uml-online/ PlantUML – Rendering textual
+% UML diagrams> PlantUML has an active web-site and many users. New releases appears
+% regularly. See: <http://modeling-languages.com/interview-plantuml/ A coffee with Arnaud
+% Roques (creator of PlantUML)>
+%
+% The documentation of PlantUML is good and includes lots of examples. There is 
+% <http://plantuml.com/class-diagram an on-line help> and the 
+% <http://plantuml.com/PlantUML_Language_Reference_Guide.pdf PlantUML Language Reference
+% Guide>, which is a pdf-file.   
+%
+% There are alternatives to PlantUML, but I think I made a good choice five years ago.
+%
+%% How I currently use m2uml                .
+% Some sketchy UML-diagrams helps me to put some real thought into the high level design
+% and forget about Matlab functions and one-liners for a while. I've applied that
+% seriously a few times and it definately helps me come up with better designs. I use
+% <http://www.planttext.com/planttext PlantText> and make only selected Class and Sequence
+% diagrams. (Speculation: a function, uml2m, would keep me away from Matlab functions and
+% one-liners even longer.) 
+%  
+% The design process continuous in parallel with coding. m2uml comes into play when I
+% have some code. 
+%
+% My use of m2uml is a bit clumsy:
+%
+% * prepare Matlab code to call m2uml
+% * run m2uml to generate PlantUML code   
+% * copy&paste the PlantUML code to PlantText running in my browser
+% * run PlantUML to produce a diagram (click the Refresh button of PlantText)  
+% * modify the PlantUML code to improve the layout of the diagram and click Refresh
+% * copy&paste the modified lines back to the input of m2uml
+% * download the png-file
+%
+% I assume this could be automated to some extent. However, because of the limitations of
+% Graphviz it must be easy to "modify the PlantUML code" in a trial and error process.
+%
+% Initially, I installed PlantUML, Graphviz and a PlantUML editor on my PC. Now, I don't
+% think that's worth the trouble. However, the <http://plantuml.com/eclipse Integration
+% with Eclipse> looks nice.
+%
+%% Examples                                 .
+% For this demo I've copy&pasted four examples from a testsuite. All of them are based
+% on contributions to the File Exchange.
+%
+% Prerequisites for running the examples in this script are
+%
+% * m2uml is installed
+% * the File Exchange contributions, respectively, are installed
+%
+% and the paths to the File Exchange contributions shall be edited to 
+% match your system 
+% 
+path_to_BN_Singleton = 'h:\m\FEX\oop\BN\Singleton';
+path_to_BN_Iterator  = 'h:\m\FEX\oop\BN\Iterator';
+path_to_TrafficSigns = 'h:\m\FEX\oop\TrafficSigns';
+path_to_youemel      = 'h:\m\FEX\UML\youemel';
+%
+%% Singleton                                .
+% <http://uk.mathworks.com/matlabcentral/fileexchange/24911-design-patternREPLACE_WITH_DASH_DASHsingletonREPLACE_WITH_DASH_DASHcreational-
+% Design Pattern: Singleton (Creational)by Bobby Nedelkovski>
+
+addpath( path_to_BN_Singleton )
+[~] = m2uml.run( 'BN_Singleton'  ...
+    ,   {
+        'Singleton'
+        'SingletonImpl'
+        }, {
+        } );
+
+rmpath( path_to_BN_Singleton )
+%%
+% <<BN_Singleton_PlantText.png>>
+%
+%% Iterator                                 .
+% <http://uk.mathworks.com/matlabcentral/fileexchange/25225-design-patternREPLACE_WITH_DASH_DASHiteratorREPLACE_WITH_DASH_DASHbehavioural-
+% Design Pattern: Iterator (Behavioural) by Bobby Nedelkovski> 
+%
+    addpath( path_to_BN_Iterator )
+    [~] = m2uml.run( 'BN_Iterator'  ...
+        ,   {
+            'List'
+            'CellArrayList'
+            'Iterator'
+            'CellArrayListIterator'
+            }, {
+            'CellArrayList "1" <-left-o "1 " CellArrayListIterator : "  "'
+            } );
+    rmpath( path_to_BN_Iterator )
+%%
+% <<BN_Iterator.png>>
+%    
+%% Animated traffic lights                  .
+% <http://uk.mathworks.com/matlabcentral/fileexchange/38316-object-oriented-program-exampleREPLACE_WITH_DASH_DASHanimated-traffic-lights-on-road-intersection
+% Object oriented program example: animated traffic lights on road intersection by
+% Bogumila & Zbigniew MROZEK>
+%
+% This example exposed a fundamental problem. A Matlab program typically consists of a
+% mixure of classes, functions and sometimes even scripts. Currently, m2uml only handles
+% classes and will not catch depencencies between classes that occur via functions. For
+% this example I transformed the script, start, to a class to make m2uml display it.
+
+    addpath( path_to_TrafficSigns )
+    [~] = m2uml.run( 'Animated Traffic Lights'  ...
+        ,   {
+            'start_poi'
+            'map'
+            'trafficLamp'
+            'tLamps'
+            }, {
+            'start_poi -right-> map'
+            'start_poi -down-> tLamps'
+            'tLamps "1" -right-> "4" trafficLamp : "  "'
+            } );
+    rmpath( path_to_TrafficSigns )
+%%
+% <<TrafficSigns.png>>
+%    
+%% youemel                                  .
+% <http://uk.mathworks.com/matlabcentral/fileexchange/47717-youemel youemel by Nicholas>
+% The "main" of the program is the funciton, youemel. I've transformed this function to a
+% class, youemel_poi.
+
+    addpath( path_to_youemel )
+    [~] = m2uml.run( 'youemel'  ...
+        ,   {
+            'youemel_poi'
+            'UmlClass'               
+            'UmlDiagram'             
+            'UmlDirectedRelationship'
+            'UmlGeneralization'      
+            'UmlRelationship'        
+            }, {
+            'youemel_poi        REPLACE_WITH_DASH_DASH>          UmlDiagram'
+            'UmlDiagram     "1" -right-> "*" UmlClass'
+            'UmlDiagram     "1" -left->  "*" UmlGeneralization : "  "'
+            } );
+    rmpath( path_to_youemel )        
+%%
+% <<youemel.png>>
+% 
+%% 
+%% Local installation of PlantUML           .
+% A local installation of PlantUML may after all be worth the trouble. (I assume it's
+% possible to use an on-line service automatically, I have not done it.) I made a local
+% installation for two reasons.
+%
+% * An issue with PlantUML, which I reported. In a couple of days I received a new
+% version. PlantUML is indeed supported!
+% * Graphviz is needed to run youemel and I didn't find on-line support.
+%
+% I made a function, m2uml.call_local_PlantUML, which creates a svg-file and displays the
+% it in the Matlab Web Browser. Next, I tested this function with 
+% <http://uk.mathworks.com/matlabcentral/fileexchange/47717-youemel youemel by Nicholas>
+%
+    addpath( path_to_youemel )
+    m2uml.call_local_PlantUML       ...
+        ( 'Title'   , 'youemel'     ...
+        , 'Classes' , {
+                        'youemel_poi'
+                        'UmlClass'               
+                        'UmlDiagram'             
+                        'UmlDirectedRelationship'
+                        'UmlGeneralization'      
+                        'UmlRelationship'        
+                    }    ...
+        , 'Arrows'  , {
+                        'youemel_poi     REPLACE_WITH_DASH_DASH>          UmlDiagram'
+                        'UmlDiagram  "1" -right-> "*" UmlClass'
+                        'UmlDiagram  "1" -left->  "*" UmlGeneralization : "  "'
+                    } )
+    rmpath( path_to_youemel )
+%%
+% <<local_youemel_svg.png>>
+%
+ 
+##### SOURCE END #####
+--></body></html>
