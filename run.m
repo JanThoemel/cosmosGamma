@@ -30,7 +30,7 @@
 %   for possible simplification
 %
 % Recently done:
-% - Add function publish to function docs as an optional parameter
+% - Fix function publish in function docs as an optional parameter
 % - Fix function docs to work in both Windows and Mac
 % - Fix documentation tool that shows custom object classes used
 % - Fix change of working directory and path of the running m-file
@@ -318,6 +318,7 @@ end
 
 
 %% question
+
 % initial idx and altitude
 idx=120;
 
@@ -330,7 +331,7 @@ orbitSection      = 2;                      % size of orbit section [deg]
 orbitSectionSize  = 2;                      % size of orbit section [deg]
 orbitSections     = 1:orbitSectionSize:360;
 orbitCounter      = 0;
-error             = zeros(6,iv.Ns);
+%error             = zeros(6,iv.Ns);
 sst               = zeros(9,1);
 sstDesired        = zeros(6,1);
 sstOld            = zeros(9,1);
@@ -344,24 +345,24 @@ TIME_PP         = 0;          % time for post processing
 
 %  Non-gravitational perturbations
 
-wind     = iv.WindOn * iv.Rho/2 * iv.V^2 * [-1 0 0]';
-sunlight = iv.SunOn * 2 * 4.5e-6 * [0 -1 0]'; % only for dawn/dusk orbit
-refSurf  = iv.PanelSurface * iv.Panels(3);
+% wind     = iv.WindOn * iv.Rho/2 * iv.V^2 * [-1 0 0]';
+% sunlight = iv.SunOn * 2 * 4.5e-6 * [0 -1 0]'; % only for dawn/dusk orbit
+% refSurf  = iv.PanelSurface * iv.Panels(3);
 
 %  Force vector determination and angular granulaty
 
-alphas = 0 : iv.DeltaAngle : 360; % roll
-betas  = 0 : iv.DeltaAngle : 180; % pitch
-gammas = 0 : iv.DeltaAngle : 360; % yaw
+% alphas = 0 : iv.DeltaAngle : 360; % roll
+% betas  = 0 : iv.DeltaAngle : 180; % pitch
+% gammas = 0 : iv.DeltaAngle : 360; % yaw
 
 %  Calculates pressure forces and returns 4D-Arrays of size:
 %  (3, length(alphas), length(betas), length(gammas) )
 
-aeroPressure = aeroPressureForce(wind, iv.PanelSurface, iv.Panels(1), ...
-	iv.Panels(2), iv.Panels(3), alphas, betas, gammas, iv.Rho, iv.V, iv.Tatmos);
-
-solarPressure = solarPressureForce(sunlight, iv.PanelSurface, iv.Panels(1), ...
-	iv.Panels(2), iv.Panels(3), alphas, betas, gammas);
+% aeroPressure = aeroPressureForce(wind, iv.PanelSurface, iv.Panels(1), ...
+% 	iv.Panels(2), iv.Panels(3), alphas, betas, gammas, iv.Rho, iv.V, iv.Tatmos);
+% 
+% solarPressure = solarPressureForce(sunlight, iv.PanelSurface, iv.Panels(1), ...
+% 	iv.Panels(2), iv.Panels(3), alphas, betas, gammas);
 
 %  Simulation object and parameters
 

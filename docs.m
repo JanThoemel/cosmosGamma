@@ -28,7 +28,7 @@ path(current_path,strcat('.',filesep,'lib',filesep));
 %   pass values for one parameter before another. ...
 %   However, parameter value inputs require that you pass the ...
 %   input name (e.g. 'publish') along with the value of the input.
-% - Examples of checker functions:
+% - Examples of validation functions:
 %   @isstring
 %   @(x) any(validatestring(x,{'publish'}))
 
@@ -47,7 +47,7 @@ parse(p,varargin{:});
 mode = p.Results.mode;
 
 % Check for parameter 'publish'.
-if strcmp(mode,modeOptions{1})
+if any(validatestring(mode,modeOptions(1)))
 	
 	% Set options to publish documentation.
 	options = struct('format','html',... % [html], [pdf].
