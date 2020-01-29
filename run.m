@@ -30,6 +30,7 @@
 %   for possible simplification
 %
 % Recently done:
+% - Fix function docs to work in both Windows and Mac
 % - Fix documentation tool that shows custom object classes used
 % - Fix change of working directory and path of the running m-file
 % - Change method to get full path of file run
