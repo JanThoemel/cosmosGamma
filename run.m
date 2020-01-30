@@ -15,8 +15,7 @@
 % - go over all steps from MYcosmosFS.m (spmd loop): now at line 136
 %
 % To do:
-% - Remove url links from automatically generated uml diagram
-% - Put custom class names into the automatic UML generator
+% - Use proxy service of the PlantUML server to open UML diagram
 % - Add docs('update') option to update publish for all m files
 % - Generate pdf publish files for all files in Windows PC
 % - Upload to Git all publish files generated in Windows PC
@@ -49,16 +48,11 @@
 %   for both Windows and Mac
 %
 % Recently done:
-% - In +m2uml.Property, lines 100 to 108: remove Hyperlink, ToolTip
-% - In +m2uml.Property, line 18: set ToolTip to empty char
-% - In +m2uml.Operation, lines 87 to 93: remove Hyperlink, ToolTip
-% - In +m2uml.Operation, line 76: set Hyperlink to empty char
-% - In +m2uml.Operation, line 67: set ToolTip to empty char
-% - In +m2uml.ClassNode, lines 134 to 143: remove Hyperlink, ToolTip
-% - In +m2uml.TodoFixme, lines 88 to 97: remove Hyperlink, ToolTip
-% - In +m2uml.TodoFixme, lines 60, 63: set empty char
-% - In +m2uml.ClassNode, line 120: Hyperlink = empty char
-% - In +m2uml.ClassNode, lines 107, 114: ToolTipString = empty char
+% - Remove hyperlinks, tooltips and fix visibility codes in m2uml
+% - Add spacing between VisibilityCode and Names in m2uml
+% - In +m2uml.Property, lines 100 to 109: remove Hyperlink, ToolTip
+% - In +m2uml.Operation, lines 87 to 94: remove Hyperlink, ToolTip
+% - In +m2uml.ClassNode, lines 134 to 144: remove Hyperlink, ToolTip
 % - Fix filesep in m2uml.filespec2fqn for dos/unix compatibility (2)
 % - Update custom function uml
 % - Fix function publish in function docs as an optional parameter

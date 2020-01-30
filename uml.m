@@ -53,4 +53,24 @@ import m2uml.*
 	} ...
 );
 
+% Upload file temp.uml to GitHub.
+
+
+
+
+
+
+% Set URL to the proxy service of the PlantUML server.
+plantProxy = 'https://www.plantuml.com/plantuml/proxy?';
+
+% Set complete URL of the raw document containing the PlantUML code.
+src = '';
+
+% Specify the format of the output file (default: png).
+fmt = 'png'; % [png], [svg], [eps], [epstext], [txt].
+
+% Use proxy service of the PlantUML server to open UML diagram.
+strcat(plantProxy,'src=',src,'&fmt=',fmt);
+%web(strcat(plantProxy,'src=',src,'&fmt=',fmt));
+
 end
