@@ -48,6 +48,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - Add temp.uml to GitHub automatically
 % - Remove hyperlinks, tooltips and fix visibility codes in m2uml
 % - Add spacing between VisibilityCode and Names in m2uml
 % - In +m2uml.Property, lines 100 to 109: remove Hyperlink, ToolTip

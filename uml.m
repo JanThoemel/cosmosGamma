@@ -2,7 +2,7 @@ function uml()
 %% Generate PlantUML code for COSMOS software.
 %_____________________________________________________________________
 %
-% Function docs:
+% Function uml:
 %
 % Detailed explanation goes here.
 %_____________________________________________________________________
@@ -19,6 +19,8 @@ addpath(strcat('.',filesep,'lib',filesep));
 
 % Import package m2uml with all its classes and functions.
 import m2uml.*
+
+fprintf('Generating code for UML diagram ...');
 
 % Notes on how to set relations between classes:
 % - Association occurs when two classes in a model need to ...
@@ -53,12 +55,33 @@ import m2uml.*
 	} ...
 );
 
-% Upload file temp.uml to GitHub.
+% Get name of the current active branch on Git.
+text = fileread('.git/HEAD');
+parsed = textscan(text,'%s');
+if ~strcmp(parsed{1}{1},'ref:') || ~length(parsed{1})>1
+	% HEAD is not in the expected format.
+	fprintf('Error in format of the file .git/HEAD');
+	return
+else
+	path = parsed{1}{2};
+	[~,branchName,~] = fileparts(path);
+	fprintf('Current git branch is ''%s''',branchName);
+end
 
+fprintf('Uploading UML output to branch ''uml-output''');
 
+% Upload file 'temp.uml' to GitHub on branch 'uml-output'.
+!git checkout -B uml-output
+!git add temp.uml
+!git commit -m "Generated new UML diagram"
+!git push -u origin uml-output
 
-
-
+% Return to original git branch.
+% originalGitBranch="master"
+% git checkout "$originalGitBranch"
+setenv('originalGitBranch',branchName);
+!git checkout "$originalGitBranch"
+fprintf('Returned to original branch ''%s''',branchName);
 
 % Set URL to the proxy service of the PlantUML server.
 plantProxy = 'https://www.plantuml.com/plantuml/proxy?';
