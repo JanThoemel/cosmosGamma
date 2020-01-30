@@ -15,7 +15,6 @@
 % - go over all steps from MYcosmosFS.m (spmd loop): now at line 136
 %
 % To do:
-% - Use proxy service of the PlantUML server to open UML diagram
 % - Add docs('update') option to update publish for all m files
 % - Generate pdf publish files for all files in Windows PC
 % - Upload to Git all publish files generated in Windows PC
@@ -48,6 +47,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - Use proxy service of the PlantUML server to open UML diagram
 % - Add temp.uml to GitHub automatically (3)
 % - Remove hyperlinks, tooltips and fix visibility codes in m2uml
 % - Add spacing between VisibilityCode and Names in m2uml

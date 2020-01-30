@@ -88,16 +88,16 @@ setenv('originalGitBranch',branchName);
 fprintf('\nReturned to original branch ''%s''.\n',branchName);
 
 % Set URL to the proxy service of the PlantUML server.
-plantProxy = 'https://www.plantuml.com/plantuml/proxy?';
+plantProxy = 'http://www.plantuml.com/plantuml/proxy?';
 
 % Set complete URL of the raw document containing the PlantUML code.
-src = '';
+src = strcat('https://raw.githubusercontent.com/rodweber/',...
+	'beta-cosmos/uml-output/temp.uml');
 
 % Specify the format of the output file (default: png).
 fmt = 'png'; % [png], [svg], [eps], [epstext], [txt].
 
 % Use proxy service of the PlantUML server to open UML diagram.
-strcat(plantProxy,'src=',src,'&fmt=',fmt);
-%web(strcat(plantProxy,'src=',src,'&fmt=',fmt));
+web(strcat(plantProxy,'src=',src,'&fmt=',fmt));
 
 end
