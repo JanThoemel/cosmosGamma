@@ -49,7 +49,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
-% - Add custom function uml
+% - Update custom function uml
 % - Fix function publish in function docs as an optional parameter
 % - Fix function docs to work in both Windows and Mac
 % - Fix documentation tool that shows custom object classes used
