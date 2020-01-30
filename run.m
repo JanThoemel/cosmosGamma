@@ -15,21 +15,41 @@
 % - go over all steps from MYcosmosFS.m (spmd loop): now at line 136
 %
 % To do:
+% - Remove url links from automatically generated uml diagram
 % - Put custom class names into the automatic UML generator
+% - Add docs('update') option to update publish for all m files
+% - Generate pdf publish files for all files in Windows PC
+% - Upload to Git all publish files generated in Windows PC
+% - Add docs('all') to open publish files as well as docs for classes
+% - Update readme.md
+%   - To run CosmosFS program, open and run the file 'run.m' in MATLAB
+%   - To see documentation for the custom objects and classes used, 
+%     enter command 'docs' in MATLAB's Command Window
+%   - To see documentation for all files in CosmosFS program, 
+%     enter command 'docs('all')' in MATLAB's Command Window
+%   - To generate PlantUML code for CosmosFS class diagram, 
+%     enter command 'uml' in MATLAB's Command Window
 % - check usage of var wind
 % - check usage of var refSurf
 % - review @aeroPressureForce.m
 % - review @aeroDragLiftSentman.m
 % - review @vectorRotation.m
 % - review @solarPressureForce.m
+% - Use class property attribute 'Constant, GetAccess = public' ...
+%   for constant attributes e.g. in class Orbit
 % - Change class IvanovFormationFlight to FormationFlight, add
 %   property 'case' and set property as 'Ivanov'
 % - Change class IvanovSatellite to Satellite, add
 %   property 'case' and set property as 'Ivanov'
 % - @orbitalproperties.m, line 89: Check function semi-major axis 
 %   for possible simplification
+% - Create package '+cosmos' for all custom functions
+% - Custom package to be downloaded and saved into users MATLAB folder
+% - Create tutorial to place custom package into users MATLAB folder
+%   for both Windows and Mac
 %
 % Recently done:
+% - Add custom function uml
 % - Fix function publish in function docs as an optional parameter
 % - Fix function docs to work in both Windows and Mac
 % - Fix documentation tool that shows custom object classes used

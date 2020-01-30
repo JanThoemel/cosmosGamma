@@ -1,0 +1,39 @@
+function uml()
+%% Generate PlantUML code for COSMOS software.
+%_____________________________________________________________________
+%
+% Function docs:
+%
+% Detailed explanation goes here.
+%_____________________________________________________________________
+
+% Get directory of this matlab file.
+[filepath,~,~] = fileparts(mfilename('fullpath'));
+
+% Change working directory to the directory of this m-file.
+cd(filepath);
+
+% Add m2uml and lib folders to the current MATLAB path.
+addpath(strcat('.',filesep,'m2uml',filesep));
+addpath(strcat('.',filesep,'lib',filesep));
+
+% Import package m2uml with all its classes and functions.
+import m2uml.*
+
+% Run tool m2uml.
+[~] = m2uml.run('CosmosFS', ...
+	{ ...
+		%'Main', ...
+		'IvanovFormationFlight', ...
+		'CosmosSimulation', ...
+		'Orbit', ...
+		'IvanovSatellite' ...
+	} , { ...
+		%'Main "1" --> "1" IvanovFormationFlight', ...
+		%'Main "1" --> "1" CosmosSimulation', ...
+		'IvanovFormationFlight "1" --> "*" IvanovSatellite', ...
+		'IvanovFormationFlight "1" --> "1" Orbit'
+	} ...
+);
+
+end
