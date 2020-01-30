@@ -46,15 +46,16 @@ function    [ fnq, folder, ext ] = filespec2fqn( filespec )
     
     switch folder_type
         case '+'
-            % A package may contain a @-folder            
-            ca1     = regexp( filespec, '\\\+', 'split', 'once' );
+            % A package may contain a @-folder
+            %ca1     = regexp( filespec, '\\\+', 'split', 'once' );
+            ca1     = regexp( filespec, strcat(filesep,filesep,'\+'), 'split', 'once' );
             folder  = ca1{1};  
             [p1,p2,ext] = fileparts( ca1{2} );
             if isempty( strfind( p1, '@' ) )
                 str = strrep( p1, filesep, '.' );
                 fnq = cat( 2, str, '.', p2 );
             else
-                ca2 = regexp( p1, '\\@', 'split', 'once' );
+                ca2 = regexp( p1, strcat(filesep,'\@'), 'split', 'once' );
                 if strcmp( ca2{2}, p2 )
                     str = strrep( ca2{1}, [filesep,'+'], '.' );
                     fnq = cat( 2, str, '.', p2 ); 
@@ -65,7 +66,7 @@ keyboard % empty else
         case '@'
             % NOTE: ...toolbox\signal\signal\@fdesign\@bandpass\setcurrentspecs.m'
             % A @-folder may not contain a package 
-            cac = regexp( filespec, '\\@', 'split', 'once' );
+            cac = regexp( filespec, strcat(filesep,'\@'), 'split', 'once' );
             folder  = cac{1};
             [p1,p2,ext] = fileparts( cac{2} );
             if strcmp( p1, p2 )

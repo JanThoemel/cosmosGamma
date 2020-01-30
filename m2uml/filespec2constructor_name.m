@@ -26,13 +26,14 @@ function    [ is_class, constructor ] = filespec2constructor_name( filespec )
     
     switch folder_type
         case '+'
-            % A package may contain a @-folder            
-            ca1 = regexp( filespec, '\\\+', 'split', 'once' );
+            % A package may contain a @-folder
+            %ca1 = regexp( filespec, '\\\+', 'split', 'once' );
+            ca1 = regexp( filespec, strcat(filesep,filesep,'\+'), 'split', 'once' );
             [p1,p2,~] = fileparts( ca1{2} );
             if isempty( strfind( p1, '@' ) )
                 constructor = p2;
             else
-                ca2 = regexp( p1, '\\@', 'split', 'once' );
+                ca2 = regexp( p1, strcat(filesep,'\@'), 'split', 'once' );
                 if strcmp( ca2{2}, p2 )
                     constructor = '';
                 else
@@ -42,7 +43,7 @@ keyboard % empty else
         case '@'
             % NOTE: ...toolbox\signal\signal\@fdesign\@bandpass\setcurrentspecs.m'
             % A @-folder may not contain a package 
-            cac = regexp( filespec, '\\@', 'split', 'once' );
+            cac = regexp( filespec, strcat(filesep,'\@'), 'split', 'once' );
             [p1,p2,~] = fileparts( cac{2} );
             if strcmp( p1, p2 )
                 constructor = p2;
