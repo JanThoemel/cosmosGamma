@@ -48,7 +48,7 @@ function    [ fnq, folder, ext ] = filespec2fqn( filespec )
         case '+'
             % A package may contain a @-folder
             %ca1     = regexp( filespec, '\\\+', 'split', 'once' );
-            ca1     = regexp( filespec, strcat(filesep,'\+'), 'split', 'once' );
+            ca1     = regexp( filespec, '\+', 'split', 'once' );
             folder  = ca1{1};  
             [p1,p2,ext] = fileparts( ca1{2} );
             if isempty( strfind( p1, '@' ) )

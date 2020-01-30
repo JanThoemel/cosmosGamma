@@ -59,7 +59,7 @@
 % - In +m2uml.TodoFixme, lines 60, 63: set empty char
 % - In +m2uml.ClassNode, line 120: Hyperlink = empty char
 % - In +m2uml.ClassNode, lines 107, 114: ToolTipString = empty char
-% - Fix filesep in m2uml.filespec2fqn for dos/unix compatibility
+% - Fix filesep in m2uml.filespec2fqn for dos/unix compatibility (2)
 % - Update custom function uml
 % - Fix function publish in function docs as an optional parameter
 % - Fix function docs to work in both Windows and Mac
