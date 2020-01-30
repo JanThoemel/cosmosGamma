@@ -66,7 +66,7 @@ keyboard % empty else
             % NOTE: ...toolbox\signal\signal\@fdesign\@bandpass\setcurrentspecs.m'
             % A @-folder may not contain a package 
             cac = regexp( filespec, '\\@', 'split', 'once' );
-            folder  = cac{1};  
+            folder  = cac{1};
             [p1,p2,ext] = fileparts( cac{2} );
             if strcmp( p1, p2 )
                 fnq = p1;

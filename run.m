@@ -49,6 +49,16 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - In +m2uml.Property, lines 100 to 108: remove Hyperlink, ToolTip
+% - In +m2uml.Property, line 18: set ToolTip to empty char
+% - In +m2uml.Operation, lines 87 to 93: remove Hyperlink, ToolTip
+% - In +m2uml.Operation, line 76: set Hyperlink to empty char
+% - In +m2uml.Operation, line 67: set ToolTip to empty char
+% - In +m2uml.ClassNode, lines 134 to 143: remove Hyperlink, ToolTip
+% - In +m2uml.TodoFixme, lines 88 to 97: remove Hyperlink, ToolTip
+% - In +m2uml.TodoFixme, lines 60, 63: set empty char
+% - In +m2uml.ClassNode, line 120: Hyperlink = empty char
+% - In +m2uml.ClassNode, lines 107, 114: ToolTipString = empty char
 % - Update custom function uml
 % - Fix function publish in function docs as an optional parameter
 % - Fix function docs to work in both Windows and Mac
