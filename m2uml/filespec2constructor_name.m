@@ -28,7 +28,7 @@ function    [ is_class, constructor ] = filespec2constructor_name( filespec )
         case '+'
             % A package may contain a @-folder
             %ca1 = regexp( filespec, '\\\+', 'split', 'once' );
-            ca1 = regexp( filespec, strcat(filesep,filesep,'\+'), 'split', 'once' );
+            ca1 = regexp( filespec, strcat(filesep,'\+'), 'split', 'once' );
             [p1,p2,~] = fileparts( ca1{2} );
             if isempty( strfind( p1, '@' ) )
                 constructor = p2;
