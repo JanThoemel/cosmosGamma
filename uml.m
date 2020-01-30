@@ -65,11 +65,11 @@ if ~strcmp(parsed{1}{1},'ref:') || ~length(parsed{1})>1
 else
 	path = parsed{1}{2};
 	[~,branchName,~] = fileparts(path);
-	!git stash push
 	fprintf([ ...
-		'Previous git branch ''%s'' has been stashed.\n',...
+		'Active git branch ''%s'' will be stashed.\n',...
 		'Its latest state will be recovered later.\n'],...
 		branchName);
+	!git stash push
 end
 
 % Upload file 'temp.uml' to GitHub on branch 'uml-output'.
