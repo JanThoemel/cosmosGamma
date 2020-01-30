@@ -20,7 +20,7 @@ addpath(strcat('.',filesep,'lib',filesep));
 % Import package m2uml with all its classes and functions.
 import m2uml.*
 
-fprintf('Generating code for UML diagram ...');
+fprintf('Generating code for UML diagram...\n\n');
 
 % Notes on how to set relations between classes:
 % - Association occurs when two classes in a model need to ...
@@ -60,19 +60,22 @@ text = fileread('.git/HEAD');
 parsed = textscan(text,'%s');
 if ~strcmp(parsed{1}{1},'ref:') || ~length(parsed{1})>1
 	% HEAD is not in the expected format.
-	fprintf('Error in format of the file .git/HEAD');
+	fprintf(2,'Error in format of the file .git/HEAD\n');
 	return
 else
 	path = parsed{1}{2};
 	[~,branchName,~] = fileparts(path);
-	fprintf('Current git branch is ''%s''',branchName);
+	!git stash push
+	fprintf([ ...
+		'Previous git branch ''%s'' has been stashed.\n',...
+		'Its latest state will be recovered later.\n'],...
+		branchName);
 end
 
-fprintf('Uploading UML output to branch ''uml-output''');
-
 % Upload file 'temp.uml' to GitHub on branch 'uml-output'.
+fprintf('Now uploading UML output to branch ''uml-output''...\n\n');
 !git checkout -B uml-output
-!git add temp.uml
+!git add -f temp.uml
 !git commit -m "Generated new UML diagram"
 !git push -u origin uml-output
 
@@ -81,7 +84,8 @@ fprintf('Uploading UML output to branch ''uml-output''');
 % git checkout "$originalGitBranch"
 setenv('originalGitBranch',branchName);
 !git checkout "$originalGitBranch"
-fprintf('Returned to original branch ''%s''',branchName);
+!git stash pop
+fprintf('\nReturned to original branch ''%s''.\n',branchName);
 
 % Set URL to the proxy service of the PlantUML server.
 plantProxy = 'https://www.plantuml.com/plantuml/proxy?';
