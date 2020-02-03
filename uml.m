@@ -20,7 +20,35 @@ addpath(strcat('.',filesep,'lib',filesep));
 % Import package m2uml with all its classes and functions.
 import m2uml.*
 
-fprintf(2,'Generating code for UML diagram...\n\n');
+% Get name of the current active branch on Git.
+text = fileread('.git/HEAD');
+parsed = textscan(text,'%s');
+if ~strcmp(parsed{1}{1},'ref:') || ~length(parsed{1})>1
+	% HEAD is not in the expected format.
+	fprintf(2,'Error in format of the file .git/HEAD\n');
+	return
+else
+	path = parsed{1}{2};
+	[~,branchName,~] = fileparts(path);
+	fprintf(2,[ ...
+		'Active git branch ''%s'' will be stashed\n',...
+		'Its latest state will be recovered later...\n'],...
+		branchName);
+	% Stash current active branch.
+	!git stash push
+end
+
+% Checkout branch 'out' and reset its latest commit.
+!git checkout out && git reset --hard HEAD^
+
+% Force-push the new HEAD commit to the remote branch.
+!git push origin +HEAD
+
+% Merge the previous active branch into 'out'.
+!git merge dev
+
+% Apply stashed changes into 'out'.
+!git stash apply
 
 % Notes on how to set relations between classes:
 % - Association occurs when two classes in a model need to ...
@@ -39,6 +67,9 @@ fprintf(2,'Generating code for UML diagram...\n\n');
 %   deleted, the child class cannot exist alone; it is represented ...
 %   by the connector '*--' in PlantUML.
 
+fprintf('\n');
+fprintf(2,'Generating code for UML diagram...\n\n');
+
 % Run tool m2uml.
 [~] = m2uml.run('CosmosFS', ...
 	{ ...
@@ -55,39 +86,18 @@ fprintf(2,'Generating code for UML diagram...\n\n');
 	} ...
 );
 
-% Get name of the current active branch on Git.
-text = fileread('.git/HEAD');
-parsed = textscan(text,'%s');
-if ~strcmp(parsed{1}{1},'ref:') || ~length(parsed{1})>1
-	% HEAD is not in the expected format.
-	fprintf(2,'Error in format of the file .git/HEAD\n');
-	return
-else
-	path = parsed{1}{2};
-	[~,branchName,~] = fileparts(path);
-	fprintf(2,[ ...
-		'Active git branch ''%s'' will be stashed\n',...
-		'Its latest state will be recovered later...\n'],...
-		branchName);
-	!git stash push
-end
+% Close file 'temp.uml' in MATLAB editor.
+matlab.desktop.editor.findOpenDocument('temp.uml').close();
 
-fprintf('\n');
+% Append date/time to file 'temp.uml'.
+% In PlantUML, a single quote char (') precedes a comment.
+fid = fopen('temp.uml','a');
+fprintf(fid,'\n'' %s\n',datestr(datetime('now')));
+fclose(fid);
 
 % Upload file 'temp.uml' to GitHub on branch 'out'.
+fprintf('\n');
 fprintf(2,'Now uploading UML output to branch ''out''...\n');
-
-% Checkout branch 'out' and reset its latest commits.
-!git checkout out && git reset --hard HEAD^
-
-% Force-push the new HEAD commit to the remote branch.
-!git push origin +HEAD
-
-% Merge the branch 'dev' into 'out'.
-!git merge dev
-
-% Apply stashed changes into 'out'.
-!git stash apply
 
 % Commit UML diagram file to remote branch.
 !git add -f temp.uml
@@ -95,11 +105,10 @@ fprintf(2,'Now uploading UML output to branch ''out''...\n');
 !git commit -m "Generated new UML diagram"
 !git push -f -u origin out
 
-fprintf('\n');
-
 % Return to original git branch.
 % originalGitBranch="master"
 % git checkout "$originalGitBranch"
+fprintf('\n');
 fprintf(2,'Returning to original branch ''%s''...\n',branchName);
 setenv('originalGitBranch',branchName);
 if ispc
