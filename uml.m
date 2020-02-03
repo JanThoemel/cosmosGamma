@@ -72,12 +72,12 @@ else
 	!git stash push
 end
 
-% Upload file 'temp.uml' to GitHub on branch 'uml-output'.
-fprintf('Now uploading UML output to branch ''uml-output''...\n\n');
-!git checkout -B uml-output
+% Upload file 'temp.uml' to GitHub on branch 'out'.
+fprintf('Now uploading UML output to branch ''out''...\n\n');
+!git checkout -B out
 !git add -f temp.uml
 !git commit -m "Generated new UML diagram"
-!git push -u origin uml-output
+!git push -u origin out
 
 % Return to original git branch.
 % originalGitBranch="master"
@@ -92,7 +92,7 @@ plantProxy = 'http://www.plantuml.com/plantuml/proxy?';
 
 % Set complete URL of the raw document containing the PlantUML code.
 src = strcat('https://raw.githubusercontent.com/rodweber/',...
-	'beta-cosmos/uml-output/temp.uml');
+	'beta-cosmos/out/temp.uml');
 
 % Specify the format of the output file (default: png).
 fmt = 'png'; % [png], [svg], [eps], [epstext], [txt].
