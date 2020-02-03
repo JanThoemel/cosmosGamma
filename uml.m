@@ -39,7 +39,7 @@ else
 end
 
 % Checkout branch 'out' and reset its latest commit.
-!git checkout out && git reset --hard HEAD^
+!git checkout -B out && git reset --hard HEAD^
 
 % Force-push the new HEAD commit to the remote branch.
 !git push origin +HEAD
@@ -68,7 +68,7 @@ end
 %   by the connector '*--' in PlantUML.
 
 fprintf('\n');
-fprintf(2,'Generating code for UML diagram...\n\n');
+fprintf(2,'Generating code for UML diagram...\n');
 
 % Run tool m2uml.
 [~] = m2uml.run('CosmosFS', ...

@@ -47,7 +47,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
-% - Fix order of commands in function uml
+% - Fix order of commands in function uml (2)
 % - ^3 Fix list of git commands to update branch 'out'
 % - ^2 Update function uml for Windows compatibility (2)
 % - Add branch 'dev' and set uml output to branch 'out'
