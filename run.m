@@ -47,7 +47,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
-% - ^ Update function uml for Windows compatibility (2)
+% - ^2 Update function uml for Windows compatibility (2)
 % - Add branch 'dev' and set uml output to branch 'out'
 % - Use proxy service of the PlantUML server to open UML diagram
 % - Add temp.uml to GitHub automatically (3)

@@ -94,6 +94,7 @@ fprintf('Now uploading UML output to branch ''out''...\n');
 
 % Commit UML diagram file to remote branch.
 !git add -f temp.uml
+!git add .
 !git commit -m "Generated new UML diagram"
 !git push -u origin out
 
