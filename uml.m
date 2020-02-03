@@ -67,7 +67,7 @@ else
 	[~,branchName,~] = fileparts(path);
 	fprintf([ ...
 		'Active git branch ''%s'' will be stashed\n',...
-		'Its latest state will be recovered later\n...\n'],...
+		'Its latest state will be recovered later...\n'],...
 		branchName);
 	!git stash push
 end
@@ -75,15 +75,34 @@ end
 fprintf('\n');
 
 % Upload file 'temp.uml' to GitHub on branch 'out'.
-fprintf('Now uploading UML output to branch ''out''\n...\n');
-!git checkout -B out
+fprintf('Now uploading UML output to branch ''out''...\n');
+
+% Checkout branch 'out'.
+!git checkout out
+
+% Remove last commit locally.
+!git reset HEAD^
+
+% Force-push the new HEAD commit to the remote branch.
+!git push origin +HEAD
+
+% Merge the branch 'dev' into 'out'.
+!git merge dev
+
+% Apply stashed changes into 'out'.
+!git stash apply
+
+% Commit UML diagram file to remote branch.
 !git add -f temp.uml
 !git commit -m "Generated new UML diagram"
 !git push -u origin out
 
+fprintf('\n');
+
 % Return to original git branch.
 % originalGitBranch="master"
 % git checkout "$originalGitBranch"
+fprintf('Returning to original branch ''%s''...\n',branchName);
 setenv('originalGitBranch',branchName);
 if ispc
 	!git checkout "%originalGitBranch%"
@@ -91,7 +110,6 @@ else
 	!git checkout "$originalGitBranch"
 end
 !git stash pop
-fprintf('\nReturned to original branch ''%s''.\n',branchName);
 
 % Set URL to the proxy service of the PlantUML server.
 plantProxy = 'http://www.plantuml.com/plantuml/proxy?';
