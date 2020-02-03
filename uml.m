@@ -20,7 +20,7 @@ addpath(strcat('.',filesep,'lib',filesep));
 % Import package m2uml with all its classes and functions.
 import m2uml.*
 
-fprintf('Generating code for UML diagram...\n\n');
+fprintf(2,'Generating code for UML diagram...\n\n');
 
 % Notes on how to set relations between classes:
 % - Association occurs when two classes in a model need to ...
@@ -65,7 +65,7 @@ if ~strcmp(parsed{1}{1},'ref:') || ~length(parsed{1})>1
 else
 	path = parsed{1}{2};
 	[~,branchName,~] = fileparts(path);
-	fprintf([ ...
+	fprintf(2,[ ...
 		'Active git branch ''%s'' will be stashed\n',...
 		'Its latest state will be recovered later...\n'],...
 		branchName);
@@ -75,13 +75,10 @@ end
 fprintf('\n');
 
 % Upload file 'temp.uml' to GitHub on branch 'out'.
-fprintf('Now uploading UML output to branch ''out''...\n');
+fprintf(2,'Now uploading UML output to branch ''out''...\n');
 
-% Checkout branch 'out'.
-!git checkout out
-
-% Remove last commit locally.
-!git reset HEAD^
+% Checkout branch 'out' and reset its latest commits.
+!git checkout out && git reset --hard HEAD^
 
 % Force-push the new HEAD commit to the remote branch.
 !git push origin +HEAD
@@ -96,14 +93,14 @@ fprintf('Now uploading UML output to branch ''out''...\n');
 !git add -f temp.uml
 !git add .
 !git commit -m "Generated new UML diagram"
-!git push -u origin out
+!git push -f -u origin out
 
 fprintf('\n');
 
 % Return to original git branch.
 % originalGitBranch="master"
 % git checkout "$originalGitBranch"
-fprintf('Returning to original branch ''%s''...\n',branchName);
+fprintf(2,'Returning to original branch ''%s''...\n',branchName);
 setenv('originalGitBranch',branchName);
 if ispc
 	!git checkout "%originalGitBranch%"

@@ -47,6 +47,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - ^3 Fix list of git commands to update branch 'out'
 % - ^2 Update function uml for Windows compatibility (2)
 % - Add branch 'dev' and set uml output to branch 'out'
 % - Use proxy service of the PlantUML server to open UML diagram
