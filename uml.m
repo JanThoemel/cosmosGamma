@@ -66,14 +66,16 @@ else
 	path = parsed{1}{2};
 	[~,branchName,~] = fileparts(path);
 	fprintf([ ...
-		'Active git branch ''%s'' will be stashed.\n',...
-		'Its latest state will be recovered later.\n'],...
+		'Active git branch ''%s'' will be stashed\n',...
+		'Its latest state will be recovered later\n...\n'],...
 		branchName);
 	!git stash push
 end
 
+fprintf('\n');
+
 % Upload file 'temp.uml' to GitHub on branch 'out'.
-fprintf('Now uploading UML output to branch ''out''...\n\n');
+fprintf('Now uploading UML output to branch ''out''\n...\n');
 !git checkout -B out
 !git add -f temp.uml
 !git commit -m "Generated new UML diagram"
@@ -83,7 +85,11 @@ fprintf('Now uploading UML output to branch ''out''...\n\n');
 % originalGitBranch="master"
 % git checkout "$originalGitBranch"
 setenv('originalGitBranch',branchName);
-!git checkout "$originalGitBranch"
+if ispc
+	!git checkout "%originalGitBranch%"
+else
+	!git checkout "$originalGitBranch"
+end
 !git stash pop
 fprintf('\nReturned to original branch ''%s''.\n',branchName);
 
