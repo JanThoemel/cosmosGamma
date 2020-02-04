@@ -47,6 +47,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [1] Change calls for function path to addpath
 % - Fix order of commands in function uml (2)
 % - ^3 Fix list of git commands to update branch 'out'
 % - ^2 Update function uml for Windows compatibility (2)
@@ -86,29 +87,22 @@
 % - Add lib folder under the same directory of the main file
 % - Add code to automatically update the working directory
 % - Add array of IvanovSatellite objects into IvanovFormationFlight
-%
-% References:
-% - https://nl.mathworks.com/help/parallel-computing/parallel.pool.dataqueue.html
-% - https://nl.mathworks.com/help/parallel-computing/parpool.html
-% - https://nl.mathworks.com/help/parallel-computing/spmd.html
-% - https://stackoverflow.com/questions/12385534/spmd-vs-parfor
 
 warning on verbose;
 close all; clear all; clc; %#ok<CLALL>
 
-% Update this file name without extension "m".
+% Inform the name of this file without the extension "m".
 THIS_FILE_NAME = 'run';
 
 if(~isdeployed)
 	
-	% Get directory of this m-file, i.e. the active file in Editor.
+	% Get directory path of the active file in MATLAB's Editor.
 	[filepath,~,~] = fileparts(matlab.desktop.editor.getActiveFilename);
-	% [filepath,~,~] = fileparts(mfilename('fullpath'));
-	% [filepath,~,~] = fileparts(which(THIS_FILE_NAME));
+	addpath(filepath); % Add file path to the current MATLAB path.
 	
-	% Add directory of this m-file to the current MATLAB path.
-	current_path = path;
-	path(current_path,filepath);
+	% Get directory path of the file name set in THIS_FILE_NAME.
+	[filepath,~,~] = fileparts(which(THIS_FILE_NAME));
+	addpath(filepath); % Add file path to the current MATLAB path.
 	
 	% Change working directory to the directory of this m-file.
 	cd(filepath);
