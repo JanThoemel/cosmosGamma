@@ -16,7 +16,11 @@ classdef IvanovFormationFlight < handle
 		Orbit % Object of class Orbit.
 		Satellites % Object array of class IvanovSatellite.
 		SSCoeff % Schweighart-Sedgwick coefficient.
+		
 		TotalSatellites % Total number of satellites in the formation.
+		
+		
+		
 		
 		
 		
@@ -89,11 +93,20 @@ classdef IvanovFormationFlight < handle
 			
 			% Populate array with objects of class IvanovSatellite.
 			for i = 1 : ns
-				this.Satellites(i) = IvanovSatellite(orbit,gps,tle);
+				this.Satellites(i) = IvanovSatellite(orbit,gps,tle,ns);
 			end
 			
 			% Set default formation mode.
 			this.FormationMode = 1;
+			
+			% Convert IvanovFormationFlight to FormationFlightControl.
+			% Each Satellite will have a FormationFlightControl.
+			
+			% To do:
+			% Documentation for SST, SSTDesired, SSTError.
+			% this.SSt        = zeros(9,1);
+			% this.SStDesired = zeros(6,1);
+			% this.SStError   = zeros(6,ns);
 			
 			
 			
@@ -157,16 +170,17 @@ classdef IvanovFormationFlight < handle
 			
 		end
 		
-		function sstDesired = getDesiredSST(this,time,satID)
-%% Get desired SST.
+		function sstDesired = getSStDesired(this,time,satID)
+%% Get desired satellite state.
 %_____________________________________________________________________
 %
 % Desired solution for Ivanov's case.
 %_____________________________________________________________________
 			
 			% Does this make sense?
-			% Is size of 'time' always 1?
-			sstDesired = zeros(9,size(time,2));
+			% Isn't the size of 'time' always 1?
+			% sstDesired = zeros(9,size(time,2));
+			sstDesired = zeros(6,1);
 			
 			% Analytical solution according to Ivanov.
 			switch this.FormationMode

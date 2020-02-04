@@ -11,7 +11,11 @@ classdef IvanovSatellite < handle
 	properties (Access = public)
 		
 		Orbit % Object of class Orbit.
-		SST % Satellite state.
+		State % Satellite state.
+		StateDesired % Desired satellite state.
+		StateError % Satellite state error.
+		
+		TotalSatellites % Total number of satellites in the formation.
 		
 	end
 	
@@ -25,13 +29,14 @@ classdef IvanovSatellite < handle
 	
 	methods
 		
-		function this = IvanovSatellite(orbit,gps,tle)
+		function this = IvanovSatellite(orbit,gps,tle,ns)
 %% Constructor for class IvanovSatellite.
 %_____________________________________________________________________
 %
 % Receive:
 % - Object of class Orbit.
 % - GPS and TLE availability.
+% - Number of satellites in the formation.
 %
 % Set:
 % - Orbit counter to zero.
@@ -40,9 +45,14 @@ classdef IvanovSatellite < handle
 			
 			this.Orbit = orbit;
 			this.OrbitCounter = 0;
-			this.SST = zeros(9,1); % Satellite state.
 			this.AvailableGPS = gps;
 			this.AvailableTLE = tle;
+			
+			this.State        = zeros(9,1);
+			this.StateDesired = zeros(6,1);
+			this.StateError   = zeros(6,ns);
+			
+			this.TotalSatellites = ns;
 			
 		end
 		

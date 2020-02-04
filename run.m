@@ -46,6 +46,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [5] Add state error determination and fix states in Satellite
 % - [4] Add trajectory determination sstDesired into parloop
 % - [3] Add orbit section loop into parloop
 % - [2] Add idx and pause into parloop
@@ -256,7 +257,15 @@ spmd(number_of_satellites)
 				
 				% Determine desired trajectory.
 				time = orbitSections(idx) / orbit.MeanMotion;
-				sstDesired = iv.getDesiredSST(time, id);
+				sstDesired = iv.getSStDesired(time, id);
+				
+				% Convert IvanovFormationFlight to FormationFlightControl.
+				% Each Satellite will have a FormationFlightControl.
+				
+				% Determine error.
+				sat(id).StateError(:,id) = sat(id).State(1:6)-sstDesired(1:6);
+				
+				
 				
 				
 				
@@ -389,7 +398,7 @@ end
 
 
 
-
+fprintf('\nDone.\n\n');
 
 
 
@@ -406,18 +415,16 @@ end
 
 %% question
 
-% initial idx and altitude
-idx=120;
 
 
 %iv = IvanovFormationFlight();
 
 %  Data that will later be per satellite and therefore inside SPMD loop
 
-orbitSection      = 2;                      % size of orbit section [deg]
-orbitSectionSize  = 2;                      % size of orbit section [deg]
-orbitSections     = 1:orbitSectionSize:360;
-orbitCounter      = 0;
+%orbitSection      = 2;                      % size of orbit section [deg]
+%orbitSectionSize  = 2;                      % size of orbit section [deg]
+%orbitSections     = 1:orbitSectionSize:360;
+%orbitCounter      = 0;
 %error             = zeros(6,iv.Ns);
 sst               = zeros(9,1);
 sstDesired        = zeros(6,1);
@@ -463,7 +470,3 @@ TIME_PP         = 0;          % time for post processing
 % for i = 1 : iv.Ns
 % 	sat(i) = IvanovSatellite();
 % end
-
-
-
-disp('end');
