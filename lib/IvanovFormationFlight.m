@@ -3,20 +3,7 @@
 %
 % Class IvanovFormationFlight:
 %
-% Priority:
-% - this line 95: Are SMA and inclination equations right?
-%
-% To do @ IvanovFormationFlightInitial.m:
-% - line 44: check sstDesiredFunction and put
-%   IvanovFormationFlightDesired.m as function of this class
-% - log.info('Original atmospheric density (rho = %1.3e) is
-%   overwritten by Ivanov\'s value (rho = 1.3e)',rho,1e-11)
-%
-% Recently done:
-% - orbitalproperties.m line 89: checked meaning of
-%   sma (semi-major axis)
-% - IvanovFormationFlightInitial.m line 65: checked usage of r0: it
-%   used in orbitalproperties.m for calculating V
+% Detailed explanation goes here.
 %_____________________________________________________________________
 
 classdef IvanovFormationFlight < handle
@@ -60,10 +47,11 @@ classdef IvanovFormationFlight < handle
 		Panels = [0 0 2]          %
 		SSTTemp                   %
 		
-		MeanAnomalyOffSet = pi/4  % For pi/2, satellite crosses on the 
+		%MeanAnomalyOffSet = pi/4  % For pi/2, satellite crosses on the 
 		%poles; for 0, satellite crosses at equator
-		NumberOfModes = 10        %
-		SSParameters              %
+		%NumberOfModes = 10        % Checked, not used!
+		% ^ Before, was used to set SSParameters
+		%SSParameters              % Checked, not used
 		
 	end
 	
@@ -112,17 +100,35 @@ classdef IvanovFormationFlight < handle
 			
 			
 			
+			
+			
+			% CHECK USAGE:
+			
 			this.TimeTemp = 0 : this.CompStep : this.LengthControlLoop;
 			this.SSTTemp = zeros(9, ns, size(this.TimeTemp,2));
+			
 			for i = 1 : ns
-				this.SSTTemp(1,i,1) = (i-1) * this.EjectionVelocity * ...
-					this.TimeBetweenEjections; % x position
-				this.SSTTemp(4,i,1) = 0; % u velocity
-				this.SSTTemp(7,i,1) = 0; % alpha
-				this.SSTTemp(8,i,1) = 0; % beta
-				this.SSTTemp(9,i,1) = 0; % gamma
+				
+				this.SSTTemp(1,i,1) = ... % Position X.
+					(i-1) * this.EjectionVelocity * this.TimeBetweenEjections;
+				
+				this.SSTTemp(4,i,1) = 0; % Velocity U.
+				this.SSTTemp(7,i,1) = 0; % Alpha.
+				this.SSTTemp(8,i,1) = 0; % Beta.
+				this.SSTTemp(9,i,1) = 0; % Gamma.
+				
 			end
-			this.SSParameters = zeros(6, ns, this.NumberOfModes);
+			
+			% To do:
+			% Provide documentation for SSParameters.
+			% SSParameters and NumberOfModes not used in Ivanov's case.
+			% this.NumberOfModes = 10;
+			% this.SSParameters = zeros(6, ns, this.NumberOfModes);
+			
+			% MeanAnomalyOffSet not used in Ivanov's case.
+			% For pi/2, satellite crosses on the poles;
+			% for 0,    satellite crosses at equator.
+			% this.MeanAnomalyOffSet = pi/4;
 			
 		end
 		
@@ -137,7 +143,7 @@ classdef IvanovFormationFlight < handle
 			
 		end
 		
-		function this = setFormationFlightMode(this, newMode)
+		function this = setFormationFlightMode(this,newMode)
 %% Set formation flight mode.
 %_____________________________________________________________________
 %
@@ -151,15 +157,91 @@ classdef IvanovFormationFlight < handle
 			
 		end
 		
-		
-% 		function [sstDesired] = IvanovFormationFlightDesired()
-% 			
-% 		end
-	
-
-		
-
+		function sstDesired = getDesiredSST(this,time,satID)
+%% Get desired SST.
 %_____________________________________________________________________
-	end
+%
+% Desired solution for Ivanov's case.
+%_____________________________________________________________________
+			
+			% Does this make sense?
+			% Is size of 'time' always 1?
+			sstDesired = zeros(9,size(time,2));
+			
+			% Analytical solution according to Ivanov.
+			switch this.FormationMode
+				case 1
+					A = 100;
+					D = 115;
+				case 2
+					factor = 1000;
+					A = factor * 100;
+					D = factor * 115;
+				otherwise
+					% To do:
+					% Throw error here if formation mode value is not expected.
+					%
+			end
+			
+			meanMotion = this.Orbit.MeanMotionRad; % Mean motion [rad/s].
+			
+			switch satID
+				case 1
+					
+					sstDesired(1,:) = -D;
+					
+				case 2
+					
+					sstDesired(1,:) = D;
+					
+				case 3
+					
+					sstDesired(1,:) = 2 * A *           ...
+						cos(meanMotion * time - acos(1/3));
+					
+					sstDesired(2,:) =     A * sqrt(3) * ...
+						sin(meanMotion * time);
+					
+					sstDesired(3,:) =     A *           ...
+						sin(meanMotion * time - acos(1/3));
+					
+					sstDesired(4,:) = 2 * A *           ...
+						-sin(meanMotion * time - acos(1/3)) * meanMotion;
+					
+					sstDesired(5,:) =     A * sqrt(3) * ...
+						cos(meanMotion * time)              * meanMotion;
+					
+					sstDesired(6,:) =     A *           ...
+						cos(meanMotion * time - acos(1/3))  * meanMotion;
+					
+				case 4
+					
+					sstDesired(1,:) = 2 * A *           ...
+						cos(meanMotion * time);
+					
+					sstDesired(2,:) =     A * sqrt(3) * ...
+						sin(meanMotion * time + acos(1/3));
+					
+					sstDesired(3,:) =     A *           ...
+						sin(meanMotion * time);
+					
+					sstDesired(4,:) = 2 * A *           ...
+						-sin(meanMotion * time)            * meanMotion;
+					
+					sstDesired(5,:) =     A * sqrt(3) * ...
+						cos(meanMotion * time + acos(1/3)) * meanMotion;
+					
+					sstDesired(6,:) =     A *           ...
+						cos(meanMotion * time)             * meanMotion;
+					
+				otherwise
+					% To do:
+					% Throw error here if satellite ID number is not expected.
+					%
+			end
+			
+		end
+		
+	end % Methods.
 	
-end
+end % Class.

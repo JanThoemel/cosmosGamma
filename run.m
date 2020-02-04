@@ -12,7 +12,6 @@
 %   is it the ID for the section? why starts at 120?
 % - @cosmosFS.m, line 234: check possible values for if, does it
 %   make sense? does it always go if = true?
-% - go over all steps from MYcosmosFS.m (spmd loop): now at line 136
 %
 % To do:
 % - Add docs('update') option to update publish for all m files
@@ -39,14 +38,15 @@
 %   property 'case' and set property as 'Ivanov'
 % - Change class IvanovSatellite to Satellite, add
 %   property 'case' and set property as 'Ivanov'
-% - @orbitalproperties.m, line 89: Check function semi-major axis 
-%   for possible simplification
+% - @orbitalproperties.m, line 89: Check function semi-major axis and 
+%   inclination for possible simplification (class Orbit now)
 % - Create package '+cosmos' for all custom functions
 % - Custom package to be downloaded and saved into users MATLAB folder
 % - Create tutorial to place custom package into users MATLAB folder
 %   for both Windows and Mac
 %
 % Recently done:
+% - [4] Add trajectory determination sstDesired into parloop
 % - [3] Add orbit section loop into parloop
 % - [2] Add idx and pause into parloop
 % - [1] Change calls for function path to addpath
@@ -248,9 +248,15 @@ spmd(number_of_satellites)
 				% To do:
 				% Compute attitude for next section.
 				
+				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%
+				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				
 				% Determine desired trajectory.
-				
-				
+				time = orbitSections(idx) / orbit.MeanMotion;
+				sstDesired = iv.getDesiredSST(time, id);
 				
 				
 				
