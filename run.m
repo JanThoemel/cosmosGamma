@@ -47,6 +47,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [3] Add orbit section loop into parloop
 % - [2] Add idx and pause into parloop
 % - [1] Change calls for function path to addpath
 % - Fix order of commands in function uml (2)
@@ -177,8 +178,8 @@ spmd(number_of_satellites)
 		[sim_status, msg] = sim.getStatus(currentOrbit);
 		
 		% Log.
-		send(dq,['Sat.',num2str(id),': orbit counter = ',...
-		         num2str(currentOrbit),'. ',msg]);
+		% send(dq,['Sat.',num2str(id),': orbit counter = ',...
+		% num2str(currentOrbit),'. ',msg]);
 		
 		% Get battery status from the satellite.
 		battery_status = 1;
@@ -186,8 +187,8 @@ spmd(number_of_satellites)
 			% Switch on the GPS.
 		end
 		
-		% While simulation status is all good, keep in orbital loop.
-		while sim_status
+		% Orbital loop.
+		while sim_status % While simulation status is all good.
 			
 			% Increment the orbit counter of the satellites.
 			sat(id).incrementOrbitCounter();
@@ -214,7 +215,7 @@ spmd(number_of_satellites)
 			sat(id).whereInWhatOrbit(endOfSectionsCycle);
 			
 			% Log.
-			send(dq,['Sat.',num2str(id),': MeanAnomalyFromAN = ',...
+			send(dq,['Sat ',num2str(id),' - MeanAnomalyFromAN = ',...
 			         num2str(sat(id).Orbit.MeanAnomalyFromAN)]);
 			
 			% Settings for control algorithm, is this necessary every orbit?
@@ -233,23 +234,43 @@ spmd(number_of_satellites)
 			pause((orbitSections(idx) - orbit.MeanAnomalyFromAN) / ...
 				orbit.MeanMotion / sim.AccelFactor);
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			% Orbit sections loop.
+			while sim_status && (idx <= size(orbitSections,2))
+				
+				% Determine cycle start time in order to allow subtraction of 
+				% the cycle duration from waiting.
+				%startTimeSection = posixtime(datetime('now')); % Posixtime [s].
+				%startTimeSection = now();
+				
+				% To do:
+				% Set attitude computed in last iteration.
+				
+				% To do:
+				% Compute attitude for next section.
+				
+				% Determine desired trajectory.
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				% Increment section counter.
+				idx = idx + 1;
+				
+				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				%%%%%%%%%%%%%%%%%%%%%%% MORE CODE HERE %%%%%%%%%%%%%%%%%%%%%%%
+				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				
+				%
+				
+			end % Orbital sections loop.
 			
 			% Get current orbit number of the satellite.
 			currentOrbit = sat(id).getCurrentOrbitNumber();
@@ -257,22 +278,26 @@ spmd(number_of_satellites)
 			% Get updated simulation status: 0 = Stop; 1 = Good.
 			[sim_status, msg] = sim.getStatus(currentOrbit);
 			
-			% Log.
-			send(dq,['Sat.',num2str(id),': orbit counter = ',...
-			         num2str(currentOrbit),'. ',msg]);
+			% Get time now.
+			timeNow = posixtime(datetime('now')); % Posixtime [s].
 			
-		end % [while sim_status].
+			% Log.
+			send(dq,['Sat ',num2str(id),' - Orbit ',...
+			         num2str(currentOrbit),' - Duration ',...
+							 num2str(timeNow - startTimeOrbit),' s - ',msg]);
+			
+		end % Orbital loop [while sim_status].
 		
-		% If orbit is broken, also break alive loop; this will change ...
+		% If orbits are broken, also break alive loop; this will change 
 		% later with other conditions.
 		if sim_status == 0
 			alive = false;
 		end
 		
-		% Log.
-		send(dq,['Sat.',num2str(id),' is dead.']);
-		
 	end % [while alive].
+	
+	% Log.
+	send(dq,['Sat ',num2str(id),' is dead.']);
 	
 end % [spmd(iv.Ns)].
 
