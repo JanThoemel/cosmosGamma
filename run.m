@@ -47,6 +47,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [2] Add idx and pause into parloop
 % - [1] Change calls for function path to addpath
 % - Fix order of commands in function uml (2)
 % - ^3 Fix list of git commands to update branch 'out'
@@ -87,6 +88,9 @@
 % - Add lib folder under the same directory of the main file
 % - Add code to automatically update the working directory
 % - Add array of IvanovSatellite objects into IvanovFormationFlight
+
+
+%% Parameters
 
 warning on verbose;
 close all; clear all; clc; %#ok<CLALL>
@@ -138,7 +142,7 @@ orbitSectionSize = 2; % Size of each orbit section [deg].
 orbitSections = 1:orbitSectionSize:360;
 
 
-%% Section break.
+%% Parallel loop
 
 % Create data queue for parallel pool.
 dq = parallel.pool.DataQueue;
@@ -193,8 +197,7 @@ spmd(number_of_satellites)
 			
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			
@@ -203,8 +206,7 @@ spmd(number_of_satellites)
 			
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			
@@ -217,6 +219,20 @@ spmd(number_of_satellites)
 			
 			% Settings for control algorithm, is this necessary every orbit?
 			[P,IR,A,B] = riccatiequation(orbit.MeanMotionRad,iv.SSCoeff);
+			
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			
+			% Wait until end of orbit section.
+			idx = find(orbitSections >= orbit.MeanAnomalyFromAN,1,'first');
+			idx = idx + 1;
+			
+			pause((orbitSections(idx) - orbit.MeanAnomalyFromAN) / ...
+				orbit.MeanMotion / sim.AccelFactor);
+			
 			
 			
 			
@@ -264,7 +280,7 @@ end % [spmd(iv.Ns)].
 delete(gcp('nocreate'));
 
 
-%% Section break.
+%% Custom objects and classes used
 
 % Set MATLAB classes to ignore.
 classesToIgnore = {'Composite',...
@@ -333,6 +349,22 @@ if objCounter > 0
 else
 	fprintf('\nNo custom object classes found.\n');
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

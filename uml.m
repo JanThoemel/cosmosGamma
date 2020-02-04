@@ -106,8 +106,6 @@ fprintf(2,'Now uploading UML output to branch ''out''...\n');
 !git push -f -u origin out
 
 % Return to original git branch.
-% originalGitBranch="master"
-% git checkout "$originalGitBranch"
 fprintf('\n');
 fprintf(2,'Returning to original branch ''%s''...\n',branchName);
 setenv('originalGitBranch',branchName);
