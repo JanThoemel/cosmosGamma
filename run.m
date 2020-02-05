@@ -46,6 +46,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [6] Remove state error determination and fix later
 % - [5] Add state error determination and fix states in Satellite
 % - [4] Add trajectory determination sstDesired into parloop
 % - [3] Add orbit section loop into parloop
@@ -257,13 +258,13 @@ spmd(number_of_satellites)
 				
 				% Determine desired trajectory.
 				time = orbitSections(idx) / orbit.MeanMotion;
-				sstDesired = iv.getSStDesired(time, id);
+				%sstDesired = iv.getSStDesired(time, id);
 				
-				% Convert IvanovFormationFlight to FormationFlightControl.
-				% Each Satellite will have a FormationFlightControl.
+				% Convert IvanovFormationFlight to FlightControl.
+				% Each Satellite will have a FlightControl.
 				
 				% Determine error.
-				sat(id).StateError(:,id) = sat(id).State(1:6)-sstDesired(1:6);
+				%sat(id).StateError(:,id) = sat(id).State(1:6)-sstDesired(1:6);
 				
 				
 				
