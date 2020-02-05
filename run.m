@@ -46,7 +46,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
-% - [7] Create new set of classes under main directory
+% - Create new set of classes under main directory
 % - [6] Remove state error determination and fix later
 % - [5] Add state error determination and fix states in Satellite
 % - [4] Add trajectory determination sstDesired into parloop
@@ -94,7 +94,7 @@
 % - Add array of IvanovSatellite objects into IvanovFormationFlight
 
 
-%% Initialization
+%% Set paths and MATLAB parameters
 
 warning on verbose;
 close all; clear all; clc; %#ok<CLALL>
@@ -122,7 +122,7 @@ if(~isdeployed)
 end
 
 
-%% Parameters
+%% Set parameters for the simulation
 
 % - Struct of parameters:
 %   NumSatellites    : Total number of satellites in the formation.
@@ -157,8 +157,26 @@ orbit = sim.Orbits; % Aliases: orbit(1) to orbit(n).
 % Create aliases for the flight control modules.
 fc = sim.FlightControlModules; % Aliases: fc(1) to fc(n).
 
-% Start simulation.
+
+%% Start simulation proccess
+
+% Initiate simulation.
 sim.start();
+
+% Obtain custom objects and classes used.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 %% Custom objects and classes used
