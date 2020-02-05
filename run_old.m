@@ -14,6 +14,7 @@
 %   make sense? does it always go if = true?
 %
 % To do:
+% - [7] Create new set of classes under main directory
 % - Add docs('update') option to update publish for all m files
 % - Generate pdf publish files for all files in Windows PC
 % - Upload to Git all publish files generated in Windows PC
@@ -46,7 +47,6 @@
 %   for both Windows and Mac
 %
 % Recently done:
-% - [7] Create new set of classes under main directory
 % - [6] Remove state error determination and fix later
 % - [5] Add state error determination and fix states in Satellite
 % - [4] Add trajectory determination sstDesired into parloop
@@ -158,7 +158,192 @@ orbit = sim.Orbits; % Aliases: orbit(1) to orbit(n).
 fc = sim.FlightControlModules; % Aliases: fc(1) to fc(n).
 
 % Start simulation.
-sim.start();
+%sim.start();
+
+
+
+
+
+
+
+
+
+
+
+%% Parallel loop
+
+% Create data queue for parallel pool.
+dq = parallel.pool.DataQueue;
+
+% Define function to call when new data is received on the DataQueue.
+afterEach(dq, @disp);
+
+% Create and return pool with the specified number of workers.
+parpool(number_of_satellites);
+
+% Set the start time for the parallel pool.
+startTimePool = posixtime(datetime('now')); % Posixtime [seconds].
+
+% Execute parallel code on workers of parallel pool.
+spmd(number_of_satellites)
+	
+	% Set satellite IDs (id) for each of the satellites.
+	id = labindex;
+	alive = true;
+	send(dq,['Satellite number ',num2str(id),' is alive.']);
+	
+	% Sattelites are alive but still doing nothing.
+	while alive
+		
+		% Get formation flight mode.
+		fofliMode = iv.getFormationFlightMode();
+		
+		% Get current orbit number of the satellite.
+		currentOrbit = sat(id).getCurrentOrbitNumber();
+		
+		% Get updated simulation status: 0 = Stop; 1 = Good.
+		[sim_status, msg] = sim.getStatus(currentOrbit);
+		
+		% Log.
+		% send(dq,['Sat.',num2str(id),': orbit counter = ',...
+		% num2str(currentOrbit),'. ',msg]);
+		
+		% Get battery status from the satellite.
+		battery_status = 1;
+		if battery_status
+			% Switch on the GPS.
+		end
+		
+		% Orbital loop.
+		while sim_status % While simulation status is all good.
+			
+			% Increment the orbit counter of the satellites.
+			sat(id).incrementOrbitCounter();
+			
+			% Set the start time for the current satellite orbit.
+			startTimeOrbit = posixtime(datetime('now')); % Posixtime [s].
+			
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			
+			% Calculate endOfSectionsCycle.
+			endOfSectionsCycle = (idx-1)/size(orbitSections,2);
+			
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			
+			% Update orbital parameters for the satellites.
+			sat(id).whereInWhatOrbit(endOfSectionsCycle);
+			
+			% Log.
+			send(dq,['Sat ',num2str(id),' - MeanAnomalyFromAN = ',...
+			         num2str(sat(id).Orbit.MeanAnomalyFromAN)]);
+			
+			% Settings for control algorithm, is this necessary every orbit?
+			[P,IR,A,B] = riccatiequation(orbit.MeanMotionRad,iv.SSCoeff);
+			
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			
+			% Wait until end of orbit section.
+			idx = find(orbitSections >= orbit.MeanAnomalyFromAN,1,'first');
+			idx = idx + 1;
+			
+			pause((orbitSections(idx) - orbit.MeanAnomalyFromAN) / ...
+				orbit.MeanMotion / sim.AccelFactor);
+			
+			% Orbit sections loop.
+			while sim_status && (idx <= size(orbitSections,2))
+				
+				% Determine cycle start time in order to allow subtraction of 
+				% the cycle duration from waiting.
+				%startTimeSection = posixtime(datetime('now')); % Posixtime [s].
+				%startTimeSection = now();
+				
+				% To do:
+				% Set attitude computed in last iteration.
+				
+				% To do:
+				% Compute attitude for next section.
+				
+				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%
+				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				
+				% Determine desired trajectory.
+				time = orbitSections(idx) / orbit.MeanMotion;
+				%sstDesired = iv.getSStDesired(time, id);
+				
+				% Convert IvanovFormationFlight to FlightControl.
+				% Each Satellite will have a FlightControl.
+				
+				% Determine error.
+				%sat(id).StateError(:,id) = sat(id).State(1:6)-sstDesired(1:6);
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				% Increment section counter.
+				idx = idx + 1;
+				
+				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				%%%%%%%%%%%%%%%%%%%%%%% MORE CODE HERE %%%%%%%%%%%%%%%%%%%%%%%
+				%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+				
+				%
+				
+			end % Orbital sections loop.
+			
+			% Get current orbit number of the satellite.
+			currentOrbit = sat(id).getCurrentOrbitNumber();
+			
+			% Get updated simulation status: 0 = Stop; 1 = Good.
+			[sim_status, msg] = sim.getStatus(currentOrbit);
+			
+			% Get time now.
+			timeNow = posixtime(datetime('now')); % Posixtime [s].
+			
+			% Log.
+			send(dq,['Sat ',num2str(id),' - Orbit ',...
+			         num2str(currentOrbit),' - Duration ',...
+							 num2str(timeNow - startTimeOrbit),' s - ',msg]);
+			
+		end % Orbital loop [while sim_status].
+		
+		% If orbits are broken, also break alive loop; this will change 
+		% later with other conditions.
+		if sim_status == 0
+			alive = false;
+		end
+		
+	end % [while alive].
+	
+	% Log.
+	send(dq,['Sat ',num2str(id),' is dead.']);
+	
+end % [spmd(iv.Ns)].
+
+% Terminate the existing parallel pool session.
+delete(gcp('nocreate'));
 
 
 %% Custom objects and classes used
@@ -240,3 +425,74 @@ end
 
 
 fprintf('\nDone.\n\n');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%% question
+
+
+
+%iv = IvanovFormationFlight();
+
+%  Data that will later be per satellite and therefore inside SPMD loop
+
+%orbitSection      = 2;                      % size of orbit section [deg]
+%orbitSectionSize  = 2;                      % size of orbit section [deg]
+%orbitSections     = 1:orbitSectionSize:360;
+%orbitCounter      = 0;
+%error             = zeros(6,iv.Ns);
+sst               = zeros(9,1);
+sstDesired        = zeros(6,1);
+sstOld            = zeros(9,1);
+refPosChangeTemp  = zeros(3,1);
+
+%  Plotting variables (will not be used for operational software)
+
+SST_PP          = zeros(9,1); % satellite state
+REFPOSCHANGE_PP = zeros(3,1); %
+TIME_PP         = 0;          % time for post processing
+
+%  Non-gravitational perturbations
+
+% wind     = iv.WindOn * iv.Rho/2 * iv.V^2 * [-1 0 0]';
+% sunlight = iv.SunOn * 2 * 4.5e-6 * [0 -1 0]'; % only for dawn/dusk orbit
+% refSurf  = iv.PanelSurface * iv.Panels(3);
+
+%  Force vector determination and angular granulaty
+
+% alphas = 0 : iv.DeltaAngle : 360; % roll
+% betas  = 0 : iv.DeltaAngle : 180; % pitch
+% gammas = 0 : iv.DeltaAngle : 360; % yaw
+
+%  Calculates pressure forces and returns 4D-Arrays of size:
+%  (3, length(alphas), length(betas), length(gammas) )
+
+% aeroPressure = aeroPressureForce(wind, iv.PanelSurface, iv.Panels(1), ...
+% 	iv.Panels(2), iv.Panels(3), alphas, betas, gammas, iv.Rho, iv.V, iv.Tatmos);
+% 
+% solarPressure = solarPressureForce(sunlight, iv.PanelSurface, iv.Panels(1), ...
+% 	iv.Panels(2), iv.Panels(3), alphas, betas, gammas);
+
+%  Simulation object and parameters
+
+% sim = Simulation();
+% sim.MaxOrbits = 10;
+
+%  Creates array of IvanovSatellite objects
+
+% iv.Satellites = IvanovSatellite.empty(iv.Ns,0);
+% sat = iv.Satellites; % alias for iv.Satellites
+% for i = 1 : iv.Ns
+% 	sat(i) = IvanovSatellite();
+% end

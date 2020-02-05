@@ -1,4 +1,4 @@
-%% Summary of this class goes here.
+%% Instantiate orbit objects.
 %_____________________________________________________________________
 %
 % Class Orbit:
@@ -8,7 +8,7 @@
 
 classdef Orbit < handle
 	
-	properties (Access = public)
+	properties (GetAccess = public, SetAccess = public)
 		
 		Altitude % Height above sea level [m].
 		Inclination % Orbital inclination [deg].
@@ -33,20 +33,14 @@ classdef Orbit < handle
 		
 	end
 	
-	methods
+	methods % Constructor.
 		
 		function this = Orbit(altitude)
 %% Constructor for class Orbit.
-%_____________________________________________________________________
-%
-% Receive:
-% - Altitude.
-%
-% Set:
-% - Rho array.
-% - Function fit().
-% - All other orbital parameters in function updateOrbitalParams().
-%_____________________________________________________________________
+% Input:
+% - Altitude [meters].
+% Output:
+% - Object of class Orbit.
 			
 			% Set array for atmospheric densities.
 			this.RhoArray = [
@@ -139,9 +133,9 @@ classdef Orbit < handle
 			
 			% Use constant atmospheric density from Ivanov's case.
 			this.Rho = 1e-11; % [kg/m^3].
-			fprintf(2,['Original atmospheric density (rho) is ',...
-				'overwritten by rho from Ivanov''s case: %1.3e\n'],...
-				this.Rho);
+			%fprintf(2,['Original atmospheric density (rho) is ',...
+				%'overwritten by rho from Ivanov''s case: %1.3e\n'],...
+				%this.Rho);
 			
 		end
 		
@@ -191,8 +185,6 @@ classdef Orbit < handle
 		
 		
 		
-		
-%_____________________________________________________________________
-	end
+	end % Public methods.
 	
-end
+end % Class Orbit.
