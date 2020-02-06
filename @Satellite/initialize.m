@@ -1,4 +1,4 @@
-function initialize(this, id)
+function initialize(this, id, commChannel)
 %% Initialize satellite.
 %_____________________________________________________________________
 %
@@ -7,9 +7,11 @@ function initialize(this, id)
 
 this.ID = id;
 this.Alive = true;
+this.CommChannel = commChannel;
 
 if this.AutoResponse
-	this.comm(['Satellite number ',num2str(id),' is alive.']);
+	msg = sprintf(['Satellite number ',num2str(id),' is alive.']);
+	this.comm(msg);
 end
 
 

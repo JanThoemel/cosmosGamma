@@ -12,6 +12,7 @@ classdef Satellite < handle
 		
 		Alive % If satellite is alive or not [true/false].
 		AutoResponse % If satellite should send responses [true/false].
+		CommChannel % Communication channel.
 		FlightControl % Object of class FlightControl.
 		ID % Unique identification number of the satellite.
 		Orbit % Object of class Orbit.
@@ -65,8 +66,8 @@ classdef Satellite < handle
 	
 	methods (Access = public)
 		
-		initialize(this, id)
-		comm(this, varargin)
+		initialize(this, id, commChannel)
+		comm(this, msg)
 		
 		
 		

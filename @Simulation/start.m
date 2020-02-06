@@ -24,14 +24,17 @@ spmd(this.NumSatellites)
 	id = labindex;
 	
 	% Create local aliases for the class objects.
-	sat = sim.Satellites(id);
-	orbit = sim.Orbits(id);
-	fc = sim.FlightControlModules(id);
+	sat = this.Satellites(id);
+	orbit = this.Orbits(id);
+	fc = this.FlightControlModules(id);
+	
+	% Set satellite communication channel as the parpool data queue.
+	commChannel = dq;
 	
 	% Initialize satellites; examples:
 	% Satellite(1) will receive ID = 1.
 	% Satellite(N) will receive ID = N.
-	sat.initialize(id);
+	sat.initialize(id, commChannel);
 	
 	
 	

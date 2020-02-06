@@ -1,11 +1,12 @@
-function comm(this, varargin)
+function comm(this, msg)
 %% Send signal response through communication antennas.
 %_____________________________________________________________________
 %
 % Details here.
 %_____________________________________________________________________
 
-fprintf(varargin);
+% Send message through the communication channel.
+send(this.CommChannel, msg);
 
 
 
