@@ -49,7 +49,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
-% - [6] Fix function to output satellite communication signals
+% - Fix function to output satellite communication signals
 % - [4] Fix function uml (2)
 % - [2] Fix code for listing custom classes into a function
 % - Create new set of classes under main directory

@@ -124,4 +124,6 @@ fmt = 'png'; % [png], [svg], [eps], [epstext], [txt].
 % Use proxy service of the PlantUML server to open UML diagram.
 web(strcat(plantProxy,'src=',src,'&fmt=',fmt));
 
+fprintf('\nDone.\n\n');
+
 end % Function uml.
