@@ -22,14 +22,22 @@ classdef Simulation < handle
 		
 	end
 	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%% Constructor Method %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
 	methods % Constructor.
 		
 		function this = Simulation(param)
 %% Constructor for class Simulation.
+%_____________________________________________________________________
+%
 % Input:
 % - Struct of parameters.
+%
 % Output:
 % - Object of class Simulation.
+%_____________________________________________________________________
 			
 			this.MaxNumOrbits = param.MaxNumOrbits;
 			this.AccelFactor = param.AccelFactor;
@@ -67,11 +75,25 @@ classdef Simulation < handle
 		
 	end % Constructor.
 	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%% Public Methods %%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
 	methods (Access = public)
 		
 		[status, msg] = getStatus(this, current_orbit)
 		start(this)
 		
 	end % Public methods.
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%% Static Methods %%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	methods (Static)
+		
+		createListCustomClasses(filepath)
+		
+	end % Static methods.
 	
 end % Class Simulation.

@@ -1,6 +1,9 @@
 function start(this)
 %% Initiate simulation.
+%_____________________________________________________________________
+%
 % Details here.
+%_____________________________________________________________________
 
 % Create data queue for parallel pool.
 dq = parallel.pool.DataQueue;
@@ -24,4 +27,4 @@ end % Parallel code.
 % Terminate the existing parallel pool session.
 delete(gcp('nocreate'));
 
-end
+end % Function start.

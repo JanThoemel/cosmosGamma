@@ -1,4 +1,5 @@
 %% File to run Cosmos software.
+%_____________________________________________________________________
 %
 % Priority:
 % - @cosmos & @cosmosFS: first uses riccati outside the loop, another
@@ -14,6 +15,8 @@
 %   make sense? does it always go if = true?
 %
 % To do:
+% - Update listCustomClasses to custom-classes.txt under docs
+% - Update git config file to properly update all EOL LF and CRLF
 % - Add docs('update') option to update publish for all m files
 % - Generate pdf publish files for all files in Windows PC
 % - Upload to Git all publish files generated in Windows PC
@@ -46,6 +49,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [1] Put code for listing custom classes into a function
 % - Create new set of classes under main directory
 % - [6] Remove state error determination and fix later
 % - [5] Add state error determination and fix states in Satellite
@@ -92,7 +96,7 @@
 % - Add lib folder under the same directory of the main file
 % - Add code to automatically update the working directory
 % - Add array of IvanovSatellite objects into IvanovFormationFlight
-
+%_____________________________________________________________________
 
 %% Set paths and MATLAB parameters
 
@@ -120,7 +124,6 @@ if(~isdeployed)
 	path(current_path,strcat('.',filesep,'lib',filesep));
 	
 end
-
 
 %% Set parameters for the simulation
 
@@ -157,104 +160,12 @@ orbit = sim.Orbits; % Aliases: orbit(1) to orbit(n).
 % Create aliases for the flight control modules.
 fc = sim.FlightControlModules; % Aliases: fc(1) to fc(n).
 
-
 %% Start simulation proccess
 
 % Initiate simulation.
 sim.start();
 
-% Obtain custom objects and classes used.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-%% Custom objects and classes used
-
-% Set MATLAB classes to ignore.
-classesToIgnore = {'Composite',...
-                   'parallel.Pool',...
-                   'parallel.pool.DataQueue'};
-
-% Save current MATLAB workspace variables.
-warning off parallel:lang:spmd:CompositeSave;
-save(fullfile(filepath,'workspace.mat'));
-
-% Get variables from saved workspace.
-varsWorkspace = who('-file',fullfile(filepath,'workspace.mat'));
-varsLength = length(varsWorkspace);
-
-% Set empty cell array for object names.
-% objectNames = {};
-objectNames = cell(varsLength,1);
-
-% Set empty cell array for class names.
-% classNames = {};
-classNames = cell(varsLength,1);
-
-% Set counter for number of custom objects found.
-objCounter = 0;
-
-% Go through all variables, one by one.
-for varnum = 1 : varsLength
-	
-	objectName = varsWorkspace{varnum};
-	className = class(eval(objectName));
-	
-	% Check if variable is a class object.
-	if isobject(eval(objectName)) && ...
-	   ~any(strcmp(classesToIgnore,className))
-		
-		% Increment counter.
-		objCounter = objCounter + 1;
-		
-		% Add object and class names to cell array.
-		objectNames{objCounter} = objectName;
-		classNames{objCounter} = className;
-		
-	end
-	
-end
-
-if objCounter > 0
-	
-	% Remove empty cells from cell arrays.
-	index = cellfun(@isempty,objectNames) == 0;
-	objectNames = objectNames(index);
-	classNames = classNames(index);
-	
-	% Print variable names and their respective classes.
-	fprintf('\nCustom objects and respective classes:\n\n');
-	objectNames = pad(objectNames,'left');
-	for n = 1 : objCounter
-		fprintf('%s : %s\n',objectNames{n},classNames{n});
-	end
-	
-	% Save only class names into file.
-	fid = fopen(fullfile(filepath,'lib','listCustomClasses'),'w');
-	fprintf(fid,'%s\n',classNames{:});
-	fclose(fid);
-	
-else
-	fprintf('\nNo custom object classes found.\n');
-end
-
-
-
-
-
-
-
-
+% Print custom objects and classes used.
+sim.createListCustomClasses(filepath);
 
 fprintf('\nDone.\n\n');
