@@ -11,7 +11,9 @@ classdef Satellite < handle
 	properties (GetAccess = public, SetAccess = public)
 		
 		Alive % If satellite is alive or not [true/false].
+		AutoResponse % If satellite should send responses [true/false].
 		FlightControl % Object of class FlightControl.
+		ID % Unique identification number of the satellite.
 		Orbit % Object of class Orbit.
 		
 	end
@@ -30,7 +32,7 @@ classdef Satellite < handle
 	
 	methods % Constructor.
 		
-		function this = Satellite(altitude, gps, tle, ns, mode)
+		function this = Satellite(altitude, resp, gps, tle, ns, mode)
 %% Constructor for class Satellite.
 %_____________________________________________________________________
 %
@@ -48,6 +50,7 @@ classdef Satellite < handle
 			this.FlightControl = FlightControl(ns, mode);
 			this.Orbit = Orbit(altitude);
 			
+			this.AutoResponse = resp;
 			this.AvailableGPS = gps;
 			this.AvailableTLE = tle;
 			this.OrbitCounter = 0;
@@ -62,8 +65,8 @@ classdef Satellite < handle
 	
 	methods (Access = public)
 		
-		%setID()
-		
+		initialize(this, id)
+		comm(this, varargin)
 		
 		
 		

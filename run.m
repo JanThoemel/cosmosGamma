@@ -49,6 +49,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [5] Create function to output satellite communication signals
 % - [4] Fix function uml (2)
 % - [2] Fix code for listing custom classes into a function
 % - Create new set of classes under main directory
@@ -128,8 +129,9 @@ end
 %   NumSatellites    : Total number of satellites in the formation.
 %   FormationMode    : Mode for the satellites formation flight.
 %   Altitude         : Height above sea level [m].
-%   AvailableGPS     : GPS availability [true/false].
-%   AvailableTLE     : TLE availability [true/false].
+%   AutoResponse     : If satellite should send responses [bool].
+%   AvailableGPS     : GPS availability [bool].
+%   AvailableTLE     : TLE availability [bool].
 %   MaxNumOrbits     : Maximum number of orbits to run.
 %   OrbitSectionSize : Size of each orbit section [deg].
 %   InitIDX          : Initial idx.
@@ -138,6 +140,7 @@ parameters = struct( ...
 	'NumSatellites'   , 4     , ...
 	'FormationMode'   , 1     , ...
 	'Altitude'        , 340000, ...
+	'AutoResponse'    , true  , ...
 	'AvailableGPS'    , false , ...
 	'AvailableTLE'    , false , ...
 	'MaxNumOrbits'    , 10    , ...
@@ -148,13 +151,13 @@ parameters = struct( ...
 % Instantiate a simulation object with the selected parameters.
 sim = Simulation(parameters);
 
-% Create aliases for the satellites.
+% Create global alias for the array of satellites.
 sat = sim.Satellites; % Aliases: sat(1) to sat(n).
 
-% Create aliases for the orbits.
+% Create global alias for the array of orbits.
 orbit = sim.Orbits; % Aliases: orbit(1) to orbit(n).
 
-% Create aliases for the flight control modules.
+% Create global alias for the array of flight control modules.
 fc = sim.FlightControlModules; % Aliases: fc(1) to fc(n).
 
 %% Start simulation proccess

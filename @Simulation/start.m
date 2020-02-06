@@ -20,6 +20,27 @@ startTimePool = posixtime(datetime('now')); % Posixtime [seconds].
 % Execute parallel code on workers of parallel pool.
 spmd(this.NumSatellites)
 	
+	% Get unique IDs for each of the satellites, from 1 to N.
+	id = labindex;
+	
+	% Create local aliases for the class objects.
+	sat = sim.Satellites(id);
+	orbit = sim.Orbits(id);
+	fc = sim.FlightControlModules(id);
+	
+	% Initialize satellites; examples:
+	% Satellite(1) will receive ID = 1.
+	% Satellite(N) will receive ID = N.
+	sat.initialize(id);
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 end % Parallel code.
