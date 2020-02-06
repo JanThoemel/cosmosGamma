@@ -33,14 +33,22 @@ classdef Orbit < handle
 		
 	end
 	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%% Constructor Method %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
 	methods % Constructor.
 		
 		function this = Orbit(altitude)
 %% Constructor for class Orbit.
+%_____________________________________________________________________
+%
 % Input:
 % - Altitude [meters].
+%
 % Output:
 % - Object of class Orbit.
+%_____________________________________________________________________
 			
 			% Set array for atmospheric densities.
 			this.RhoArray = [
@@ -139,6 +147,14 @@ classdef Orbit < handle
 			
 		end
 		
+	end % Constructor.
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%% Public Methods %%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	methods (Access = public)
+		
 		function this = updateOrbitalParams(this,altitude)
 %% Update orbital parameters.
 %_____________________________________________________________________
@@ -170,20 +186,6 @@ classdef Orbit < handle
 			this.Inclination = acosd(-(this.SemiMajorAxis/12352000)^(7/2));
 			
 		end
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 	end % Public methods.
 	

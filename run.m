@@ -15,6 +15,7 @@
 %   make sense? does it always go if = true?
 %
 % To do:
+% - Remove output of methods that update handle classes
 % - Update git config file to properly update all EOL LF and CRLF
 % - Add docs('update') option to update publish for all m files
 % - Generate pdf publish files for all files in Windows PC
@@ -48,7 +49,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
-% - [3] Fix function uml
+% - [4] Fix function uml (2)
 % - [2] Fix code for listing custom classes into a function
 % - Create new set of classes under main directory
 % - [6] Remove state error determination and fix later

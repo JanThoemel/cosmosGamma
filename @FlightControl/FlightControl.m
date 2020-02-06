@@ -19,15 +19,23 @@ classdef FlightControl < handle
 		
 	end
 	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%% Constructor Method %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
 	methods % Constructor.
 		
 		function this = FlightControl(ns, mode)
 %% Constructor for class FlightControl.
+%_____________________________________________________________________
+%
 % Input:
 % - Total number of satellites in the formation.
 % - Mode for the satellites formation flight.
+%
 % Output:
 % - Object of class FlightControl.
+%_____________________________________________________________________
 			
 			this.NumSatellites = ns;
 			this.FormationMode = mode;
@@ -42,18 +50,22 @@ classdef FlightControl < handle
 		
 	end % Constructor.
 	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%% Public Methods %%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
 	methods (Access = public)
 		
 		function mode = getFormationMode(this)
 %% Get formation flight mode.
-% Details here.
+%_____________________________________________________________________
 			
 			mode = this.FormationMode;
 		end
 		
 		function this = setFormationMode(this, new_mode)
 %% Set formation flight mode.
-% Details here.
+%_____________________________________________________________________
 			
 			if ~isnumeric(new_mode)
 				error('Formation flight mode must be numeric.');
@@ -63,9 +75,13 @@ classdef FlightControl < handle
 		
 		function this = updateStateDesired(this, time, satID, meanMotion)
 %% Update desired satellite state.
+%_____________________________________________________________________
+%
 % Desired solution for Ivanov's case.
+%
 % Input:
 % - Mean motion [rad/s].
+%_____________________________________________________________________
 			
 			% Does this make sense?
 			% Isn't the size of 'time' always 1?

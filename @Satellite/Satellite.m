@@ -24,18 +24,26 @@ classdef Satellite < handle
 		
 	end
 	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%% Constructor Method %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
 	methods % Constructor.
 		
 		function this = Satellite(altitude, gps, tle, ns, mode)
 %% Constructor for class Satellite.
+%_____________________________________________________________________
+%
 % Input:
 % - Altitude [meters].
 % - GPS availability [boolean].
 % - TLE availability [boolean].
 % - Total number of satellites in the formation.
 % - Mode for the satellites formation flight.
+%
 % Output:
 % - Object of class Satellite.
+%_____________________________________________________________________
 			
 			this.FlightControl = FlightControl(ns, mode);
 			this.Orbit = Orbit(altitude);
@@ -45,6 +53,35 @@ classdef Satellite < handle
 			this.OrbitCounter = 0;
 			
 		end
+		
+	end % Constructor.
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%% Public Methods %%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	methods (Access = public)
+		
+		%setID()
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		function this = incrementOrbitCounter(this)
 %% Increment counter for the total number of satellite orbits.
@@ -100,25 +137,6 @@ classdef Satellite < handle
 			this.Orbit.updateOrbitalParams(this.Orbit.Altitude);
 			
 		end
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 	end % Public methods.
 	

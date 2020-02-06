@@ -81,8 +81,8 @@ classdef Simulation < handle
 	
 	methods (Access = public)
 		
-		[status, msg] = getStatus(this, current_orbit)
 		start(this)
+		[status, msg] = getStatus(this, current_orbit)
 		
 	end % Public methods.
 	
