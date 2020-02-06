@@ -49,6 +49,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [1] Fix output of parloop
 % - Fix function to output satellite communication signals
 % - [4] Fix function uml (2)
 % - [2] Fix code for listing custom classes into a function
@@ -103,6 +104,7 @@
 %% Set paths and MATLAB parameters
 
 warning on verbose;
+delete(gcp('nocreate'));
 close all; clear all; clc; %#ok<CLALL>
 
 % Inform the name of this file without the extension "m".
@@ -151,6 +153,11 @@ parameters = struct( ...
 % Instantiate a simulation object with the selected parameters.
 sim = Simulation(parameters);
 
+%% Start simulation proccess
+
+% Initiate simulation.
+sim.start();
+
 % Create global alias for the array of satellites.
 sat = sim.Satellites; % Aliases: sat(1) to sat(n).
 
@@ -159,11 +166,6 @@ orbit = sim.Orbits; % Aliases: orbit(1) to orbit(n).
 
 % Create global alias for the array of flight control modules.
 fc = sim.FlightControlModules; % Aliases: fc(1) to fc(n).
-
-%% Start simulation proccess
-
-% Initiate simulation.
-sim.start();
 
 % Save current MATLAB workspace variables.
 warning off parallel:lang:spmd:CompositeSave;
