@@ -14,31 +14,4 @@ if this.AutoResponse
 	this.comm(msg);
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 end % Function initialize.

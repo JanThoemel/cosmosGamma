@@ -36,16 +36,30 @@ spmd(this.NumSatellites)
 	% Satellite(N) will receive ID = N.
 	sat.initialize(id, commChannel);
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	while sat.Alive % Sattelites turned on, but still doing nothing.
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		% Turn off the satellite.
+		sat.turnOff();
+		
+	end % While alive.
 	
 	% Globally concatenate all output variables on lab index 1.
 	% Must be the last lines of code of the parallel pool.

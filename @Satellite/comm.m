@@ -8,17 +8,4 @@ function comm(this, msg)
 % Send message through the communication channel.
 send(this.CommChannel, msg);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-end
+end % Function comm.
