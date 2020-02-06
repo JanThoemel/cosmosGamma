@@ -92,7 +92,7 @@ classdef Simulation < handle
 	
 	methods (Static)
 		
-		createListCustomClasses(filepath)
+		createListCustomClasses(filepath, workspaceFileName)
 		
 	end % Static methods.
 	

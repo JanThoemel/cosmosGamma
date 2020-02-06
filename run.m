@@ -49,7 +49,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
-% - [1] Put code for listing custom classes into a function
+% - [2] Fix code for listing custom classes into a function
 % - Create new set of classes under main directory
 % - [6] Remove state error determination and fix later
 % - [5] Add state error determination and fix states in Satellite
@@ -119,10 +119,6 @@ if(~isdeployed)
 	% Change working directory to the directory of this m-file.
 	cd(filepath);
 	
-	% Add lib folder to the current MATLAB path.
-	current_path = path;
-	path(current_path,strcat('.',filesep,'lib',filesep));
-	
 end
 
 %% Set parameters for the simulation
@@ -165,7 +161,12 @@ fc = sim.FlightControlModules; % Aliases: fc(1) to fc(n).
 % Initiate simulation.
 sim.start();
 
+% Save current MATLAB workspace variables.
+warning off parallel:lang:spmd:CompositeSave;
+workspaceFileName = 'workspace.mat';
+save(fullfile(filepath, workspaceFileName));
+
 % Print custom objects and classes used.
-sim.createListCustomClasses(filepath);
+sim.createListCustomClasses(filepath, workspaceFileName);
 
 fprintf('\nDone.\n\n');

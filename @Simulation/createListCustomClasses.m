@@ -1,21 +1,20 @@
-function createListCustomClasses(filepath)
+function createListCustomClasses(filepath, workspaceFileName)
 %% Create list of custom classes used in COSMOS.
 %_____________________________________________________________________
 %
 % Details here.
 %_____________________________________________________________________
 
+% Load workspace file into the workspace of this function.
+load(workspaceFileName); %#ok<LOAD>
+
 % Set MATLAB classes to ignore.
 classesToIgnore = {'Composite',...
                    'parallel.Pool',...
                    'parallel.pool.DataQueue'};
 
-% Save current MATLAB workspace variables.
-warning off parallel:lang:spmd:CompositeSave;
-save(fullfile(filepath,'workspace.mat'));
-
 % Get variables from saved workspace.
-varsWorkspace = who('-file',fullfile(filepath,'workspace.mat'));
+varsWorkspace = who('-file',fullfile(filepath, workspaceFileName));
 varsLength = length(varsWorkspace);
 
 % Set empty cell array for object names.
