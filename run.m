@@ -49,6 +49,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [4] Add orbit duration and remove old orbit counter methods
 % - [3] Add function fly and stopper for max num of orbits
 % - [2] Add loop alive and function to turn off satellite
 % - [1] Fix output of parloop

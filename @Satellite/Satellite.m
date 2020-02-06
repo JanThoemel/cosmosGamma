@@ -19,7 +19,7 @@ classdef Satellite < handle
 		
 	end
 	
-	properties (Access = private)
+	properties (GetAccess = public, SetAccess = private)
 		
 		AvailableGPS % GPS availability [true/false].
 		AvailableTLE % TLE availability [true/false].
@@ -70,46 +70,6 @@ classdef Satellite < handle
 		comm(this, msg)
 		fly(this)
 		turnOff(this)
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		function this = incrementOrbitCounter(this)
-%% Increment counter for the total number of satellite orbits.
-%_____________________________________________________________________
-%
-% Details here.
-%_____________________________________________________________________
-			
-			this.OrbitCounter = this.OrbitCounter + 1;
-			
-		end
-		
-		function orbitNum = getCurrentOrbitNumber(this)
-%% Get current orbit number.
-%_____________________________________________________________________
-%
-% Details here.
-%_____________________________________________________________________
-			
-			orbitNum = this.OrbitCounter;
-			
-		end
 		
 		function this = whereInWhatOrbit(this,endOfSectionsCycle)
 %% Summary here.
