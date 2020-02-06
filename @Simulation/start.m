@@ -38,6 +38,8 @@ spmd(this.NumSatellites)
 	
 	while sat.Alive % Sattelites turned on, but still doing nothing.
 		
+		% Start flying on orbital loop.
+		sat.fly();
 		
 		
 		
@@ -53,11 +55,11 @@ spmd(this.NumSatellites)
 		
 		
 		
-		
-		
-		
-		% Turn off the satellite.
-		sat.turnOff();
+		% If maximum number of orbits for the simulation has been reached,
+		% turn off the satellite.
+		if sat.OrbitCounter >= this.MaxNumOrbits
+			sat.turnOff();
+		end
 		
 	end % While alive.
 	

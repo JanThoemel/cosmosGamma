@@ -14,4 +14,10 @@ if this.AutoResponse
 	this.comm(msg);
 end
 
+% Get battery status from the satellite.
+battery_status = 1;
+if battery_status
+	% Switch on the GPS.
+end
+
 end % Function initialize.

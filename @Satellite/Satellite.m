@@ -68,6 +68,7 @@ classdef Satellite < handle
 		
 		initialize(this, id, commChannel)
 		comm(this, msg)
+		fly(this)
 		turnOff(this)
 		
 		
