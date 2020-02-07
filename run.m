@@ -59,6 +59,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [6] Remove func getStatus from class Simulation
 % - [5] Add class GPS and other major updates
 % - Add GPS functions to all other classes
 % - Create a class GPS
@@ -67,7 +68,6 @@
 % - Create function GPS.getMeanAnomalyFromAN()
 % - Create function GPS.getOrbitCounter()
 % - Pass props AvailableGPS, AvailableTLE from Satellite to Orbit
-% - Create function updateOrbitalCounter to increment counter
 % - Create prop IDX for class Simulation
 % - [4] Add orbit duration and remove old orbit counter methods
 % - [3] Add function fly and stopper for max num of orbits

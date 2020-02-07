@@ -47,7 +47,7 @@ classdef Simulation < handle
 			this.IDX = param.InitIDX;
 			this.OrbitSectionSize = param.OrbitSectionSize;
 			this.OrbitSections = 1:param.OrbitSectionSize:360;
-			this.NumOrbitSections = length(this.OrbitSections)
+			this.NumOrbitSections = length(this.OrbitSections);
 			
 			this.NumSatellites = param.NumSatellites;
 			
@@ -94,18 +94,6 @@ classdef Simulation < handle
 	methods (Access = public)
 		
 		start(this)
-		
-		
-		
-		
-		
-		
-		
-		
-		% DELETEE!!!
-		
-		[status, msg] = getStatus(this, current_orbit)
-		% ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 		
 	end % Public methods.
 	
