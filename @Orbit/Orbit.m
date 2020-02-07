@@ -22,6 +22,14 @@ classdef Orbit < handle
 		
 	end
 	
+	properties (GetAccess = public, SetAccess = private)
+		
+		AvailableGPS % GPS availability [true/false].
+		AvailableTLE % TLE availability [true/false].
+		OrbitCounter % Counter for the number of orbits passed.
+		
+	end
+	
 	properties (Access = private)
 		
 		F % Interpolation function created with fit().
@@ -39,16 +47,38 @@ classdef Orbit < handle
 	
 	methods % Constructor.
 		
-		function this = Orbit(altitude)
+		function this = Orbit(altitude, gps, tle)
 %% Constructor for class Orbit.
 %_____________________________________________________________________
 %
 % Input:
 % - Altitude [meters].
+% - GPS availability [boolean].
+% - TLE availability [boolean].
 %
 % Output:
 % - Object of class Orbit.
 %_____________________________________________________________________
+			
+			% this.AtmosTemp:
+			% should be interpolated later [K].
+			
+			% Update orbital parameters.
+			this.Altitude = altitude;
+			this.AvailableGPS = gps;
+			this.AvailableTLE = tle;
+			this.OrbitCounter = 0;
+			
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%this.updateOrbitalParams(altitude);
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			
 			% Set array for atmospheric densities.
 			this.RhoArray = [
@@ -133,17 +163,11 @@ classdef Orbit < handle
 			% Use function fit() to calculate rho.
 			this.F = fit(this.RhoArray(:,1),this.RhoArray(:,2),'exp1');
 			
-			% this.AtmosTemp:
-			% should be interpolated later [K].
-			
-			% Update orbital parameters.
-			this.updateOrbitalParams(altitude);
-			
 			% Use constant atmospheric density from Ivanov's case.
 			this.Rho = 1e-11; % [kg/m^3].
-			%fprintf(2,['Original atmospheric density (rho) is ',...
-				%'overwritten by rho from Ivanov''s case: %1.3e\n'],...
-				%this.Rho);
+			fprintf(2,['Original atmospheric density (rho) is ',...
+				'overwritten by rho from Ivanov''s case: %1.3e\n'],...
+				this.Rho);
 			
 		end
 		
@@ -155,7 +179,35 @@ classdef Orbit < handle
 	
 	methods (Access = public)
 		
-		function this = updateOrbitalParams(this,altitude)
+		updateOrbitalParams(this, orbitCounter, meanAnomalyFromAN)
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		function this = uOLDupdateOrbitalParams(this,altitude)
 %% Update orbital parameters.
 %_____________________________________________________________________
 %

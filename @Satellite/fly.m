@@ -5,9 +5,12 @@ function fly(this)
 % Details here.
 %_____________________________________________________________________
 
+% Get updated orbital parameters from GPS/TLE.
+orbitCounter = this.GPSModule.getOrbitCounter();
+meanAnomalyFromAN = this.GPSModule.getMeanAnomalyFromAN();
+
 % Update orbital parameters.
-% Later from GPS/TLE.
-this.OrbitCounter = this.OrbitCounter + 1;
+this.Orbit.updateOrbitalParams(orbitCounter, meanAnomalyFromAN);
 
 % Set the start time for the current satellite orbit.
 timeOrbitStart = posixtime(datetime('now')); % Posixtime [s].
@@ -41,7 +44,7 @@ timeOrbitDuration = timeOrbitEnd - timeOrbitStart; % Posixtime [s].
 
 if this.AutoResponse
 	msg = sprintf(['Sat ',num2str(this.ID),' - Orbit ',...
-	               num2str(this.OrbitCounter),' - Duration ',...
+	               num2str(this.Orbit.OrbitCounter),' - Duration ',...
 	               num2str(timeOrbitDuration),' s']);
 	this.comm(msg);
 end

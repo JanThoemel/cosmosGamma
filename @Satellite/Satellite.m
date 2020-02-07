@@ -14,16 +14,13 @@ classdef Satellite < handle
 		AutoResponse % If satellite should send responses [true/false].
 		CommChannel % Communication channel.
 		FlightControl % Object of class FlightControl.
+		GPSModule % Object of class GPS.
 		ID % Unique identification number of the satellite.
 		Orbit % Object of class Orbit.
 		
 	end
 	
 	properties (GetAccess = public, SetAccess = private)
-		
-		AvailableGPS % GPS availability [true/false].
-		AvailableTLE % TLE availability [true/false].
-		OrbitCounter % Counter for the number of orbits passed.
 		
 	end
 	
@@ -48,13 +45,10 @@ classdef Satellite < handle
 % - Object of class Satellite.
 %_____________________________________________________________________
 			
-			this.FlightControl = FlightControl(ns, mode);
-			this.Orbit = Orbit(altitude);
-			
 			this.AutoResponse = resp;
-			this.AvailableGPS = gps;
-			this.AvailableTLE = tle;
-			this.OrbitCounter = 0;
+			this.FlightControl = FlightControl(ns, mode);
+			this.Orbit = Orbit(altitude, gps, tle);
+			this.GPSModule = GPS();
 			
 		end
 		
@@ -70,6 +64,27 @@ classdef Satellite < handle
 		comm(this, msg)
 		fly(this)
 		turnOff(this)
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		%DELETEEE!!
+		
+		
+		
 		
 		function this = whereInWhatOrbit(this,endOfSectionsCycle)
 %% Summary here.

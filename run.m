@@ -15,6 +15,16 @@
 %   make sense? does it always go if = true?
 %
 % To do:
+% - Remove prop AvailableGPS since GPS has been implemented
+% - Calculate endOfSectionsCycle in simulation loop
+% - Simulation calls function to update orbit in the end of the orbital sections: updateOrbitCounter()
+%   later the function will update from GPS, but now it will only
+%   increment
+% - Later update orbitCounter using anglefromAN? update in Orbit.updateOrbitalParams
+% - [5] Add function to update orbital params
+% - Check Orbit.uOLDupdateOrbitalParams and whereInWhatOrbit:
+%   do I need two functions, one to update only altitude and another
+%   to update all other orbital params?
 % - Remove output of methods that update handle classes
 % - Update git config file to properly update all EOL LF and CRLF
 % - Add docs('update') option to update publish for all m files
@@ -49,6 +59,16 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [5] Add class GPS and other major updates
+% - Add GPS functions to all other classes
+% - Create a class GPS
+% - Create function GPS.incrementMeanAnomalyFromAN()
+% - Create function GPS.incrementOrbitCounter()
+% - Create function GPS.getMeanAnomalyFromAN()
+% - Create function GPS.getOrbitCounter()
+% - Pass props AvailableGPS, AvailableTLE from Satellite to Orbit
+% - Create function updateOrbitalCounter to increment counter
+% - Create prop IDX for class Simulation
 % - [4] Add orbit duration and remove old orbit counter methods
 % - [3] Add function fly and stopper for max num of orbits
 % - [2] Add loop alive and function to turn off satellite
@@ -169,6 +189,9 @@ orbit = sim.Orbits; % Aliases: orbit(1) to orbit(n).
 
 % Create global alias for the array of flight control modules.
 fc = sim.FlightControlModules; % Aliases: fc(1) to fc(n).
+
+% Create global alias for the array of GPS modules.
+gps = sim.GPSModules; % Aliases: gps(1) to gps(n).
 
 % Save current MATLAB workspace variables.
 warning off parallel:lang:spmd:CompositeSave;

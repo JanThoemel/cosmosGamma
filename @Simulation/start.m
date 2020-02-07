@@ -27,6 +27,7 @@ spmd(this.NumSatellites)
 	sat = this.Satellites(id);
 	orbit = this.Orbits(id);
 	fc = this.FlightControlModules(id);
+	gps = this.GPSModules(id);
 	
 	% Set satellite communication channel as the parpool data queue.
 	commChannel = dq;
@@ -37,6 +38,36 @@ spmd(this.NumSatellites)
 	sat.initialize(id, commChannel);
 	
 	while sat.Alive % Sattelites turned on, but still doing nothing.
+		
+		% Update orbit counter.
+		gps.incrementOrbitCounter();
+		
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		
+		% Calculate endOfSectionsCycle.
+		endOfSectionsCycle = (this.IDX - 1) / this.NumOrbitSections;
+		
+		% From whereInWhatOrbit().
+		if endOfSectionsCycle
+			gps.MeanAnomalyFromAN = 0.01;
+		else
+			gps.MeanAnomalyFromAN = 120;
+		end
+		
+		% ^
+		% Update mean anomaly from ascending node.
+		% For now, simulation updates this value.
+		% Later, this value will be obtained from GPS/TLE.
+		
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		
 		% Start flying on orbital loop.
 		sat.fly();
@@ -57,7 +88,7 @@ spmd(this.NumSatellites)
 		
 		% If maximum number of orbits for the simulation has been reached,
 		% turn off the satellite.
-		if sat.OrbitCounter >= this.MaxNumOrbits
+		if orbit.OrbitCounter >= this.MaxNumOrbits
 			send(dq,['Maximum number of orbits reached - ',...
 			         'Killing Sat ',num2str(sat.ID)]);
 			sat.turnOff();

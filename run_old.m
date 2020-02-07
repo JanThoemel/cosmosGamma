@@ -232,6 +232,8 @@ spmd(number_of_satellites)
 			% Calculate endOfSectionsCycle.
 			endOfSectionsCycle = (idx-1)/size(orbitSections,2);
 			
+			
+			
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
