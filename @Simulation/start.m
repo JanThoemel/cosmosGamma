@@ -99,12 +99,18 @@ spmd(this.NumSatellites)
 	% Globally concatenate all output variables on lab index 1.
 	% Must be the last lines of code of the parallel pool.
 	satellites = gcat(sat,2,1);
+	orbits = gcat(orbit,2,1);
+	flightControlModules = gcat(fc,2,1);
+	gpsModules = gcat(gps,2,1);
 	
 end % Parallel code.
 
 % Get the globally concatenated values stored on lab index 1.
 % Must be placed right after the end of the parallel pool.
 this.Satellites = satellites{1};
+this.Orbits = orbits{1};
+this.FlightControlModules = flightControlModules{1};
+this.GPSModules = gpsModules{1};
 
 % Terminate the existing parallel pool session.
 delete(gcp('nocreate'));

@@ -59,6 +59,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [8] Fix class objects being passed as output of parloop
 % - [7] Update custom-classes.txt with class GPS
 % - [6] Remove func getStatus from class Simulation
 % - [5] Add class GPS and other major updates
