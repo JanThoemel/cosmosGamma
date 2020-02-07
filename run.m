@@ -15,7 +15,6 @@
 %   make sense? does it always go if = true?
 %
 % To do:
-% - Update UML with class GPS
 % - Remove prop AvailableGPS since GPS has been implemented
 % - Calculate endOfSectionsCycle in simulation loop
 % - Simulation calls function to update orbit in the end of the orbital sections: updateOrbitCounter()
@@ -60,6 +59,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [11] Update UML with class GPS
 % - [10] Fix orbit times and add AutoResponse to func comm
 % - Remove status and update comm messages with labels
 % - [8] Fix class objects being passed as output of parloop
