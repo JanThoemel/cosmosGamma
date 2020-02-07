@@ -97,8 +97,8 @@ spmd(this.NumSatellites)
 		% If maximum number of orbits for the simulation has been reached,
 		% turn off the satellite.
 		if orbit.OrbitCounter >= this.MaxNumOrbits
-			send(dq,['[sim] Maximum number of orbits reached - ',...
-			         'Killing Sat ',num2str(sat.ID)]);
+			send(dq,['[sim] Maximum number of orbits reached! ',...
+			         'Killing [sat ',num2str(sat.ID),']']);
 			sat.turnOff();
 		end
 		

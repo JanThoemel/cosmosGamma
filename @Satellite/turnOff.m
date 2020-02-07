@@ -5,7 +5,7 @@ function turnOff(this)
 % Details here.
 %_____________________________________________________________________
 
-msg = sprintf(['Satellite ',num2str(this.ID),' is turning off.']);
+msg = sprintf(['Satellite ',num2str(this.ID),' will turn off now']);
 
 this.comm(msg);
 

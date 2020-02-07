@@ -10,7 +10,7 @@ this.Alive = true;
 this.CommChannel = commChannel;
 
 if this.AutoResponse
-	msg = sprintf(['Satellite number ',num2str(id),' is alive.']);
+	msg = sprintf(['Satellite number ',num2str(id),' is alive']);
 	this.comm(msg);
 end
 

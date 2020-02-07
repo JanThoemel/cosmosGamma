@@ -59,7 +59,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
-% - [11] Update UML with class GPS
+% - [12] Fix UML with class GPS
 % - [10] Fix orbit times and add AutoResponse to func comm
 % - Remove status and update comm messages with labels
 % - [8] Fix class objects being passed as output of parloop
