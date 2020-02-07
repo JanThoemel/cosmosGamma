@@ -5,10 +5,10 @@ function turnOff(this)
 % Details here.
 %_____________________________________________________________________
 
-this.Alive = false;
-
-msg = sprintf(['Sat ',num2str(this.ID),' is dead.']);
+msg = sprintf(['Satellite ',num2str(this.ID),' is turning off.']);
 
 this.comm(msg);
+
+this.Alive = false;
 
 end % Function turnOff.

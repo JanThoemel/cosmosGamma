@@ -12,8 +12,21 @@ function updateOrbitalParams(this, orbitCounter, meanAnomalyFromAN)
 %   it will be obtained from GPS/TLE.
 %_____________________________________________________________________
 
-% Set orbital parameters updated in GPS/TLE.
-this.OrbitCounter = orbitCounter;
+% Check if orbit has changed.
+if (orbitCounter ~= this.OrbitCounter)
+	
+	% If changed, update counter.
+	this.OrbitCounter = orbitCounter;
+	
+	% Update orbit identifier in time vector.
+	this.TimeOrbitStart(1) = this.OrbitCounter;
+	
+	% Set the start time for the current satellite orbit.
+	this.TimeOrbitStart(2) = posixtime(datetime('now')); % [s].
+	
+end
+
+% Update mean anomaly from ascending node.
 this.MeanAnomalyFromAN = meanAnomalyFromAN;
 
 

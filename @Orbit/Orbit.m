@@ -27,6 +27,9 @@ classdef Orbit < handle
 		AvailableGPS % GPS availability [true/false].
 		AvailableTLE % TLE availability [true/false].
 		OrbitCounter % Counter for the number of orbits passed.
+		TimeOrbitDuration % Posixtime [s].
+		TimeOrbitStart % Posixtime [s].
+		%TimeOrbitEnd % Posixtime [s].
 		
 	end
 	
@@ -68,6 +71,8 @@ classdef Orbit < handle
 			this.AvailableGPS = gps;
 			this.AvailableTLE = tle;
 			this.OrbitCounter = 0;
+			this.TimeOrbitDuration = zeros(1,2);
+			this.TimeOrbitStart = zeros(1,2);
 			
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%this.updateOrbitalParams(altitude);
 			
@@ -165,9 +170,8 @@ classdef Orbit < handle
 			
 			% Use constant atmospheric density from Ivanov's case.
 			this.Rho = 1e-11; % [kg/m^3].
-			fprintf(2,['Original atmospheric density (rho) is ',...
-				'overwritten by rho from Ivanov''s case: %1.3e\n'],...
-				this.Rho);
+			fprintf(2,['[orbit] Atmospheric density is overwritten by ',...
+				'constant value from Ivanov''s case: %1.3e\n'], this.Rho);
 			
 		end
 		
@@ -181,7 +185,11 @@ classdef Orbit < handle
 		
 		updateOrbitalParams(this, orbitCounter, meanAnomalyFromAN)
 		
-		
+		function updateOrbitDuration(this)
+			timenow = posixtime(datetime('now')); % [s].
+			this.TimeOrbitDuration(1) = this.TimeOrbitStart(1); % Orbit[#].
+			this.TimeOrbitDuration(2) = timenow - this.TimeOrbitStart(2);
+		end
 		
 		
 		

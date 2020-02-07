@@ -6,6 +6,7 @@ function comm(this, msg)
 %_____________________________________________________________________
 
 % Send message through the communication channel.
+msg = ['[sat ',num2str(this.ID),'] ',msg];
 send(this.CommChannel, msg);
 
 end % Function comm.

@@ -21,7 +21,7 @@ classdef Simulation < handle
 		OrbitSectionSize % Size of each orbit section [deg].
 		OrbitSections % Orbital sections for the simulation.
 		Satellites % Array of Satellite objects.
-		Status % Simulation status.
+		%Status % Simulation status.
 		
 	end
 	

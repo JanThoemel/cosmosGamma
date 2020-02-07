@@ -92,6 +92,10 @@ spmd(this.NumSatellites)
 			send(dq,['[sim] Maximum number of orbits reached - ',...
 			         'Killing Sat ',num2str(sat.ID)]);
 			sat.turnOff();
+		else
+			send(dq,['[sat ',num2str(sat.ID),'] ',...
+				'Orbit ',num2str(orbit.OrbitCounter),' finished ',...
+				'(',num2str(timeOrbitDuration),' s)']);
 		end
 		
 	end % While alive.
