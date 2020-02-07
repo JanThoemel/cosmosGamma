@@ -5,8 +5,10 @@ function comm(this, msg)
 % Details here.
 %_____________________________________________________________________
 
-% Send message through the communication channel.
-msg = ['[sat ',num2str(this.ID),'] ',msg];
-send(this.CommChannel, msg);
+if this.AutoResponse
+	% Send message through the communication channel.
+	msg = ['[sat ',num2str(this.ID),'] ',msg];
+	send(this.CommChannel, msg);
+end
 
 end % Function comm.

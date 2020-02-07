@@ -38,10 +38,4 @@ this.Orbit.updateOrbitalParams(orbitCounter, meanAnomalyFromAN);
 % Update duration of the current orbit.
 this.Orbit.updateOrbitDuration();
 
-% if this.AutoResponse
-% 	msg = sprintf(['Orbit ',num2str(this.Orbit.OrbitCounter),...
-% 	               ' - Duration ',num2str(timeOrbitDuration),' s']);
-% 	this.comm(msg);
-% end
-
 end % Function fly.

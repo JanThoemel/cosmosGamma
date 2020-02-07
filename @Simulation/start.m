@@ -83,8 +83,12 @@ spmd(this.NumSatellites)
 		
 		
 		
-		
-		
+		% Check if orbit counter identifiers match.
+		if (orbit.OrbitCounter ~= orbit.TimeOrbitDuration(1))
+			msg = ['Orbit identifiers in orbit.OrbitCounter and ',...
+				'orbit.TimeOrbitDuration do not match.'];
+			error('Simulation:start:orbitIdentifierNotEqual',msg);
+		end
 		
 		% If maximum number of orbits for the simulation has been reached,
 		% turn off the satellite.
@@ -95,7 +99,7 @@ spmd(this.NumSatellites)
 		else
 			send(dq,['[sat ',num2str(sat.ID),'] ',...
 				'Orbit ',num2str(orbit.OrbitCounter),' finished ',...
-				'(',num2str(timeOrbitDuration),' s)']);
+				'(',num2str(orbit.TimeOrbitDuration(2)),' s)']);
 		end
 		
 	end % While alive.
