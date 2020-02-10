@@ -163,4 +163,14 @@ classdef FlightControl < handle
 		
 	end % Public methods.
 	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%% Static Methods %%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	methods (Static)
+		
+		[P, IR, A, B] = riccatiequation(meanMotion, SSCoeff)
+		
+	end % Static methods.
+	
 end % Class FlightControl.

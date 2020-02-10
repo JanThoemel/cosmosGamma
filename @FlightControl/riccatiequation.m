@@ -1,4 +1,4 @@
-function [P,IR,A,B]=riccatiequation(meanMotion,SSCoeff)
+function [P, IR, A, B] = riccatiequation(meanMotion, SSCoeff)
 %% according to:
 %% C. Traub, G. H. Herdrich, and S. Fasoulas, “Influence of energy accommodation on a robust spacecraft rendezvous maneuver using differential aerodynamic forces,” CEAS Sp. J., 2019.
 %% but with Ivanov's coordinate system and variable renaming
