@@ -38,20 +38,20 @@ end
 % Checkout branch 'out' and reset its latest commit.
 % !git checkout -B out && git reset --hard HEAD^
 
-% Delete local branch 'out'.
-!git branch -D out
+% Delete local branch 'temp-branch'.
+!git branch -D temp-branch
 
-% Create and checkout new branch 'out'.
-!git checkout -B out
+% Create and checkout new branch 'temp-branch'.
+!git checkout -B temp-branch
 
 % Force-push the new HEAD commit to the remote branch.
 % !git push -u origin out +HEAD
 !git push -f -u origin out
 
-% Merge the previous active branch into 'out'.
+% Merge the previous active branch into 'temp-branch'.
 % !git merge dev
 
-% Apply stashed changes into 'out'.
+% Apply stashed changes into 'temp-branch'.
 !git stash apply
 
 % Notes on how to set relations between classes:
@@ -119,7 +119,7 @@ else
 	!git checkout "$originalGitBranch"
 end
 !git stash pop
-!git branch -D out
+!git branch -D temp-branch
 
 % Set URL to the proxy service of the PlantUML server.
 plantProxy = 'http://www.plantuml.com/plantuml/proxy?';

@@ -59,6 +59,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - Fix function uml with branch temp
 % - [12] Fix UML with class GPS
 % - [10] Fix orbit times and add AutoResponse to func comm
 % - Remove status and update comm messages with labels
