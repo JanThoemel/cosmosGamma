@@ -6,11 +6,11 @@ function fly(this)
 %_____________________________________________________________________
 
 % Get updated orbital parameters from GPS/TLE.
-orbitCounter = this.GPSModule.getOrbitCounter();
+orbitFromGPS = this.GPSModule.getOrbitCounter();
 meanAnomalyFromAN = this.GPSModule.getMeanAnomalyFromAN();
 
 % Update orbital parameters.
-this.Orbit.updateOrbitalParams(orbitCounter, meanAnomalyFromAN);
+this.Orbit.updateOrbitalParams(orbitFromGPS, meanAnomalyFromAN);
 
 
 

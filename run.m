@@ -15,16 +15,9 @@
 %   make sense? does it always go if = true?
 %
 % To do:
-% - Remove prop AvailableGPS since GPS has been implemented
-% - Calculate endOfSectionsCycle in simulation loop
-% - Simulation calls function to update orbit in the end of the orbital sections: updateOrbitCounter()
-%   later the function will update from GPS, but now it will only
-%   increment
-% - Later update orbitCounter using anglefromAN? update in Orbit.updateOrbitalParams
-% - [5] Add function to update orbital params
-% - Check Orbit.uOLDupdateOrbitalParams and whereInWhatOrbit:
-%   do I need two functions, one to update only altitude and another
-%   to update all other orbital params?
+% - Remove prop AvailableGPS from class Orbit
+% - Later update orbitCounter using anglefromAN? update in 
+%   Orbit.updateOrbitalParams
 % - Remove output of methods that update handle classes
 % - Update git config file to properly update all EOL LF and CRLF
 % - Add docs('update') option to update publish for all m files
@@ -59,6 +52,9 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [1] Convert all refs from MeanMotion to MeanMotionDeg
+% - Remove old func updateOrbitalParams from Orbit
+% - Remove comments and func sat.whereInWhatOrbit
 % - Fix function uml with branch temp
 % - [12] Fix UML with class GPS
 % - [10] Fix orbit times and add AutoResponse to func comm
@@ -172,7 +168,7 @@ parameters = struct( ...
 	'FormationMode'   , 1     , ...
 	'Altitude'        , 340000, ...
 	'AutoResponse'    , true  , ...
-	'AvailableGPS'    , false , ...
+	'AvailableGPS'    , true  , ...
 	'AvailableTLE'    , false , ...
 	'MaxNumOrbits'    , 10    , ...
 	'OrbitSectionSize', 2     , ...

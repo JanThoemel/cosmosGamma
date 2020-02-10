@@ -1,4 +1,4 @@
-function updateOrbitalParams(this, orbitCounter, meanAnomalyFromAN)
+function updateOrbitalParams(this, orbitFromGPS, meanAnomalyFromAN)
 %% Update orbital parameters.
 %_____________________________________________________________________
 %
@@ -12,13 +12,14 @@ function updateOrbitalParams(this, orbitCounter, meanAnomalyFromAN)
 %   it will be obtained from GPS/TLE.
 %_____________________________________________________________________
 
-% Check if orbit has changed.
-if (orbitCounter ~= this.OrbitCounter)
+% Check if orbit number received from GPS is different than the 
+% current orbit counter of the satellite.
+if (orbitFromGPS ~= this.OrbitCounter)
 	
 	% If changed, update counter.
-	this.OrbitCounter = orbitCounter;
+	this.OrbitCounter = orbitFromGPS;
 	
-	% Update orbit identifier in time vector.
+	% Update orbit identifier in orbit time vector.
 	this.TimeOrbitStart(1) = this.OrbitCounter;
 	
 	% Set the start time for the current satellite orbit.
@@ -29,25 +30,6 @@ end
 % Update mean anomaly from ascending node.
 this.MeanAnomalyFromAN = meanAnomalyFromAN;
 
-
-% !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-% Update Altitude here too.
-% this.Altitude = altitude;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 % Info provided by GPS or two line elements (TLE).
 % TLE downloadable from web (American military).
 % Compute meanAnomalyFromANGPS and altitudeGPS from available 
@@ -57,15 +39,15 @@ this.MeanAnomalyFromAN = meanAnomalyFromAN;
 % time = 1;
 
 if this.AvailableTLE
-	msg = ['TLE functions have not been implemented yet.\n',...
-		'Set the respective simulation parameters to ''false''.'];
-	error('Orbit:updateOrbitalParams:notImplementedGPSTLE',msg);
+	msg = ['TLE function has not been implemented yet.\n',...
+		'Set the respective simulation parameter to ''false''.'];
+	error('Orbit:updateOrbitalParams:notImplementedTLE',msg);
 	
 	% Update all possible orbital params from GPS/TLE.
 	% this.Orbit.Altitude = altitudeGPSTLE;
 	% this.Orbit.MeanAnomalyFromAN = meanAnomalyFromANGPSTLE;
 	
-	% From whereInWhatOrbit():
+	% Originally from whereInWhatOrbit():
 	% Compute SST here, if possible.
 end
 
@@ -89,10 +71,10 @@ this.V = sqrt(this.Mu/this.R0); % [m/s].
 this.MeanMotionRad = sqrt(this.Mu/this.R0^3); % [rad/s].
 
 % Convert mean motion from [rad/s] to [deg/s].
-this.MeanMotion = this.MeanMotionRad*180/pi; % [deg/s].
+this.MeanMotionDeg = this.MeanMotionRad*180/pi; % [deg/s].
 
 % Calculate semi-major axis and inclination in degrees.
-this.SemiMajorAxis = (1/this.MeanMotion^2*this.Mu)^(1/3);
+this.SemiMajorAxis = (1/this.MeanMotionRad^2*this.Mu)^(1/3);
 this.Inclination = acosd(-(this.SemiMajorAxis/12352000)^(7/2));
 
 end % Function updateOrbitalParams.

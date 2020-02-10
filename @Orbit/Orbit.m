@@ -13,7 +13,7 @@ classdef Orbit < handle
 		Altitude % Height above sea level [m].
 		Inclination % Orbital inclination [deg].
 		MeanAnomalyFromAN % Mean anomaly from ascending node [deg].
-		MeanMotion % Converted mean motion [deg/s].
+		MeanMotionDeg % Mean motion [deg/s].
 		MeanMotionRad % Mean motion [rad/s].
 		R0 % Mean Earth's radius plus altitude [m].
 		Rho % Atmospheric density [kg/m^3].
@@ -29,7 +29,6 @@ classdef Orbit < handle
 		OrbitCounter % Counter for the number of orbits passed.
 		TimeOrbitDuration % Posixtime [s].
 		TimeOrbitStart % Posixtime [s].
-		%TimeOrbitEnd % Posixtime [s].
 		
 	end
 	
@@ -73,17 +72,6 @@ classdef Orbit < handle
 			this.OrbitCounter = 0;
 			this.TimeOrbitDuration = zeros(1,2);
 			this.TimeOrbitStart = zeros(1,2);
-			
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%this.updateOrbitalParams(altitude);
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			
 			% Set array for atmospheric densities.
 			this.RhoArray = [
@@ -183,68 +171,12 @@ classdef Orbit < handle
 	
 	methods (Access = public)
 		
-		updateOrbitalParams(this, orbitCounter, meanAnomalyFromAN)
+		updateOrbitalParams(this, orbitFromGPS, meanAnomalyFromAN)
 		
 		function updateOrbitDuration(this)
 			timenow = posixtime(datetime('now')); % [s].
 			this.TimeOrbitDuration(1) = this.TimeOrbitStart(1); % Orbit[#].
 			this.TimeOrbitDuration(2) = timenow - this.TimeOrbitStart(2);
-		end
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		function this = uOLDupdateOrbitalParams(this,altitude)
-%% Update orbital parameters.
-%_____________________________________________________________________
-%
-% Density is the minimum density at solar minimum and winter latitude.
-% Minimum density in worst case scenario (conservative assumption).
-%_____________________________________________________________________
-			
-			% Update altitude.
-			this.Altitude = altitude;
-			
-			% Using constant atmospheric density from Ivanov's case.
-			% Otherwise:
-			% Calculate rho from function fit().
-			% this.Rho = this.F(this.Altitude);
-			
-			% Calculate r0 and v.
-			this.R0 = this.MeanEarthRadius + this.Altitude; % [m].
-			this.V = sqrt(this.Mu/this.R0); % [m/s].
-			
-			% Calculate mean motion.
-			this.MeanMotionRad = sqrt(this.Mu/this.R0^3); % [rad/s].
-			
-			% Convert mean motion from [rad/s] to [deg/s].
-			this.MeanMotion = this.MeanMotionRad*180/pi; % [deg/s].
-			
-			% Calculate semi-major axis and inclination in degrees.
-			this.SemiMajorAxis = (1/this.MeanMotion^2*this.Mu)^(1/3);
-			this.Inclination = acosd(-(this.SemiMajorAxis/12352000)^(7/2));
-			
 		end
 		
 	end % Public methods.

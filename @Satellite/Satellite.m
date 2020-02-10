@@ -65,60 +65,6 @@ classdef Satellite < handle
 		fly(this)
 		turnOff(this)
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		%DELETEEE!!
-		
-		
-		
-		
-		function this = whereInWhatOrbit(this,endOfSectionsCycle)
-%% Summary here.
-%_____________________________________________________________________
-%
-% Details here.
-%_____________________________________________________________________
-			
-			% Info provided by GPS or two line elements (TLE).
-			% TLE downloadable from web (American military).
-			% Compute meanAnomalyFromANGPS and altitudeGPS from available 
-			% past GPS or TLE/SGP4 data.
-			altitudeGPSTLE = 1;
-			meanAnomalyFromANGPSTLE = 1;
-			%time = 1;
-			
-			if this.AvailableGPS || this.AvailableTLE
-				this.Orbit.Altitude = altitudeGPSTLE;
-				this.Orbit.MeanAnomalyFromAN = meanAnomalyFromANGPSTLE;
-				% Compute SST here, if possible.
-			elseif endOfSectionsCycle
-				this.Orbit.MeanAnomalyFromAN = 0.01;
-			else
-				this.Orbit.MeanAnomalyFromAN = 120;
-			end
-			
-			% Use sst, meanAnomalyFromAN and altitude either from GPS or 
-			% from input parameters, %! define rule
-			
-			% Update orbital parameters for the satellites
-			this.Orbit.updateOrbitalParams(this.Orbit.Altitude);
-			
-		end
-		
 	end % Public methods.
 	
 end % Class Satellite.
