@@ -52,6 +52,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [3] Add first pause to simulation.start
 % - [2] Move riccati equation to class FlightControl
 % - [1] Convert all refs from MeanMotion to MeanMotionDeg
 % - Remove old func updateOrbitalParams from Orbit
