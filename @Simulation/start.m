@@ -69,7 +69,8 @@ spmd(this.NumSatellites)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		
-		% Pause #1
+		% Pause #1:
+		% Wait until end of orbit sections.
 		this.IDX = find(...
 			this.OrbitSections >= gps.MeanAnomalyFromAN, 1, 'first');
 		
@@ -84,19 +85,52 @@ spmd(this.NumSatellites)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		
-		% Start flying on orbital loop.
-		sat.fly();
-		
-		% Add pause 2
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		% Start orbit sections loop.
+		while this.IDX <= this.NumOrbitSections
+			
+			% Determine start time of this cycle, in order to subtract the 
+			% total cycle duration from the pause time (pause #2).
+			timeStartSection = now();
+			
+			% Start flying on orbital loop.
+			sat.fly();
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			% Increment section counter.
+			this.IDX = this.IDX + 1;
+			
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			
+			% Pause #2:
+			% Add pause after subtracting this section's computing time.
+			pause(this.OrbitSectionSize / orbit.MeanMotionDeg /...
+				this.AccelFactor - (now() - timeStartSection));
+			
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%% MORE CODE HERE %%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			
+			% For plotting.
+			% SST_PP = [SST_PP sst];
+			
+		end % While orbit sections loop.
 		
 		% Check if orbit counter identifiers do not match.
 		if (orbit.OrbitCounter ~= orbit.TimeOrbitDuration(1))
@@ -117,7 +151,7 @@ spmd(this.NumSatellites)
 			sat.turnOff();
 		end
 		
-	end % While alive.
+	end % While alive (main orbital loop).
 	
 	% Globally concatenate all output variables on lab index 1.
 	% Must be the last lines of code of the parallel pool.

@@ -52,6 +52,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [4] Add second pause to simulation.start
 % - [3] Add first pause to simulation.start
 % - [2] Move riccati equation to class FlightControl
 % - [1] Convert all refs from MeanMotion to MeanMotionDeg
