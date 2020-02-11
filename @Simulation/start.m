@@ -90,7 +90,8 @@ spmd(this.NumSatellites)
 			timeStartSection = now();
 			
 			% Start flying on orbital loop.
-			sat.fly();
+			currentOrbitSection = this.OrbitSections(this.IDX);
+			sat.fly(currentOrbitSection);
 			
 			
 			

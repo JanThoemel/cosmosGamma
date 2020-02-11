@@ -62,7 +62,7 @@ classdef Satellite < handle
 		
 		initialize(this, id, commChannel)
 		comm(this, msg)
-		fly(this)
+		fly(this, currentOrbitSection)
 		turnOff(this)
 		
 	end % Public methods.

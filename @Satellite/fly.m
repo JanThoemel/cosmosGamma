@@ -1,4 +1,4 @@
-function fly(this)
+function fly(this, currentOrbitSection)
 %% Initialize flight control.
 %_____________________________________________________________________
 %
@@ -16,11 +16,27 @@ this.Orbit.updateOrbitalParams(orbitFromGPS, meanAnomalyFromAN);
 [P, IR, A, B] = this.FlightControl.riccatiequation(...
 	this.Orbit.MeanMotionRad, this.FlightControl.SSCoeff);
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% From main cosmosFS:
+% Set attitude computed in last iteration.
+% this.FlightControl.setAttitude();
 
+% Compute attitude for next section.
+% Determine desired trajectory.
+time = currentOrbitSection / this.Orbit.MeanMotionDeg;
+this.FlightControl.updateStateDesired(...
+	time, this.ID, this.Orbit.MeanMotionRad);
 
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
