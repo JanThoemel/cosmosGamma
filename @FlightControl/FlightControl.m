@@ -59,18 +59,16 @@ classdef FlightControl < handle
 	
 	methods (Access = public)
 		
-		updateStateDesired(this, time, meanMotion)
-		error = getStateError(this)
-		updateStateErrors(this, receivedStateErrors)
-		avg = getStateErrorAverage(this)
 		updateStateErrorsAvg(this, receivedAverageStateErrors)
+		avg = getStateErrorAverage(this)
+		
+		updateStateErrors(this, receivedStateErrors)
+		error = getStateError(this)
+		
+		updateStateDesired(this, time, meanMotion)
 		
 		function updateSatelliteID(this, satID)
 			this.SatID = satID;
-		end
-		
-		function mode = getFormationMode(this)
-			mode = this.FormationMode;
 		end
 		
 		function setFormationMode(this, formationMode)
@@ -78,6 +76,10 @@ classdef FlightControl < handle
 				error('Formation flight mode must be numeric.');
 			end
 			this.FormationMode = formationMode;
+		end
+		
+		function mode = getFormationMode(this)
+			mode = this.FormationMode;
 		end
 		
 	end % Public methods.

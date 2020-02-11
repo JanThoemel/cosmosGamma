@@ -54,6 +54,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [8] Fix uml stash
 % - [7] Add function to update average errors
 % - [6] Move prop SatID to FlightControl class
 %   update FlightControl functions that receive satID

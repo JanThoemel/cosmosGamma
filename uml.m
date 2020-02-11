@@ -31,7 +31,8 @@ else
 		'Active git branch ''%s'' will be stashed\n',...
 		'Its latest state will be recovered later...\n'],...
 		branchName);
-	% Stash current active branch.
+	% Clear stash list and stash current active branch.
+	!git stash clear
 	!git stash push
 end
 
