@@ -49,6 +49,13 @@ this.broadcastSend(this.FlightControl.StateErrors(:,this.ID));
 % Receive the state errors from other satellites.
 receivedStateErrors = this.broadcastReceive();
 
+% Update information on state errors from other satellites.
+% this.FlightControl.updateStateErrors(receivedStateErrors);
+
+% Calculate average of the state errors.
+% avg = this.FlightControl.getStateErrorAverage();
+avg = this.FlightControl.getStateErrorAverage(...
+	this.ID, receivedStateErrors);
 
 
 

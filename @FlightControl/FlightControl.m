@@ -12,10 +12,12 @@ classdef FlightControl < handle
 		
 		FormationMode % Mode for the satellites formation flight.
 		NumSatellites % Total number of satellites in the formation.
+		%SatID % % Unique identification number of the satellite.
 		SSCoeff % Schweighart-Sedgwick coefficient.
 		State % Satellite state.
 		StateDesired % Desired satellite state.
-		StateErrors % State errors from all satellites in the formation.
+		StateErrors % State errors of all satellites in the formation.
+		%StateErrorsAvg % Average of the state errors of all satellites.
 		
 	end
 	
@@ -43,6 +45,7 @@ classdef FlightControl < handle
 			this.State        = zeros(9, 1);
 			this.StateDesired = zeros(6, 1);
 			this.StateErrors  = zeros(6, ns);
+			%this.StateErrorsAvg  = zeros(6, ns);
 			
 			this.SSCoeff = 1;
 			
@@ -58,6 +61,9 @@ classdef FlightControl < handle
 		
 		updateStateDesired(this, time, satID, meanMotion)
 		updateStateError(this, satID)
+		avg = getStateErrorAverage(this, thisID, receivedStateErrors)
+		
+		%function setSatelliteID(this, satID)
 		
 		function mode = getFormationMode(this)
 			mode = this.FormationMode;

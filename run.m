@@ -15,6 +15,10 @@
 %   make sense? does it always go if = true?
 %
 % To do:
+% - Move prop SatID to FlightControl class
+%   update FlightControl functions that receive satID
+%   update all calls for sat.ID to look for sat.FlightControl.SatID
+% - Add func to update state errors received from other sats
 % - Update pauses to not have cases with negative numbers
 % - Remove prop AvailableGPS from class Orbit
 % - Later update orbitCounter using anglefromAN? update in 
@@ -53,6 +57,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [5] Add function to calculate average state errors
 % - [4] Add functions to broadcast and receive state errors
 % - [3] Update acceleration factor
 % - [2] Add state error calculation in sat.fly
