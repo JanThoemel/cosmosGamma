@@ -52,6 +52,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [2] Add state error calculation in sat.fly
 % - [1] Add desired state calculation in sat.fly
 % - Add sync pauses to simulation.start
 % - [7] Fix function uml

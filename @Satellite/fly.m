@@ -28,9 +28,14 @@ this.Orbit.updateOrbitalParams(orbitFromGPS, meanAnomalyFromAN);
 
 % Compute attitude for next section.
 % Determine desired trajectory.
+
+% Update desired state.
 time = currentOrbitSection / this.Orbit.MeanMotionDeg;
 this.FlightControl.updateStateDesired(...
 	time, this.ID, this.Orbit.MeanMotionRad);
+
+% Update state error.
+this.FlightControl.updateStateError(this.ID);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

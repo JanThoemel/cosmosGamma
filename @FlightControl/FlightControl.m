@@ -57,6 +57,7 @@ classdef FlightControl < handle
 	methods (Access = public)
 		
 		updateStateDesired(this, time, satID, meanMotion)
+		updateStateError(this, satID)
 		
 		function mode = getFormationMode(this)
 			mode = this.FormationMode;
