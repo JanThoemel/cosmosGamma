@@ -40,9 +40,9 @@ classdef FlightControl < handle
 			this.NumSatellites = ns;
 			this.FormationMode = mode;
 			
-			this.State        = zeros(9,1);
-			this.StateDesired = zeros(6,1);
-			this.StateErrors  = zeros(6,ns);
+			this.State        = zeros(9, 1);
+			this.StateDesired = zeros(6, 1);
+			this.StateErrors  = zeros(6, ns);
 			
 			this.SSCoeff = 1;
 			

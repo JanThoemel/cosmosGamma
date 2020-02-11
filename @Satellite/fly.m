@@ -43,7 +43,11 @@ this.FlightControl.updateStateError(this.ID);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Communicate new state error to other satellites.
+this.broadcastSend(this.FlightControl.StateErrors(:,this.ID));
 
+% Receive the state errors from other satellites.
+receivedStateErrors = this.broadcastReceive();
 
 
 
