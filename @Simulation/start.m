@@ -69,13 +69,10 @@ spmd(this.NumSatellites)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		
+		this.updateIDX(gps.MeanAnomalyFromAN);
+		
 		% Pause #1:
 		% Wait until end of orbit sections.
-		this.IDX = find(...
-			this.OrbitSections >= gps.MeanAnomalyFromAN, 1, 'first');
-		
-		this.IDX = this.IDX + 1;
-		
 		pause( (this.OrbitSections(this.IDX) - gps.MeanAnomalyFromAN) /...
 			orbit.MeanMotionDeg / this.AccelFactor);
 		
@@ -110,7 +107,7 @@ spmd(this.NumSatellites)
 			
 			
 			% Increment section counter.
-			this.IDX = this.IDX + 1;
+			this.incrementIDX();
 			
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

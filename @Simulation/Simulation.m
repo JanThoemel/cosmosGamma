@@ -94,6 +94,8 @@ classdef Simulation < handle
 	methods (Access = public)
 		
 		start(this)
+		incrementIDX(this)
+		updateIDX(this, meanAnomalyFromAN)
 		
 	end % Public methods.
 	
