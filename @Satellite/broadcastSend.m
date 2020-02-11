@@ -6,9 +6,9 @@ function broadcastSend(this, msg)
 %_____________________________________________________________________
 
 for satID = 1 : this.FlightControl.NumSatellites
-	if satID ~= this.ID
+	if satID ~= this.FlightControl.SatID
 		labSend(msg, satID);
 	end
 end
 
-end % Function broadcastSend.
+end % Function Satellite.broadcastSend.

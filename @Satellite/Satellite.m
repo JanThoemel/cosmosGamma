@@ -15,7 +15,7 @@ classdef Satellite < handle
 		CommChannel % Communication channel.
 		FlightControl % Object of class FlightControl.
 		GPSModule % Object of class GPS.
-		ID % Unique identification number of the satellite.
+		Name % Unique name for identification of the satellite.
 		Orbit % Object of class Orbit.
 		
 	end

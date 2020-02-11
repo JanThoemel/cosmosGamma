@@ -5,10 +5,11 @@ function turnOff(this)
 % Details here.
 %_____________________________________________________________________
 
-msg = sprintf(['Satellite ',num2str(this.ID),' will turn off now']);
+msg = sprintf('Satellite %d will turn off now',...
+	this.FlightControl.SatID);
 
 this.comm(msg);
 
 this.Alive = false;
 
-end % Function turnOff.
+end % Function Satellite.turnOff.

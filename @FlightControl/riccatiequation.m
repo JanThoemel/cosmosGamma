@@ -57,4 +57,5 @@ function [P, IR, A, B] = riccatiequation(meanMotion, SSCoeff)
   S=zeros(6,3);
   E2=eye(6);
  [P,~,~] = care(A,B,Q,R,S,E2);
-end
+ 
+end % Function FlightControl.riccatiequation.

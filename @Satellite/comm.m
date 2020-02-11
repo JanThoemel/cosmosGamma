@@ -7,8 +7,8 @@ function comm(this, msg)
 
 if this.AutoResponse
 	% Send message through the communication channel.
-	msg = ['[sat ',num2str(this.ID),'] ',msg];
+	msg = sprintf('[%s] %s', this.Name, msg);
 	send(this.CommChannel, msg);
 end
 
-end % Function comm.
+end % Function Satellite.comm.

@@ -1,4 +1,4 @@
-function updateStateDesired(this, time, satID, meanMotion)
+function updateStateDesired(this, time, meanMotion)
 %% Update desired satellite state.
 %_____________________________________________________________________
 %
@@ -28,7 +28,7 @@ switch this.FormationMode
 		%
 end
 
-switch satID
+switch this.SatID
 	case 1
 		
 		sstDesired(1,:) = -D;
@@ -85,4 +85,4 @@ end
 
 this.StateDesired = sstDesired;
 
-end % Function updateStateDesired.
+end % Function FlightControl.updateStateDesired.

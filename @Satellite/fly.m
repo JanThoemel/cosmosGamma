@@ -31,11 +31,10 @@ this.Orbit.updateOrbitalParams(orbitFromGPS, meanAnomalyFromAN);
 
 % Update desired state.
 time = currentOrbitSection / this.Orbit.MeanMotionDeg;
-this.FlightControl.updateStateDesired(...
-	time, this.ID, this.Orbit.MeanMotionRad);
+this.FlightControl.updateStateDesired(time, this.Orbit.MeanMotionRad);
 
-% Update state error.
-this.FlightControl.updateStateError(this.ID);
+% Get state error.
+stateError = this.FlightControl.getStateError();
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -44,18 +43,16 @@ this.FlightControl.updateStateError(this.ID);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Communicate new state error to other satellites.
-this.broadcastSend(this.FlightControl.StateErrors(:,this.ID));
+this.broadcastSend(stateError);
 
 % Receive the state errors from other satellites.
 receivedStateErrors = this.broadcastReceive();
 
 % Update information on state errors from other satellites.
-% this.FlightControl.updateStateErrors(receivedStateErrors);
+this.FlightControl.updateStateErrors(receivedStateErrors);
 
 % Calculate average of the state errors.
-% avg = this.FlightControl.getStateErrorAverage();
-avg = this.FlightControl.getStateErrorAverage(...
-	this.ID, receivedStateErrors);
+avg = this.FlightControl.getStateErrorAverage();
 
 
 
@@ -71,4 +68,4 @@ avg = this.FlightControl.getStateErrorAverage(...
 % Update duration of the current orbit.
 this.Orbit.updateOrbitDuration();
 
-end % Function fly.
+end % Function Satellite.fly.

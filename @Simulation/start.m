@@ -136,9 +136,9 @@ spmd(this.NumSatellites)
 				'orbit.TimeOrbitDuration do not match.'];
 			error('Simulation:start:orbitIdentifierNotEqual',msg);
 		else
-			send(dq,['[sat ',num2str(sat.ID),'] ',...
-				'Orbit ',num2str(orbit.OrbitCounter),' finished ',...
-				'(',num2str(orbit.TimeOrbitDuration(2)),' s)']);
+			msg = ['Orbit ',num2str(orbit.OrbitCounter),' finished ',...
+				'(',num2str(orbit.TimeOrbitDuration(2)),' s)'];
+			sat.comm(msg);
 		end
 		
 		% If maximum number of orbits for the simulation has been reached,
@@ -146,7 +146,7 @@ spmd(this.NumSatellites)
 		if orbit.OrbitCounter >= this.MaxNumOrbits
 			pause(2);
 			send(dq,['[sim] Maximum number of orbits reached! ',...
-			         'Killing [sat ',num2str(sat.ID),']']);
+			         'Killing [',sat.Name,']']);
 			sat.turnOff();
 		end
 		

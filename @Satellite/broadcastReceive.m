@@ -8,9 +8,9 @@ function msg = broadcastReceive(this)
 msg = zeros(6, this.FlightControl.NumSatellites);
 
 for satID = 1 : this.FlightControl.NumSatellites
-	if satID ~= this.ID
+	if satID ~= this.FlightControl.SatID
 		msg(:, satID) = labReceive(satID);
 	end
 end
 
-end % Function broadcastReceive.
+end % Function Satellite.broadcastReceive.

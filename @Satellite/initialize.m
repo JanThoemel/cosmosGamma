@@ -5,14 +5,19 @@ function initialize(this, id, commChannel)
 % Details here.
 %_____________________________________________________________________
 
-this.ID = id;
-this.Alive = true;
+% Update satellite ID in the formation flight.
+this.FlightControl.updateSatelliteID(id);
+
+% Set satellite name.
+this.Name = ['sat ',num2str(id)];
+
+% Set satellite communication channel.
 this.CommChannel = commChannel;
 
-if this.AutoResponse
-	msg = sprintf(['Satellite number ',num2str(id),' is alive']);
-	this.comm(msg);
-end
+% Make satellite alive.
+this.Alive = true;
+msg = sprintf('Satellite number %d is alive', id);
+this.comm(msg);
 
 % Get battery status from the satellite.
 battery_status = 1;
@@ -20,4 +25,4 @@ if battery_status
 	% Switch on the GPS.
 end
 
-end % Function initialize.
+end % Function Satellite.initialize.
