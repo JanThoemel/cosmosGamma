@@ -52,6 +52,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [3] Update acceleration factor
 % - [2] Add state error calculation in sat.fly
 % - [1] Add desired state calculation in sat.fly
 % - Add sync pauses to simulation.start
@@ -182,7 +183,7 @@ parameters = struct( ...
 	'MaxNumOrbits'    , 10    , ...
 	'OrbitSectionSize', 2     , ...
 	'InitIDX'         , 120   , ...
-	'AccelFactor'     , 10000 );
+	'AccelFactor'     , 100000 );
 
 % Instantiate a simulation object with the selected parameters.
 sim = Simulation(parameters);
