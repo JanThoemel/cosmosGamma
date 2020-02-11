@@ -63,6 +63,7 @@ classdef FlightControl < handle
 		error = getStateError(this)
 		updateStateErrors(this, receivedStateErrors)
 		avg = getStateErrorAverage(this)
+		updateStateErrorsAvg(this, receivedAverageStateErrors)
 		
 		function updateSatelliteID(this, satID)
 			this.SatID = satID;

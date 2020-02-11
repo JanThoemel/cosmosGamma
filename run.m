@@ -15,6 +15,7 @@
 %   make sense? does it always go if = true?
 %
 % To do:
+% - Rename function docs and uml to gendocs and genuml
 % - Update pauses to not have cases with negative numbers
 % - Remove prop AvailableGPS from class Orbit
 % - Later update orbitCounter using anglefromAN? update in 
@@ -53,6 +54,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [7] Add function to update average errors
 % - [6] Move prop SatID to FlightControl class
 %   update FlightControl functions that receive satID
 %   update all calls for sat.ID to look for sat.FlightControl.SatID

@@ -5,15 +5,15 @@ function avg = getStateErrorAverage(this)
 % Details here.
 %_____________________________________________________________________
 
-avg = zeros(6, this.NumSatellites);
+avg = zeros(6, 1);
 
 for i = 1 : 6 % for line in [x, y, z, u, v, w].
-	for j = 1 : this.NumSatellites % for satID in [1 : ns].
-		avg(i, this.SatID) = avg(i, this.SatID) + this.StateErrors(i, j);
+	for satID = 1 : this.NumSatellites % for satID in [1 : ns].
+		avg(i) = avg(i) + this.StateErrors(i, satID);
 	end
-	avg(i, this.SatID) = avg(i, this.SatID) / this.NumSatellites;
+	avg(i) = avg(i) / this.NumSatellites;
 end
 
-this.StateErrorsAvg = avg;
+this.StateErrorsAvg(:, this.SatID) = avg;
 
 end % Function FlightControl.getStateErrorAverage.
