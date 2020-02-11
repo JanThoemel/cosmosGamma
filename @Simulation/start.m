@@ -15,7 +15,7 @@ afterEach(dq, @disp);
 parpool(this.NumSatellites);
 
 % Set the start time for the parallel pool.
-startTimePool = posixtime(datetime('now')); % Posixtime [seconds].
+timeStartPool = posixtime(datetime('now')); % Posixtime [seconds].
 
 % Execute parallel code on workers of parallel pool.
 spmd(this.NumSatellites)
@@ -70,6 +70,11 @@ spmd(this.NumSatellites)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		
 		this.updateIDX(gps.MeanAnomalyFromAN);
+		
+		% Pause #1:
+		% Wait until end of orbit sections.
+		pause( (this.OrbitSections(this.IDX) - gps.MeanAnomalyFromAN) /...
+			orbit.MeanMotionDeg / this.AccelFactor);
 		
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -135,14 +140,10 @@ spmd(this.NumSatellites)
 				'(',num2str(orbit.TimeOrbitDuration(2)),' s)']);
 		end
 		
-		% Pause #1:
-		% Wait until end of orbit sections.
-		pause( (this.OrbitSections(this.IDX) - gps.MeanAnomalyFromAN) /...
-			orbit.MeanMotionDeg / this.AccelFactor);
-		
 		% If maximum number of orbits for the simulation has been reached,
 		% turn off the satellite.
 		if orbit.OrbitCounter >= this.MaxNumOrbits
+			pause(2);
 			send(dq,['[sim] Maximum number of orbits reached! ',...
 			         'Killing [sat ',num2str(sat.ID),']']);
 			sat.turnOff();
@@ -168,5 +169,11 @@ this.GPSModules = gpsModules{1};
 
 % Terminate the existing parallel pool session.
 delete(gcp('nocreate'));
+
+% Calculate the execution time of the parallel pool.
+timeEndPool = posixtime(datetime('now')); % Posixtime [seconds].
+timeDurationPool = timeEndPool - timeStartPool;
+fprintf('Total simulation time: %s seconds.\n',...
+	num2str(timeDurationPool));
 
 end % Function start.

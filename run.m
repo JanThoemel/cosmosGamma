@@ -52,6 +52,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - Add sync pauses to simulation.start
 % - [7] Fix function uml
 % - [6] Add update orbital params in constructor and fix pauses
 % - [5] Fix idx update in sim.start
