@@ -46,7 +46,7 @@ end
 
 % Force-push the new HEAD commit to the remote branch.
 % !git push -u origin out +HEAD
-!git push -f -u origin out
+!git push -f -u origin HEAD:out
 
 % Merge the previous active branch into 'temp-branch'.
 % !git merge dev
@@ -107,7 +107,7 @@ fprintf(2,'Now uploading UML output to branch ''out''...\n');
 !git add -f temp.uml
 !git add .
 !git commit -m "Update UML diagram"
-!git push -f -u origin out
+!git push -f -u origin HEAD:out
 
 % Return to original git branch.
 fprintf('\n');

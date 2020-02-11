@@ -71,11 +71,6 @@ spmd(this.NumSatellites)
 		
 		this.updateIDX(gps.MeanAnomalyFromAN);
 		
-		% Pause #1:
-		% Wait until end of orbit sections.
-		pause( (this.OrbitSections(this.IDX) - gps.MeanAnomalyFromAN) /...
-			orbit.MeanMotionDeg / this.AccelFactor);
-		
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -139,6 +134,11 @@ spmd(this.NumSatellites)
 				'Orbit ',num2str(orbit.OrbitCounter),' finished ',...
 				'(',num2str(orbit.TimeOrbitDuration(2)),' s)']);
 		end
+		
+		% Pause #1:
+		% Wait until end of orbit sections.
+		pause( (this.OrbitSections(this.IDX) - gps.MeanAnomalyFromAN) /...
+			orbit.MeanMotionDeg / this.AccelFactor);
 		
 		% If maximum number of orbits for the simulation has been reached,
 		% turn off the satellite.
