@@ -161,6 +161,9 @@ classdef Orbit < handle
 			fprintf(2,['[orbit] Atmospheric density is overwritten by ',...
 				'constant value from Ivanov''s case: %1.3e\n'], this.Rho);
 			
+			% Update orbital parameters.
+			this.updateOrbitalParams(0, 0);
+			
 		end
 		
 	end % Constructor.

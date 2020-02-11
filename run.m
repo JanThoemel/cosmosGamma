@@ -52,6 +52,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [6] Add update orbital params in constructor and fix pauses
 % - [5] Fix idx update in sim.start
 % - [4] Add second pause to simulation.start
 % - [3] Add first pause to simulation.start
