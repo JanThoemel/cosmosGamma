@@ -10,12 +10,18 @@ filesToPub = { ...
 	'run'
 };
 
+% Inform name of the folder in which to save documentation files.
+folderDocs = 'docs';
+
+% Inform name of the file containing names of the custom classes.
+fileCustomClasses = 'custom-classes.txt';
+
 % Get directory of this matlab file.
 [filepath,~,~] = fileparts(mfilename('fullpath'));
 
 % Add lib folder to the current MATLAB path.
 current_path = path;
-path(current_path,strcat('.',filesep,'lib',filesep));
+path(current_path,strcat('.',filesep,folderDocs,filesep));
 
 % Parse optional input arguments:
 % - Inputs that you add with addRequired or addOptional are ...
@@ -52,21 +58,21 @@ try
 	
 	% Set options to publish documentation.
 	options = struct('format','html',... % [html], [pdf].
-	                 'outputDir',fullfile(filepath,'doc'));
+	                 'outputDir',fullfile(filepath,folderDocs));
 	
 	% Publish documentation in previously specified folder.
 	publish(strcat(filesToPub{1},'.m'),options);
 	
 	% Open published documentation.
 	if strcmp(options.format,'html')
-		web(strcat('doc',filesep,filesToPub{1},'.',options.format));
+		web(strcat(folderDocs,filesep,filesToPub{1},'.',options.format));
 	else
-		winopen(strcat('doc',filesep,filesToPub{1},'.',options.format));
+		winopen(strcat(folderDocs,filesep,filesToPub{1},'.',options.format));
 	end
 	
 catch
 	
-	fid = fopen(fullfile(filepath,'lib','listCustomClasses'));
+	fid = fopen(fullfile(filepath,folderDocs,fileCustomClasses));
 	classNames = textscan(fid,'%s');
 	fclose(fid);
 	

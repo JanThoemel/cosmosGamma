@@ -15,6 +15,7 @@
 %   make sense? does it always go if = true?
 %
 % To do:
+% - Add option opendocs('update') alias to option publish
 % - Rename functions update to upd
 %   change the order of class functions to optimize uml diagram
 % - Rename function docs and uml to gendocs and genuml
@@ -56,6 +57,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [10] Fix function opendocs
 % - [9] Move former lib files to a folder outside git repo
 % - Rename functions uml and docs to openuml and opendocs
 % - [8] Fix uml stash
