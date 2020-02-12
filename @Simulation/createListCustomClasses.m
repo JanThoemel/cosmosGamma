@@ -72,4 +72,4 @@ else
 	fprintf('\nNo custom object classes found.\n');
 end
 
-end % Function createListCustomClasses.
+end % Function Simulation.createListCustomClasses.

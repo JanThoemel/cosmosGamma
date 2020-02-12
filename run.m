@@ -15,6 +15,8 @@
 %   make sense? does it always go if = true?
 %
 % To do:
+% - Rename functions update to upd
+%   change the order of class functions to optimize uml diagram
 % - Rename function docs and uml to gendocs and genuml
 % - Update pauses to not have cases with negative numbers
 % - Remove prop AvailableGPS from class Orbit
@@ -54,6 +56,8 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [9] Move former lib files to a folder outside git repo
+% - Rename functions uml and docs to openuml and opendocs
 % - [8] Fix uml stash
 % - [7] Add function to update average errors
 % - [6] Move prop SatID to FlightControl class

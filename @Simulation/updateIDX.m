@@ -10,4 +10,4 @@ this.IDX = find(...
 
 this.incrementIDX();
 
-end % Function updateIDX.
+end % Function Simulation.updateIDX.

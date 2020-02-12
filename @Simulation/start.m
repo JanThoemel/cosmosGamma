@@ -177,4 +177,4 @@ timeDurationPool = timeEndPool - timeStartPool;
 fprintf('Total simulation time: %s seconds.\n',...
 	num2str(timeDurationPool));
 
-end % Function start.
+end % Function Simulation.start.

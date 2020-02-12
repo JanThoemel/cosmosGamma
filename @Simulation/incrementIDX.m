@@ -7,4 +7,4 @@ function incrementIDX(this)
 
 this.IDX = this.IDX + 1;
 
-end % Function incrementIDX.
+end % Function Simulation.incrementIDX.

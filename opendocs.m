@@ -1,8 +1,6 @@
-function docs(varargin)
-%% Open documentation for custom classes in COSMOS software.
+function opendocs(varargin)
+%% Open documentation for custom classes in Cosmos software.
 %_____________________________________________________________________
-%
-% Function docs:
 %
 % Detailed explanation goes here.
 %_____________________________________________________________________
@@ -79,4 +77,4 @@ catch
 	
 end
 
-end
+end % Function opendocs.

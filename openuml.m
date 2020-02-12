@@ -1,5 +1,5 @@
-function uml()
-%% Generate PlantUML code for COSMOS software.
+function openuml()
+%% Generate PlantUML code and open class diagram for Cosmos software.
 %_____________________________________________________________________
 %
 % Details here.
@@ -137,4 +137,4 @@ web(strcat(plantProxy,'src=',src,'&fmt=',fmt));
 
 fprintf('\nDone.\n\n');
 
-end % Function uml.
+end % Function openuml.
