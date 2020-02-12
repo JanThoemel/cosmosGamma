@@ -7,7 +7,7 @@ function opendocs(varargin)
 
 % Set file names to publish, without extension "m".
 filesToPub = { ...
-	'run'
+	'runCosmosBeta'
 };
 
 % Inform name of the folder in which to save documentation files.

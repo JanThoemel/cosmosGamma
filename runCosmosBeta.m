@@ -57,6 +57,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [13] Rename run to runCosmosBeta
 % - [12] Update function openuml with new name CosmosSimulation
 % - [11] Rename class Simulation to CosmosSimulation
 % - [10] Fix function opendocs
@@ -161,7 +162,7 @@ delete(gcp('nocreate'));
 close all; clear all; clc; %#ok<CLALL>
 
 % Inform the name of this file without the extension "m".
-THIS_FILE_NAME = 'run';
+THIS_FILE_NAME = 'runCosmosBeta';
 
 if(~isdeployed)
 	
