@@ -57,6 +57,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [12] Update function openuml with new name CosmosSimulation
 % - [11] Rename class Simulation to CosmosSimulation
 % - [10] Fix function opendocs
 % - [9] Move former lib files to a folder outside git repo
@@ -209,6 +210,8 @@ sim = CosmosSimulation(parameters);
 
 % Initiate simulation.
 sim.start();
+
+%% Documentation
 
 % Create global alias for the array of satellites.
 sat = sim.Satellites; % Aliases: sat(1) to sat(n).
