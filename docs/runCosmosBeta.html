@@ -1,0 +1,605 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>runCosmosBeta</title><meta name="generator" content="MATLAB 9.7"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-02-12"><meta name="DC.source" content="runCosmosBeta.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">File to run Cosmos software.</a></li><li><a href="#2">Set paths and MATLAB parameters</a></li><li><a href="#3">Set parameters for the simulation</a></li><li><a href="#4">Start simulation proccess</a></li><li><a href="#5">Documentation</a></li></ul></div><h2 id="1">File to run Cosmos software.</h2><pre class="codeinput"><span class="comment">%_____________________________________________________________________</span>
+<span class="comment">%</span>
+<span class="comment">% Priority:</span>
+<span class="comment">% - @cosmos &amp; @cosmosFS: first uses riccati outside the loop, another</span>
+<span class="comment">%   uses riccati inside the loop</span>
+<span class="comment">% - @cosmosFS.m,</span>
+<span class="comment">%   line 241: orbitalproperties outputs mean motion in [rad/s];</span>
+<span class="comment">%   line 243: whereInWhatOrbit converts to [deg/s];</span>
+<span class="comment">%   line 95: converts back to [rad/s]</span>
+<span class="comment">%   @riccatiequation, line 7: mean motion should be in deg/s ?</span>
+<span class="comment">% - @cosmosFS.m, lines 39, 92: what is idx? idx in @whereInWhatOrbit?</span>
+<span class="comment">%   is it the ID for the section? why starts at 120?</span>
+<span class="comment">% - @cosmosFS.m, line 234: check possible values for if, does it</span>
+<span class="comment">%   make sense? does it always go if = true?</span>
+<span class="comment">%</span>
+<span class="comment">% To do:</span>
+<span class="comment">% - Add option opendocs('update') alias to option publish</span>
+<span class="comment">% - Rename functions update to upd</span>
+<span class="comment">%   change the order of class functions to optimize uml diagram</span>
+<span class="comment">% - Rename function docs and uml to gendocs and genuml</span>
+<span class="comment">% - Update pauses to not have cases with negative numbers</span>
+<span class="comment">% - Remove prop AvailableGPS from class Orbit</span>
+<span class="comment">% - Later update orbitCounter using anglefromAN? update in</span>
+<span class="comment">%   Orbit.updateOrbitalParams</span>
+<span class="comment">% - Remove output of methods that update handle classes</span>
+<span class="comment">% - Update git config file to properly update all EOL LF and CRLF</span>
+<span class="comment">% - Add docs('update') option to update publish for all m files</span>
+<span class="comment">% - Generate pdf publish files for all files in Windows PC</span>
+<span class="comment">% - Upload to Git all publish files generated in Windows PC</span>
+<span class="comment">% - Add docs('all') to open publish files as well as docs for classes</span>
+<span class="comment">% - Update readme.md</span>
+<span class="comment">%   - To run CosmosFS program, open and run the file 'run.m' in MATLAB</span>
+<span class="comment">%   - To see documentation for the custom objects and classes used,</span>
+<span class="comment">%     enter command 'docs' in MATLAB's Command Window</span>
+<span class="comment">%   - To see documentation for all files in CosmosFS program,</span>
+<span class="comment">%     enter command 'docs('all')' in MATLAB's Command Window</span>
+<span class="comment">%   - To generate PlantUML code for CosmosFS class diagram,</span>
+<span class="comment">%     enter command 'uml' in MATLAB's Command Window</span>
+<span class="comment">% - check usage of var wind</span>
+<span class="comment">% - check usage of var refSurf</span>
+<span class="comment">% - review @aeroPressureForce.m</span>
+<span class="comment">% - review @aeroDragLiftSentman.m</span>
+<span class="comment">% - review @vectorRotation.m</span>
+<span class="comment">% - review @solarPressureForce.m</span>
+<span class="comment">% - Use class property attribute 'Constant, GetAccess = public' ...</span>
+<span class="comment">%   for constant attributes e.g. in class Orbit</span>
+<span class="comment">% - Change class IvanovFormationFlight to FormationFlight, add</span>
+<span class="comment">%   property 'case' and set property as 'Ivanov'</span>
+<span class="comment">% - Change class IvanovSatellite to Satellite, add</span>
+<span class="comment">%   property 'case' and set property as 'Ivanov'</span>
+<span class="comment">% - @orbitalproperties.m, line 89: Check function semi-major axis and</span>
+<span class="comment">%   inclination for possible simplification (class Orbit now)</span>
+<span class="comment">% - Create package '+cosmos' for all custom functions</span>
+<span class="comment">% - Custom package to be downloaded and saved into users MATLAB folder</span>
+<span class="comment">% - Create tutorial to place custom package into users MATLAB folder</span>
+<span class="comment">%   for both Windows and Mac</span>
+<span class="comment">%</span>
+<span class="comment">% Recently done:</span>
+<span class="comment">% - [13] Rename run to runCosmosBeta</span>
+<span class="comment">% - [12] Update function openuml with new name CosmosSimulation</span>
+<span class="comment">% - [11] Rename class Simulation to CosmosSimulation</span>
+<span class="comment">% - [10] Fix function opendocs</span>
+<span class="comment">% - [9] Move former lib files to a folder outside git repo</span>
+<span class="comment">% - Rename functions uml and docs to openuml and opendocs</span>
+<span class="comment">% - [8] Fix uml stash</span>
+<span class="comment">% - [7] Add function to update average errors</span>
+<span class="comment">% - [6] Move prop SatID to FlightControl class</span>
+<span class="comment">%   update FlightControl functions that receive satID</span>
+<span class="comment">%   update all calls for sat.ID to look for sat.FlightControl.SatID</span>
+<span class="comment">% - Add func to update state errors received from other sats</span>
+<span class="comment">% - [5] Add function to calculate average state errors</span>
+<span class="comment">% - [4] Add functions to broadcast and receive state errors</span>
+<span class="comment">% - [3] Update acceleration factor</span>
+<span class="comment">% - [2] Add state error calculation in sat.fly</span>
+<span class="comment">% - [1] Add desired state calculation in sat.fly</span>
+<span class="comment">% - Add sync pauses to simulation.start</span>
+<span class="comment">% - [7] Fix function uml</span>
+<span class="comment">% - [6] Add update orbital params in constructor and fix pauses</span>
+<span class="comment">% - [5] Fix idx update in sim.start</span>
+<span class="comment">% - [4] Add second pause to simulation.start</span>
+<span class="comment">% - [3] Add first pause to simulation.start</span>
+<span class="comment">% - [2] Move riccati equation to class FlightControl</span>
+<span class="comment">% - [1] Convert all refs from MeanMotion to MeanMotionDeg</span>
+<span class="comment">% - Remove old func updateOrbitalParams from Orbit</span>
+<span class="comment">% - Remove comments and func sat.whereInWhatOrbit</span>
+<span class="comment">% - Fix function uml with branch temp</span>
+<span class="comment">% - [12] Fix UML with class GPS</span>
+<span class="comment">% - [10] Fix orbit times and add AutoResponse to func comm</span>
+<span class="comment">% - Remove status and update comm messages with labels</span>
+<span class="comment">% - [8] Fix class objects being passed as output of parloop</span>
+<span class="comment">% - [7] Update custom-classes.txt with class GPS</span>
+<span class="comment">% - [6] Remove func getStatus from class Simulation</span>
+<span class="comment">% - [5] Add class GPS and other major updates</span>
+<span class="comment">% - Add GPS functions to all other classes</span>
+<span class="comment">% - Create a class GPS</span>
+<span class="comment">% - Create function GPS.incrementMeanAnomalyFromAN()</span>
+<span class="comment">% - Create function GPS.incrementOrbitCounter()</span>
+<span class="comment">% - Create function GPS.getMeanAnomalyFromAN()</span>
+<span class="comment">% - Create function GPS.getOrbitCounter()</span>
+<span class="comment">% - Pass props AvailableGPS, AvailableTLE from Satellite to Orbit</span>
+<span class="comment">% - Create prop IDX for class Simulation</span>
+<span class="comment">% - [4] Add orbit duration and remove old orbit counter methods</span>
+<span class="comment">% - [3] Add function fly and stopper for max num of orbits</span>
+<span class="comment">% - [2] Add loop alive and function to turn off satellite</span>
+<span class="comment">% - [1] Fix output of parloop</span>
+<span class="comment">% - Fix function to output satellite communication signals</span>
+<span class="comment">% - [4] Fix function uml (2)</span>
+<span class="comment">% - [2] Fix code for listing custom classes into a function</span>
+<span class="comment">% - Create new set of classes under main directory</span>
+<span class="comment">% - [6] Remove state error determination and fix later</span>
+<span class="comment">% - [5] Add state error determination and fix states in Satellite</span>
+<span class="comment">% - [4] Add trajectory determination sstDesired into parloop</span>
+<span class="comment">% - [3] Add orbit section loop into parloop</span>
+<span class="comment">% - [2] Add idx and pause into parloop</span>
+<span class="comment">% - [1] Change calls for function path to addpath</span>
+<span class="comment">% - Fix order of commands in function uml (2)</span>
+<span class="comment">% - ^3 Fix list of git commands to update branch 'out'</span>
+<span class="comment">% - ^2 Update function uml for Windows compatibility (2)</span>
+<span class="comment">% - Add branch 'dev' and set uml output to branch 'out'</span>
+<span class="comment">% - Use proxy service of the PlantUML server to open UML diagram</span>
+<span class="comment">% - Add temp.uml to GitHub automatically (3)</span>
+<span class="comment">% - Remove hyperlinks, tooltips and fix visibility codes in m2uml</span>
+<span class="comment">% - Add spacing between VisibilityCode and Names in m2uml</span>
+<span class="comment">% - In +m2uml.Property, lines 100 to 109: remove Hyperlink, ToolTip</span>
+<span class="comment">% - In +m2uml.Operation, lines 87 to 94: remove Hyperlink, ToolTip</span>
+<span class="comment">% - In +m2uml.ClassNode, lines 134 to 144: remove Hyperlink, ToolTip</span>
+<span class="comment">% - Fix filesep in m2uml.filespec2fqn for dos/unix compatibility (2)</span>
+<span class="comment">% - Update custom function uml</span>
+<span class="comment">% - Fix function publish in function docs as an optional parameter</span>
+<span class="comment">% - Fix function docs to work in both Windows and Mac</span>
+<span class="comment">% - Fix documentation tool that shows custom object classes used</span>
+<span class="comment">% - Fix change of working directory and path of the running m-file</span>
+<span class="comment">% - Change method to get full path of file run</span>
+<span class="comment">% - Add class Main and change main.m to run.m</span>
+<span class="comment">% - Check MeanAnomalyFromAN value</span>
+<span class="comment">% - Add riccati equation</span>
+<span class="comment">% - Add to class Orbit the property mean anomaly from ascending node</span>
+<span class="comment">% - Add to class Orbit the property of mean motion in rad/s</span>
+<span class="comment">% - Fix implementation of whereInWhatOrbit</span>
+<span class="comment">% - Add getCurrentOrbitNumber to class Satellite</span>
+<span class="comment">% - Remove redundant properties in class IvanovFormationFlight</span>
+<span class="comment">% - Check orbital properties</span>
+<span class="comment">% - Add function to update orbital parameters in class Orbit</span>
+<span class="comment">% - Add variables to set GPS/TLE availability</span>
+<span class="comment">% - Fix orbit counter increment and checkpoint</span>
+<span class="comment">% - Add print checkpoints in main and end of files</span>
+<span class="comment">% - Add getStatus() to class Simulation</span>
+<span class="comment">% - Add orbit counter to IvanovSatellite</span>
+<span class="comment">% - Add set and get methods for formation flight mode</span>
+<span class="comment">% - Add class Orbit into IvanovFormationFlight</span>
+<span class="comment">% - Add class CosmosSimulation to main file</span>
+<span class="comment">% - Add lib folder under the same directory of the main file</span>
+<span class="comment">% - Add code to automatically update the working directory</span>
+<span class="comment">% - Add array of IvanovSatellite objects into IvanovFormationFlight</span>
+<span class="comment">%_____________________________________________________________________</span>
+</pre><h2 id="2">Set paths and MATLAB parameters</h2><pre class="codeinput">warning <span class="string">on</span> <span class="string">verbose</span>;
+delete(gcp(<span class="string">'nocreate'</span>));
+close <span class="string">all</span>; clear <span class="string">all</span>; clc; <span class="comment">%#ok&lt;CLALL&gt;</span>
+
+<span class="comment">% Inform the name of this file without the extension "m".</span>
+THIS_FILE_NAME = <span class="string">'runCosmosBeta'</span>;
+
+<span class="keyword">if</span>(~isdeployed)
+
+	<span class="comment">% Get directory path of the active file in MATLAB's Editor.</span>
+	[filepath,~,~] = fileparts(matlab.desktop.editor.getActiveFilename);
+	addpath(filepath); <span class="comment">% Add file path to the current MATLAB path.</span>
+
+	<span class="comment">% Get directory path of the file name set in THIS_FILE_NAME.</span>
+	[filepath,~,~] = fileparts(which(THIS_FILE_NAME));
+	addpath(filepath); <span class="comment">% Add file path to the current MATLAB path.</span>
+
+	<span class="comment">% Change working directory to the directory of this m-file.</span>
+	cd(filepath);
+
+<span class="keyword">end</span>
+</pre><h2 id="3">Set parameters for the simulation</h2><pre class="codeinput"><span class="comment">% - Struct of parameters:</span>
+<span class="comment">%   NumSatellites    : Total number of satellites in the formation.</span>
+<span class="comment">%   FormationMode    : Mode for the satellites formation flight.</span>
+<span class="comment">%   Altitude         : Height above sea level [m].</span>
+<span class="comment">%   AutoResponse     : If satellite should send responses [bool].</span>
+<span class="comment">%   AvailableGPS     : GPS availability [bool].</span>
+<span class="comment">%   AvailableTLE     : TLE availability [bool].</span>
+<span class="comment">%   MaxNumOrbits     : Maximum number of orbits to run.</span>
+<span class="comment">%   OrbitSectionSize : Size of each orbit section [deg].</span>
+<span class="comment">%   InitIDX          : Initial idx.</span>
+<span class="comment">%   AccelFactor      : Acceleration factor for the simulation.</span>
+parameters = struct( <span class="keyword">...</span>
+	<span class="string">'NumSatellites'</span>   , 4     , <span class="keyword">...</span>
+	<span class="string">'FormationMode'</span>   , 1     , <span class="keyword">...</span>
+	<span class="string">'Altitude'</span>        , 340000, <span class="keyword">...</span>
+	<span class="string">'AutoResponse'</span>    , true  , <span class="keyword">...</span>
+	<span class="string">'AvailableGPS'</span>    , true  , <span class="keyword">...</span>
+	<span class="string">'AvailableTLE'</span>    , false , <span class="keyword">...</span>
+	<span class="string">'MaxNumOrbits'</span>    , 10    , <span class="keyword">...</span>
+	<span class="string">'OrbitSectionSize'</span>, 2     , <span class="keyword">...</span>
+	<span class="string">'InitIDX'</span>         , 120   , <span class="keyword">...</span>
+	<span class="string">'AccelFactor'</span>     , 100000 );
+
+<span class="comment">% Instantiate a simulation object with the selected parameters.</span>
+sim = CosmosSimulation(parameters);
+</pre><pre class="codeoutput">[orbit] Atmospheric density is overwritten by constant value from Ivanov's case: 1.000e-11
+[orbit] Atmospheric density is overwritten by constant value from Ivanov's case: 1.000e-11
+[orbit] Atmospheric density is overwritten by constant value from Ivanov's case: 1.000e-11
+[orbit] Atmospheric density is overwritten by constant value from Ivanov's case: 1.000e-11
+</pre><h2 id="4">Start simulation proccess</h2><pre class="codeinput"><span class="comment">% Initiate simulation.</span>
+sim.start();
+</pre><pre class="codeoutput">Starting parallel pool (parpool) using the 'local' profile ...
+Connected to the parallel pool (number of workers: 4).
+[sat 2] Satellite number 2 is alive
+[sat 1] Satellite number 1 is alive
+[sat 4] Satellite number 4 is alive
+[sat 3] Satellite number 3 is alive
+[sat 2] Orbit 1 finished (0.953 s)
+[sat 1] Orbit 1 finished (0.953 s)
+[sat 3] Orbit 1 finished (0.953 s)
+[sat 4] Orbit 1 finished (0.953 s)
+[sat 3] Orbit 2 finished (0.485 s)
+[sat 2] Orbit 2 finished (0.485 s)
+[sat 1] Orbit 2 finished (0.485 s)
+[sat 4] Orbit 2 finished (0.485 s)
+[sat 2] Orbit 3 finished (0.499 s)
+[sat 4] Orbit 3 finished (0.499 s)
+[sat 3] Orbit 3 finished (0.499 s)
+[sat 1] Orbit 3 finished (0.499 s)
+[sat 3] Orbit 4 finished (0.516 s)
+[sat 2] Orbit 4 finished (0.516 s)
+[sat 1] Orbit 4 finished (0.516 s)
+[sat 4] Orbit 4 finished (0.516 s)
+[sat 2] Orbit 5 finished (0.468 s)
+[sat 1] Orbit 5 finished (0.484 s)
+[sat 3] Orbit 5 finished (0.468 s)
+[sat 4] Orbit 5 finished (0.484 s)
+[sat 3] Orbit 6 finished (0.469 s)
+[sat 2] Orbit 6 finished (0.469 s)
+[sat 4] Orbit 6 finished (0.469 s)
+[sat 1] Orbit 6 finished (0.469 s)
+[sat 2] Orbit 7 finished (0.547 s)
+[sat 4] Orbit 7 finished (0.547 s)
+[sat 1] Orbit 7 finished (0.547 s)
+[sat 3] Orbit 7 finished (0.547 s)
+[sat 3] Orbit 8 finished (0.484 s)
+[sat 2] Orbit 8 finished (0.484 s)
+[sat 4] Orbit 8 finished (0.484 s)
+[sat 1] Orbit 8 finished (0.484 s)
+[sat 1] Orbit 9 finished (0.468 s)
+[sat 2] Orbit 9 finished (0.468 s)
+[sat 3] Orbit 9 finished (0.468 s)
+[sat 4] Orbit 9 finished (0.468 s)
+[sat 2] Orbit 10 finished (0.453 s)
+[sat 3] Orbit 10 finished (0.469 s)
+[sat 1] Orbit 10 finished (0.469 s)
+[sat 4] Orbit 10 finished (0.469 s)
+[sim] Maximum number of orbits reached! Killing [sat 4]
+[sim] Maximum number of orbits reached! Killing [sat 3]
+[sim] Maximum number of orbits reached! Killing [sat 1]
+[sim] Maximum number of orbits reached! Killing [sat 2]
+[sat 4] Satellite 4 will turn off now
+[sat 3] Satellite 3 will turn off now
+[sat 1] Satellite 1 will turn off now
+[sat 2] Satellite 2 will turn off now
+Parallel pool using the 'local' profile is shutting down.
+Total simulation time: 11.855 seconds.
+</pre><h2 id="5">Documentation</h2><pre class="codeinput"><span class="comment">% Create global alias for the array of satellites.</span>
+sat = sim.Satellites; <span class="comment">% Aliases: sat(1) to sat(n).</span>
+
+<span class="comment">% Create global alias for the array of orbits.</span>
+orbit = sim.Orbits; <span class="comment">% Aliases: orbit(1) to orbit(n).</span>
+
+<span class="comment">% Create global alias for the array of flight control modules.</span>
+fc = sim.FlightControlModules; <span class="comment">% Aliases: fc(1) to fc(n).</span>
+
+<span class="comment">% Create global alias for the array of GPS modules.</span>
+gps = sim.GPSModules; <span class="comment">% Aliases: gps(1) to gps(n).</span>
+
+<span class="comment">% Save current MATLAB workspace variables.</span>
+warning <span class="string">off</span> <span class="string">parallel:lang:spmd:CompositeSave</span>;
+workspaceFileName = <span class="string">'workspace.mat'</span>;
+save(fullfile(filepath, workspaceFileName));
+
+<span class="comment">% Print custom objects and classes used.</span>
+sim.createListCustomClasses(filepath, workspaceFileName);
+
+fprintf(<span class="string">'\nDone.\n\n'</span>);
+</pre><pre class="codeoutput">
+Custom objects and respective classes:
+
+    fc : FlightControl
+   gps : GPS
+ orbit : Orbit
+   sat : Satellite
+   sim : CosmosSimulation
+
+Done.
+
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2019b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% File to run Cosmos software.
+%_____________________________________________________________________
+%
+% Priority:
+% - @cosmos & @cosmosFS: first uses riccati outside the loop, another
+%   uses riccati inside the loop
+% - @cosmosFS.m,
+%   line 241: orbitalproperties outputs mean motion in [rad/s]; 
+%   line 243: whereInWhatOrbit converts to [deg/s];
+%   line 95: converts back to [rad/s]
+%   @riccatiequation, line 7: mean motion should be in deg/s ?
+% - @cosmosFS.m, lines 39, 92: what is idx? idx in @whereInWhatOrbit?
+%   is it the ID for the section? why starts at 120?
+% - @cosmosFS.m, line 234: check possible values for if, does it
+%   make sense? does it always go if = true?
+%
+% To do:
+% - Add option opendocs('update') alias to option publish
+% - Rename functions update to upd
+%   change the order of class functions to optimize uml diagram
+% - Rename function docs and uml to gendocs and genuml
+% - Update pauses to not have cases with negative numbers
+% - Remove prop AvailableGPS from class Orbit
+% - Later update orbitCounter using anglefromAN? update in 
+%   Orbit.updateOrbitalParams
+% - Remove output of methods that update handle classes
+% - Update git config file to properly update all EOL LF and CRLF
+% - Add docs('update') option to update publish for all m files
+% - Generate pdf publish files for all files in Windows PC
+% - Upload to Git all publish files generated in Windows PC
+% - Add docs('all') to open publish files as well as docs for classes
+% - Update readme.md
+%   - To run CosmosFS program, open and run the file 'run.m' in MATLAB
+%   - To see documentation for the custom objects and classes used, 
+%     enter command 'docs' in MATLAB's Command Window
+%   - To see documentation for all files in CosmosFS program, 
+%     enter command 'docs('all')' in MATLAB's Command Window
+%   - To generate PlantUML code for CosmosFS class diagram, 
+%     enter command 'uml' in MATLAB's Command Window
+% - check usage of var wind
+% - check usage of var refSurf
+% - review @aeroPressureForce.m
+% - review @aeroDragLiftSentman.m
+% - review @vectorRotation.m
+% - review @solarPressureForce.m
+% - Use class property attribute 'Constant, GetAccess = public' ...
+%   for constant attributes e.g. in class Orbit
+% - Change class IvanovFormationFlight to FormationFlight, add
+%   property 'case' and set property as 'Ivanov'
+% - Change class IvanovSatellite to Satellite, add
+%   property 'case' and set property as 'Ivanov'
+% - @orbitalproperties.m, line 89: Check function semi-major axis and 
+%   inclination for possible simplification (class Orbit now)
+% - Create package '+cosmos' for all custom functions
+% - Custom package to be downloaded and saved into users MATLAB folder
+% - Create tutorial to place custom package into users MATLAB folder
+%   for both Windows and Mac
+%
+% Recently done:
+% - [13] Rename run to runCosmosBeta
+% - [12] Update function openuml with new name CosmosSimulation
+% - [11] Rename class Simulation to CosmosSimulation
+% - [10] Fix function opendocs
+% - [9] Move former lib files to a folder outside git repo
+% - Rename functions uml and docs to openuml and opendocs
+% - [8] Fix uml stash
+% - [7] Add function to update average errors
+% - [6] Move prop SatID to FlightControl class
+%   update FlightControl functions that receive satID
+%   update all calls for sat.ID to look for sat.FlightControl.SatID
+% - Add func to update state errors received from other sats
+% - [5] Add function to calculate average state errors
+% - [4] Add functions to broadcast and receive state errors
+% - [3] Update acceleration factor
+% - [2] Add state error calculation in sat.fly
+% - [1] Add desired state calculation in sat.fly
+% - Add sync pauses to simulation.start
+% - [7] Fix function uml
+% - [6] Add update orbital params in constructor and fix pauses
+% - [5] Fix idx update in sim.start
+% - [4] Add second pause to simulation.start
+% - [3] Add first pause to simulation.start
+% - [2] Move riccati equation to class FlightControl
+% - [1] Convert all refs from MeanMotion to MeanMotionDeg
+% - Remove old func updateOrbitalParams from Orbit
+% - Remove comments and func sat.whereInWhatOrbit
+% - Fix function uml with branch temp
+% - [12] Fix UML with class GPS
+% - [10] Fix orbit times and add AutoResponse to func comm
+% - Remove status and update comm messages with labels
+% - [8] Fix class objects being passed as output of parloop
+% - [7] Update custom-classes.txt with class GPS
+% - [6] Remove func getStatus from class Simulation
+% - [5] Add class GPS and other major updates
+% - Add GPS functions to all other classes
+% - Create a class GPS
+% - Create function GPS.incrementMeanAnomalyFromAN()
+% - Create function GPS.incrementOrbitCounter()
+% - Create function GPS.getMeanAnomalyFromAN()
+% - Create function GPS.getOrbitCounter()
+% - Pass props AvailableGPS, AvailableTLE from Satellite to Orbit
+% - Create prop IDX for class Simulation
+% - [4] Add orbit duration and remove old orbit counter methods
+% - [3] Add function fly and stopper for max num of orbits
+% - [2] Add loop alive and function to turn off satellite
+% - [1] Fix output of parloop
+% - Fix function to output satellite communication signals
+% - [4] Fix function uml (2)
+% - [2] Fix code for listing custom classes into a function
+% - Create new set of classes under main directory
+% - [6] Remove state error determination and fix later
+% - [5] Add state error determination and fix states in Satellite
+% - [4] Add trajectory determination sstDesired into parloop
+% - [3] Add orbit section loop into parloop
+% - [2] Add idx and pause into parloop
+% - [1] Change calls for function path to addpath
+% - Fix order of commands in function uml (2)
+% - ^3 Fix list of git commands to update branch 'out'
+% - ^2 Update function uml for Windows compatibility (2)
+% - Add branch 'dev' and set uml output to branch 'out'
+% - Use proxy service of the PlantUML server to open UML diagram
+% - Add temp.uml to GitHub automatically (3)
+% - Remove hyperlinks, tooltips and fix visibility codes in m2uml
+% - Add spacing between VisibilityCode and Names in m2uml
+% - In +m2uml.Property, lines 100 to 109: remove Hyperlink, ToolTip
+% - In +m2uml.Operation, lines 87 to 94: remove Hyperlink, ToolTip
+% - In +m2uml.ClassNode, lines 134 to 144: remove Hyperlink, ToolTip
+% - Fix filesep in m2uml.filespec2fqn for dos/unix compatibility (2)
+% - Update custom function uml
+% - Fix function publish in function docs as an optional parameter
+% - Fix function docs to work in both Windows and Mac
+% - Fix documentation tool that shows custom object classes used
+% - Fix change of working directory and path of the running m-file
+% - Change method to get full path of file run
+% - Add class Main and change main.m to run.m
+% - Check MeanAnomalyFromAN value
+% - Add riccati equation
+% - Add to class Orbit the property mean anomaly from ascending node
+% - Add to class Orbit the property of mean motion in rad/s
+% - Fix implementation of whereInWhatOrbit
+% - Add getCurrentOrbitNumber to class Satellite
+% - Remove redundant properties in class IvanovFormationFlight
+% - Check orbital properties
+% - Add function to update orbital parameters in class Orbit
+% - Add variables to set GPS/TLE availability
+% - Fix orbit counter increment and checkpoint
+% - Add print checkpoints in main and end of files
+% - Add getStatus() to class Simulation
+% - Add orbit counter to IvanovSatellite
+% - Add set and get methods for formation flight mode
+% - Add class Orbit into IvanovFormationFlight
+% - Add class CosmosSimulation to main file
+% - Add lib folder under the same directory of the main file
+% - Add code to automatically update the working directory
+% - Add array of IvanovSatellite objects into IvanovFormationFlight
+%_____________________________________________________________________
+
+%% Set paths and MATLAB parameters
+
+warning on verbose;
+delete(gcp('nocreate'));
+close all; clear all; clc; %#ok<CLALL>
+
+% Inform the name of this file without the extension "m".
+THIS_FILE_NAME = 'runCosmosBeta';
+
+if(~isdeployed)
+	
+	% Get directory path of the active file in MATLAB's Editor.
+	[filepath,~,~] = fileparts(matlab.desktop.editor.getActiveFilename);
+	addpath(filepath); % Add file path to the current MATLAB path.
+	
+	% Get directory path of the file name set in THIS_FILE_NAME.
+	[filepath,~,~] = fileparts(which(THIS_FILE_NAME));
+	addpath(filepath); % Add file path to the current MATLAB path.
+	
+	% Change working directory to the directory of this m-file.
+	cd(filepath);
+	
+end
+
+%% Set parameters for the simulation
+
+% - Struct of parameters:
+%   NumSatellites    : Total number of satellites in the formation.
+%   FormationMode    : Mode for the satellites formation flight.
+%   Altitude         : Height above sea level [m].
+%   AutoResponse     : If satellite should send responses [bool].
+%   AvailableGPS     : GPS availability [bool].
+%   AvailableTLE     : TLE availability [bool].
+%   MaxNumOrbits     : Maximum number of orbits to run.
+%   OrbitSectionSize : Size of each orbit section [deg].
+%   InitIDX          : Initial idx.
+%   AccelFactor      : Acceleration factor for the simulation.
+parameters = struct( ...
+	'NumSatellites'   , 4     , ...
+	'FormationMode'   , 1     , ...
+	'Altitude'        , 340000, ...
+	'AutoResponse'    , true  , ...
+	'AvailableGPS'    , true  , ...
+	'AvailableTLE'    , false , ...
+	'MaxNumOrbits'    , 10    , ...
+	'OrbitSectionSize', 2     , ...
+	'InitIDX'         , 120   , ...
+	'AccelFactor'     , 100000 );
+
+% Instantiate a simulation object with the selected parameters.
+sim = CosmosSimulation(parameters);
+
+%% Start simulation proccess
+
+% Initiate simulation.
+sim.start();
+
+%% Documentation
+
+% Create global alias for the array of satellites.
+sat = sim.Satellites; % Aliases: sat(1) to sat(n).
+
+% Create global alias for the array of orbits.
+orbit = sim.Orbits; % Aliases: orbit(1) to orbit(n).
+
+% Create global alias for the array of flight control modules.
+fc = sim.FlightControlModules; % Aliases: fc(1) to fc(n).
+
+% Create global alias for the array of GPS modules.
+gps = sim.GPSModules; % Aliases: gps(1) to gps(n).
+
+% Save current MATLAB workspace variables.
+warning off parallel:lang:spmd:CompositeSave;
+workspaceFileName = 'workspace.mat';
+save(fullfile(filepath, workspaceFileName));
+
+% Print custom objects and classes used.
+sim.createListCustomClasses(filepath, workspaceFileName);
+
+fprintf('\nDone.\n\n');
+
+##### SOURCE END #####
+--></body></html>

@@ -57,6 +57,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [14] Add html doc for runCosmosBeta
 % - [13] Rename run to runCosmosBeta
 % - [12] Update function openuml with new name CosmosSimulation
 % - [11] Rename class Simulation to CosmosSimulation
