@@ -1,5 +1,5 @@
 function createListCustomClasses(filepath, workspaceFileName)
-%% Create list of custom classes used in COSMOS.
+%% Create list of custom classes used in Cosmos.
 %_____________________________________________________________________
 %
 % Details here.
@@ -72,4 +72,4 @@ else
 	fprintf('\nNo custom object classes found.\n');
 end
 
-end % Function Simulation.createListCustomClasses.
+end % Function CosmosSimulation.createListCustomClasses.

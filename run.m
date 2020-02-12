@@ -57,6 +57,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [11] Rename class Simulation to CosmosSimulation
 % - [10] Fix function opendocs
 % - [9] Move former lib files to a folder outside git repo
 % - Rename functions uml and docs to openuml and opendocs
@@ -202,7 +203,7 @@ parameters = struct( ...
 	'AccelFactor'     , 100000 );
 
 % Instantiate a simulation object with the selected parameters.
-sim = Simulation(parameters);
+sim = CosmosSimulation(parameters);
 
 %% Start simulation proccess
 

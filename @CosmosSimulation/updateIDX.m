@@ -10,4 +10,4 @@ this.IDX = find(...
 
 this.incrementIDX();
 
-end % Function Simulation.updateIDX.
+end % Function CosmosSimulation.updateIDX.

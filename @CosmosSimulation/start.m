@@ -1,5 +1,5 @@
 function start(this)
-%% Initiate simulation.
+%% Initiate Cosmos simulation.
 %_____________________________________________________________________
 %
 % Details here.
@@ -177,4 +177,4 @@ timeDurationPool = timeEndPool - timeStartPool;
 fprintf('Total simulation time: %s seconds.\n',...
 	num2str(timeDurationPool));
 
-end % Function Simulation.start.
+end % Function CosmosSimulation.start.

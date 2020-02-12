@@ -1,12 +1,12 @@
 %% Create a simulation environment for satellite formation flight.
 %_____________________________________________________________________
 %
-% Class Simulation:
+% Class CosmosSimulation:
 %
 % Detailed explanation goes here.
 %_____________________________________________________________________
 
-classdef Simulation < handle
+classdef CosmosSimulation < handle
 	
 	properties (GetAccess = public, SetAccess = private)
 		
@@ -31,7 +31,7 @@ classdef Simulation < handle
 	
 	methods % Constructor.
 		
-		function this = Simulation(param)
+		function this = CosmosSimulation(param)
 %% Constructor for class Simulation.
 %_____________________________________________________________________
 %
@@ -109,4 +109,4 @@ classdef Simulation < handle
 		
 	end % Static methods.
 	
-end % Class Simulation.
+end % Class CosmosSimulation.

@@ -2,4 +2,4 @@ FlightControl
 GPS
 Orbit
 Satellite
-Simulation
+CosmosSimulation
