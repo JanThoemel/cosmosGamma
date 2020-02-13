@@ -65,6 +65,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [4] Fix call to FlightControl.findBestAttitude
 % - [3] Add functions aeroDragLiftSentman and rodriguesRotation
 % - [2] Set prop Orbit.TempAtmos as public
 % - [1] Translate function SSEquation into new function updState
