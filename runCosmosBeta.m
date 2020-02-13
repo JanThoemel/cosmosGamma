@@ -65,6 +65,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [2] Fix time vector handling after end of parpool
 % - [1] Add time plot vector to class simulation
 % - Update cosmos-uml in docs
 % - [5] Fix function FlightControl.updState
