@@ -14,6 +14,7 @@ function plotting(angles,sst,refPosChange,time,ns,meanMotion,u,e)
   end
  
   if 1 %% reference position change
+	  refPosChange = squeeze(refPosChange);
     figure
       plot(time,refPosChange(1,:),time,refPosChange(2,:),time,refPosChange(3,:));
       legend('x','y','z');title('reference position change')

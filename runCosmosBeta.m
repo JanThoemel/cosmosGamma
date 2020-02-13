@@ -65,6 +65,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [11] Fix bug in plotting reference changes
 % - [10] Fix function plotting in class simulation
 % - [8] Fix vector with satellite states for plotting
 % - [6] Fix data handling after end of parpool
@@ -253,8 +254,8 @@ gps = sim.GPSModules; % Aliases: gps(1) to gps(n).
 
 angles = sim.SatStates(:,7:9,:);
 sst = sim.SatStates(:,1:6,:);
-refPosChange = sim.SatPositions;
-time = sim.TimeVector(1,:)';
+refPosChange = sim.SatPositions(1,:,:);
+time = sim.TimeVector';
 ns = sim.NumSatellites;
 meanMotion = orbit.MeanMotionRad;
 u = zeros(sim.NumSatellites, 3, size(sim.SatStates,3));
