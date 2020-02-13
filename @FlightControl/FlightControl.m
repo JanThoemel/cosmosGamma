@@ -23,6 +23,7 @@ classdef FlightControl < handle
 		StateDesired % Desired satellite state.
 		StateErrors % State errors of all satellites in the formation.
 		StateErrorsAvg % Average of the state errors of all satellites.
+		StateOld % Old satellite state.
 		SurfacePanel % Surface area of each of the satellite panels [m^2].
 		SurfaceRef % Reference surface area.
 		WindFactor % Multiplication factor for wind pressure.
@@ -112,6 +113,10 @@ classdef FlightControl < handle
 		updateStateDesired(this, time, meanMotion)
 		
 		updState(this, P, IR, A, B, deltaTime)
+		
+		function shiftState(this, shift)
+			this.State(1:3) = this.State(1:3) + shift;
+		end
 		
 		function updateSatelliteID(this, satID)
 			this.SatID = satID;

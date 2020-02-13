@@ -97,9 +97,42 @@ spmd(this.NumSatellites)
 			timestep = this.OrbitSectionSize / orbit.MeanMotionDeg;
 			this.updTimeVector(id, timestep);
 			
+			% Send reference position to all non 1-satellites.
+			refPosChange = zeros(3,1);
+			if id == 1
+				refPosChange(1:3) = fc.State(1:3) - fc.StateOld(1:3);
+				for satID = 2 : this.NumSatellites
+					tag = 1000000 * satID + ...
+						10000 * this.IDX + ...
+						100 * orbit.OrbitCounter + 1;
+					labSend(refPosChange, satID, tag);
+				end
+			end
 			
+			% Receive reference position in other satellites.
+			if id ~= 1
+				tag = 1000000 * id + ...
+					10000 * this.IDX + ...
+					100 * orbit.OrbitCounter + 1;
+				refPosChange = labReceive(1, tag);
+			end
 			
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			
+			% Move coordinate system.
+			% Should the old state be shifted as well?
+			shift = -refPosChange(1:3);
+			fc.shiftState(shift);
+			
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			
 			
 			

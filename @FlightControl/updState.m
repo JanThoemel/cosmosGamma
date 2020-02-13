@@ -5,7 +5,8 @@ function updState(this, P, IR, A, B, deltaTime)
 % Details here.
 %_____________________________________________________________________
 
-oldState  = this.State;
+this.StateOld = this.State;
+
 oldAlphas = this.State(7);
 oldBetas  = this.State(8);
 oldGammas = this.State(9);
@@ -71,9 +72,9 @@ end
 
 % Update satellite state: solve ODE with backward Euler step.
 this.State(1:6) = ...
-	(A * oldState(1:6) + B * forceVector / this.SatelliteMass) * ...
+	(A * this.StateOld(1:6) + B * forceVector / this.SatelliteMass) *...
 	deltaTime + ...
-	oldState(1:6);
+	this.StateOld(1:6);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
