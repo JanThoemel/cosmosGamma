@@ -21,6 +21,8 @@ classdef CosmosSimulation < handle
 		OrbitSectionSize % Size of each orbit section [deg].
 		OrbitSections % Orbital sections for the simulation.
 		Satellites % Array of Satellite objects.
+		SatPositions % Satellite positions in relation to the reference.
+		SatPositionsLengths % Length of the satellite positions vectors.
 		%Status % Simulation status.
 		TimeVector % Time vector for plotting.
 		TimeVectorLengths % Length of the time vector for each satellite.
@@ -52,6 +54,9 @@ classdef CosmosSimulation < handle
 			this.NumOrbitSections = length(this.OrbitSections);
 			
 			this.NumSatellites = param.NumSatellites;
+			
+			this.SatPositions = zeros(this.NumSatellites,3,1);
+			this.SatPositionsLengths = ones(this.NumSatellites,1);
 			
 			this.TimeVector = zeros(this.NumSatellites,1);
 			this.TimeVectorLengths = ones(this.NumSatellites,1);
@@ -113,6 +118,15 @@ classdef CosmosSimulation < handle
 			
 			this.TimeVectorLengths(satID) = ...
 				this.TimeVectorLengths(satID) + 1;
+		end
+		
+		function updSatPositions(this, satID, newValue)
+			nextPos = this.SatPositionsLengths(satID) + 1;
+			
+			this.SatPositions(satID, 1:3, nextPos) = newValue;
+			
+			this.SatPositionsLengths(satID) = ...
+				this.SatPositionsLengths(satID) + 1;
 		end
 		
 		updateIDX(this, meanAnomalyFromAN)

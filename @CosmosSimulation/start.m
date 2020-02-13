@@ -117,6 +117,9 @@ spmd(this.NumSatellites)
 				refPosChange = labReceive(1, tag);
 			end
 			
+			% Update vector with satellite positions for plotting.
+			this.updSatPositions(id, refPosChange);
+			
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%

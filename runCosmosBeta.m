@@ -65,6 +65,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [4] Add function to update vector of satellite positions
 % - [3] Add change in reference position and shift state
 % - [2] Fix time vector handling after end of parpool
 % - [1] Add time plot vector to class simulation
