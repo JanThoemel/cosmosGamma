@@ -15,7 +15,7 @@
 %   make sense? does it always go if = true?
 %
 % To do:
-% - Divide simulation parameters into groups:A
+% - Divide simulation parameters into groups:
 %   simulationParameters
 %   satelliteParameters
 %   orbitParameters (maybe not required)
