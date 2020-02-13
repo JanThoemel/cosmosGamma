@@ -65,6 +65,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - Update cosmos-uml in docs
 % - [5] Fix function FlightControl.updState
 % - [4] Fix call to FlightControl.findBestAttitude
 % - [3] Add functions aeroDragLiftSentman and rodriguesRotation
