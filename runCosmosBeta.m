@@ -65,6 +65,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [3] Add functions aeroDragLiftSentman and rodriguesRotation
 % - [2] Set prop Orbit.TempAtmos as public
 % - [1] Translate function SSEquation into new function updState
 % - Update readme.md

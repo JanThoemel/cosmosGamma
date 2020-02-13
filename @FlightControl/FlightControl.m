@@ -144,11 +144,15 @@ classdef FlightControl < handle
 			sunlight, panelSurface, noxpanels, noypanels, nozpanels, ...
 			alphas, betas, gammas)
 		
+		vRot = rodriguesRotation(v, k, theta)
+		
 		[P, IR, A, B] = riccatiequation(meanMotion, SSCoeff)
 		
 		[forceVector, alphaOpt, betaOpt, gammaOpt] = findBestAttitude( ...
 			totalForceVector, controlVector, alphas, betas, gammas, ...
 			oldAlphaOpt, oldBetaOpt, oldGammaOpt)
+		
+		[CD, CL] = aeroDragLiftSentman(theta, Tatmos, v, rho)
 		
 	end % Static methods.
 	

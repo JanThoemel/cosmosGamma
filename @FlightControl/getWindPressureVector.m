@@ -39,11 +39,11 @@ function aerototalforcevector = getWindPressureVector(wind,panelSurface,noxpanel
           Igz=RzY*Ry*RzR*Iz;
           [thetaaero(i,j,k),phiaero(i,j,k),Igz2]=thetaphi1(wind, Igz);
           %[aerodragcoef(i,j,k),aeroliftcoef(i,j,k)]=aeroDragLiftCoef(thetaaero(i,j,k));
-          [CD(i,j,k),CL(i,j,k)]= aeroDragLiftSentman(thetaaero(i,j,k),Tatmos,v,rho);     
+          [CD(i,j,k),CL(i,j,k)]= FlightControl.aeroDragLiftSentman(thetaaero(i,j,k),Tatmos,v,rho);     
           aeroforcevectorz=-wind           *    CD(i,j,k)*windPressure*panelSurface;
           ax=cross(wind,Igz2);
           if norm(ax)~=0
-            liftvector = rodrigues_rot(wind,ax,90/180*pi);
+            liftvector = FlightControl.rodriguesRotation(wind,ax,90/180*pi);
           else
             liftvector = [0 0 0]';
           end
@@ -53,11 +53,11 @@ function aerototalforcevector = getWindPressureVector(wind,panelSurface,noxpanel
           Igx=RzY*Ry*RzR*Ix;
           [thetaaero(i,j,k),phiaero(i,j,k),Igx2]=thetaphi1(wind, Igx);
           %[aerodragcoef(i,j,k),aeroliftcoef(i,j,k)]=aeroDragLiftCoef(thetaaero(i,j,k));
-          [CD(i,j,k),CL(i,j,k)]= aeroDragLiftSentman(thetaaero(i,j,k),Tatmos,v,rho);
+          [CD(i,j,k),CL(i,j,k)]= FlightControl.aeroDragLiftSentman(thetaaero(i,j,k),Tatmos,v,rho);
           aeroforcevectorx=-wind                         *  CD(i,j,k)*windPressure*panelSurface;
           ax=cross(wind,Igx2);
           if norm(ax)~=0
-            liftvector = rodrigues_rot(wind,ax,90/180*pi);
+            liftvector = FlightControl.rodriguesRotation(wind,ax,90/180*pi);
           else
             liftvector = [0 0 0]';
           end
@@ -67,11 +67,11 @@ function aerototalforcevector = getWindPressureVector(wind,panelSurface,noxpanel
           Igy=RzY*Ry*RzR*Iy;
           [thetaaero(i,j,k),phiaero(i,j,k),Igy2]=thetaphi1(wind, Igy);
           %[aerodragcoef(i,j,k),aeroliftcoef(i,j,k)]=aeroDragLiftCoef(thetaaero(i,j,k));
-          [CD(i,j,k),CL(i,j,k)]= aeroDragLiftSentman(thetaaero(i,j,k),Tatmos,v,rho);         
+          [CD(i,j,k),CL(i,j,k)]= FlightControl.aeroDragLiftSentman(thetaaero(i,j,k),Tatmos,v,rho);         
           aeroforcevectory=-wind        *  CD(i,j,k)*windPressure*panelSurface;
           ax=cross(wind,Igy2) ;
           if norm(ax)~=0
-            liftvector = rodrigues_rot(wind,ax,90/180*pi);
+            liftvector = FlightControl.rodriguesRotation(wind,ax,90/180*pi);
           else
             liftvector = [0 0 0]';
           end            
