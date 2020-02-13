@@ -194,14 +194,14 @@ spmd(this.NumSatellites)
 	
 	% Globally concatenate all output variables on lab index 1.
 	% Must be the last lines of code of the parallel pool.
-	satellites = gcat(sat,2,1);
-	orbits = gcat(orbit,2,1);
-	flightControlModules = gcat(fc,2,1);
-	gpsModules = gcat(gps,2,1);
-	timeVectorLengths = gcat(this.TimeVectorLengths(id),2,1);
-	timeVector = gcat(this.TimeVector(id,:)',2,1);
-	satPositionsLengths = gcat(this.SatPositionsLengths(id,:)',2,1);
-	satPositions = gcat(this.SatPositions(id,:,:),2,1);
+	satellites = gcat(sat,1,1);
+	orbits = gcat(orbit,1,1);
+	flightControlModules = gcat(fc,1,1);
+	gpsModules = gcat(gps,1,1);
+	timeVectorLengths = gcat(this.TimeVectorLengths(id),1,1);
+	timeVector = gcat(this.TimeVector(id,:),1,1);
+	satPositionsLengths = gcat(this.SatPositionsLengths(id,:),1,1);
+	satPositions = gcat(this.SatPositions(id,:,:),1,1);
 	
 end % Parallel code.
 
