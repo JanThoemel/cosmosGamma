@@ -155,6 +155,8 @@ classdef CosmosSimulation < handle
 	
 	methods (Static)
 		
+		plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
+		
 		createListCustomClasses(filepath, workspaceFileName)
 		
 	end % Static methods.
