@@ -71,21 +71,11 @@ this.FlightControl.updateStateErrorsAvg(receivedAverageStateErrors);
 % Check whether all errors have the same value in all satellites.
 
 % Shift error.
-%
-%
+this.FlightControl.shiftError();
 
 % Compute attitude and update satellite state.
 deltaTime = sizeOrbitSection / this.Orbit.MeanMotionDeg;
 this.FlightControl.updState(P, IR, A, B, deltaTime);
-
-
-
-
-
-
-
-
-
 
 % Update duration of the current orbit.
 this.Orbit.updateOrbitDuration();

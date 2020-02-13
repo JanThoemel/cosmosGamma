@@ -65,7 +65,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
-% - [9] Add function plotting to class simulation
+% - [10] Fix function plotting in class simulation
 % - [8] Fix vector with satellite states for plotting
 % - [6] Fix data handling after end of parpool
 % - [5] Fix function to update vector of satellite positions
@@ -251,15 +251,16 @@ gps = sim.GPSModules; % Aliases: gps(1) to gps(n).
 
 %% Plotting
 
-satStatesLength = size(sim.SatStates,3);
+angles = sim.SatStates(:,7:9,:);
+sst = sim.SatStates(:,1:6,:);
+refPosChange = sim.SatPositions;
+time = sim.TimeVector(1,:)';
+ns = sim.NumSatellites;
+meanMotion = orbit.MeanMotionRad;
+u = zeros(sim.NumSatellites, 3, size(sim.SatStates,3));
+e = zeros(sim.NumSatellites, 6, size(sim.SatStates,3));
 
-u = zeros(3, sim.NumSatellites, satStatesLength);
-
-e = zeros(6, sim.NumSatellites, satStatesLength);
-
-sim.plotting(sim.SatStates(:,7:9,:), sim.SatStates(:,1:6,:), ...
-	sim.SatPositions, sim.TimeVector, sim.NumSatellites, ...
-	orbit.MeanMotionRad, u, e);
+sim.plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e);
 
 %% Documentation
 

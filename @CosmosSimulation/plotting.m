@@ -5,7 +5,7 @@ function plotting(angles,sst,refPosChange,time,ns,meanMotion,u,e)
       for i=1:3
         subplot(3,1,i)
         for j=1:ns
-          plot(time/2/pi*meanMotion,squeeze(e(i,j,:)));hold on;
+          plot(time/2/pi*meanMotion,squeeze(e(j,i,:)));hold on;
         end
         legend;
         title(strcat('error coordinate',num2str(i)))
@@ -24,63 +24,63 @@ function plotting(angles,sst,refPosChange,time,ns,meanMotion,u,e)
     figure
      subplot(4,3,1)%% roll
        for i=1:ns
-         plot(squeeze(time/2/pi*meanMotion),squeeze(angles(1,i,:)));hold on
+         plot(squeeze(time/2/pi*meanMotion),squeeze(angles(i,1,:)));hold on
          names(i)=[{strcat('sat',int2str(i))}];
        end
       ylabel('roll angle [deg]');xlabel('no. of orbits');grid on;hold off;legend(names);
       subplot(4,3,2)%% pitch
       for i=1:ns
-         plot(squeeze(time/2/pi*meanMotion),squeeze(angles(2,i,:)));hold on
+         plot(squeeze(time/2/pi*meanMotion),squeeze(angles(i,2,:)));hold on
       end
       ylabel('pitch angle [deg]');xlabel('no. of orbits');grid on;hold off;
       subplot(4,3,3)%%yaw
       for i=1:ns
-         plot(squeeze(time/2/pi*meanMotion),squeeze(angles(3,i,:)));hold on
+         plot(squeeze(time/2/pi*meanMotion),squeeze(angles(i,3,:)));hold on
       end
       ylabel('yaw angle [deg]');xlabel('no. of orbits');grid on;hold off
       subplot(4,3,4)%%x
       for i=1:ns
-         plot(squeeze(time/2/pi*meanMotion),squeeze(sst(1,i,:)));hold on
+         plot(squeeze(time/2/pi*meanMotion),squeeze(sst(i,1,:)));hold on
       end
       ylabel('x [m]');xlabel('no. of orbits');grid on;hold off
       subplot(4,3,5)%%y
       for i=1:ns
-         plot(squeeze(time/2/pi*meanMotion),squeeze(sst(2,i,:)));hold on
+         plot(squeeze(time/2/pi*meanMotion),squeeze(sst(i,2,:)));hold on
       end
       ylabel('y [m]');xlabel('no. of orbits');grid on;hold off
       subplot(4,3,6)%%z
       for i=1:ns
-         plot(squeeze(time/2/pi*meanMotion),squeeze(sst(3,i,:)));hold on
+         plot(squeeze(time/2/pi*meanMotion),squeeze(sst(i,3,:)));hold on
       end
       ylabel('z [m]');xlabel('no. of orbits');grid on;hold off
       subplot(4,3,7)%%u1
       for i=1:ns
-         plot(squeeze(time/2/pi*meanMotion),squeeze(u(1,i,:)));hold on
+         plot(squeeze(time/2/pi*meanMotion),squeeze(u(i,1,:)));hold on
       end
       ylabel('u1');xlabel('no. of orbits');grid on;hold off
       subplot(4,3,8)%%u2
       for i=1:ns
-         plot(squeeze(time/2/pi*meanMotion),squeeze(u(2,i,:)));hold on
+         plot(squeeze(time/2/pi*meanMotion),squeeze(u(i,2,:)));hold on
       end
       ylabel('u2');xlabel('no. of orbits');grid on;hold off
       subplot(4,3,9)%%u3
       for i=1:ns
-         plot(squeeze(time/2/pi*meanMotion),squeeze(u(3,i,:)));hold on
+         plot(squeeze(time/2/pi*meanMotion),squeeze(u(i,3,:)));hold on
       end
       ylabel('u3');xlabel('no. of orbits');grid on;hold off  
       subplot(4,3,10)%%u
       for i=1:ns
-         plot(squeeze(time/2/pi*meanMotion),squeeze(sst(4,i,:)));hold on
+         plot(squeeze(time/2/pi*meanMotion),squeeze(sst(i,4,:)));hold on
       end
       ylabel('u [m/s]');xlabel('no. of orbits');grid on;hold off
       subplot(4,3,11)%%v
       for i=1:ns
-         plot(squeeze(time/2/pi*meanMotion),squeeze(sst(5,i,:)));hold on
+         plot(squeeze(time/2/pi*meanMotion),squeeze(sst(i,5,:)));hold on
       end
       ylabel('v [m/s]');xlabel('no. of orbits');grid on;hold off
       subplot(4,3,12)%%w
       for i=1:ns
-         plot(squeeze(time/2/pi*meanMotion),squeeze(sst(6,i,:)));hold on
+         plot(squeeze(time/2/pi*meanMotion),squeeze(sst(i,6,:)));hold on
       end
       ylabel('w [m/s]');xlabel('no. of orbits');grid on;hold off
 
@@ -97,7 +97,7 @@ function plotting(angles,sst,refPosChange,time,ns,meanMotion,u,e)
       fontSize=40;
       lineWidth=1;
       for i=1:ns
-        plot3(squeeze(sst(1,i,:)),squeeze(sst(2,i,:)),squeeze(sst(3,i,:)),'-','LineWidth',lineWidth);hold on;
+        plot3(squeeze(sst(i,1,:)),squeeze(sst(i,2,:)),squeeze(sst(i,3,:)),'-','LineWidth',lineWidth);hold on;
         names(i)=[{strcat('sat',int2str(i))}];
         %plot3(xzyplane(1,:),xzyplane(2,:),xzyplane(3,:),squeeze(sst(1,i,:)),squeeze(sst(2,i,:)),squeeze(sst(3,i,:)),'LineWidth',lineWidth);hold on
       end

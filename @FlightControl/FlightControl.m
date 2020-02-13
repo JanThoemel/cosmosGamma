@@ -118,6 +118,11 @@ classdef FlightControl < handle
 			this.State(1:3) = this.State(1:3) + shift;
 		end
 		
+		function shiftError(this)
+			this.StateErrors(1,this.SatID) = ...
+				this.StateErrors(1,this.SatID) - max(this.StateErrors(1,:));
+		end
+		
 		function updateSatelliteID(this, satID)
 			this.SatID = satID;
 		end
