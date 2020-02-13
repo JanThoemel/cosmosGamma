@@ -200,6 +200,8 @@ spmd(this.NumSatellites)
 	gpsModules = gcat(gps,2,1);
 	timeVectorLengths = gcat(this.TimeVectorLengths(id),2,1);
 	timeVector = gcat(this.TimeVector(id,:)',2,1);
+	satPositionsLengths = gcat(this.SatPositionsLengths(id,:)',2,1);
+	satPositions = gcat(this.SatPositions(id,:,:),2,1);
 	
 end % Parallel code.
 
@@ -211,6 +213,8 @@ this.FlightControlModules = flightControlModules{1};
 this.GPSModules = gpsModules{1};
 this.TimeVectorLengths = timeVectorLengths{1};
 this.TimeVector = timeVector{1};
+this.SatPositionsLengths = satPositionsLengths{1};
+this.SatPositions = satPositions{1};
 
 % Terminate the existing parallel pool session.
 delete(gcp('nocreate'));
