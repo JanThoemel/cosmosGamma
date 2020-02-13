@@ -1,4 +1,4 @@
-function fly(this, currentOrbitSection)
+function fly(this, currentOrbitSection, sizeOrbitSection)
 %% Initialize flight control.
 %_____________________________________________________________________
 %
@@ -11,6 +11,10 @@ meanAnomalyFromAN = this.GPSModule.getMeanAnomalyFromAN();
 
 % Update orbital parameters.
 this.Orbit.updateOrbitalParams(orbitFromGPS, meanAnomalyFromAN);
+
+% Update wind pressure.
+this.FlightControl.updWindPressures( ...
+	this.Orbit.Rho, this.Orbit.V, this.Orbit.TempAtmos);
 
 % Settings for control algorithm, is this necessary in every loop?
 [P, IR, A, B] = this.FlightControl.riccatiequation(...
@@ -63,7 +67,16 @@ receivedAverageStateErrors = this.broadcastReceive();
 % Update information on the average state errors.
 this.FlightControl.updateStateErrorsAvg(receivedAverageStateErrors);
 
+% From main cosmosFS:
+% Check whether all errors have the same value in all satellites.
 
+% Shift error.
+%
+%
+
+% Compute attitude and update satellite state.
+deltaTime = sizeOrbitSection / this.Orbit.MeanMotionDeg;
+this.FlightControl.updState(P, IR, A, B, deltaTime);
 
 
 

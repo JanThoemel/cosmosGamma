@@ -91,7 +91,7 @@ spmd(this.NumSatellites)
 			
 			% Start flying on orbital loop.
 			currentOrbitSection = this.OrbitSections(this.IDX);
-			sat.fly(currentOrbitSection);
+			sat.fly(currentOrbitSection, this.OrbitSectionSize);
 			
 			
 			

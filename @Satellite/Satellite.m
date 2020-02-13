@@ -30,12 +30,15 @@ classdef Satellite < handle
 	
 	methods % Constructor.
 		
-		function this = Satellite(altitude, resp, gps, tle, ns, mode)
+		function this = Satellite(altitude, deltaAngle, autoResponse, ...
+			gpsAvailability, tleAvailability, numSats, mode)
 %% Constructor for class Satellite.
 %_____________________________________________________________________
 %
 % Input:
 % - Altitude [meters].
+% - Roll, pitch, yaw angles resolution [deg].
+% - Auto response activation [boolean].
 % - GPS availability [boolean].
 % - TLE availability [boolean].
 % - Total number of satellites in the formation.
@@ -45,9 +48,9 @@ classdef Satellite < handle
 % - Object of class Satellite.
 %_____________________________________________________________________
 			
-			this.AutoResponse = resp;
-			this.FlightControl = FlightControl(ns, mode);
-			this.Orbit = Orbit(altitude, gps, tle);
+			this.AutoResponse = autoResponse;
+			this.FlightControl = FlightControl(numSats, mode, deltaAngle);
+			this.Orbit = Orbit(altitude, gpsAvailability, tleAvailability);
 			this.GPSModule = GPS();
 			
 		end
@@ -62,7 +65,7 @@ classdef Satellite < handle
 		
 		initialize(this, id, commChannel)
 		comm(this, msg)
-		fly(this, currentOrbitSection)
+		fly(this, currentOrbitSection, sizeOrbitSection)
 		broadcastSend(this, msg)
 		msg = broadcastReceive(this)
 		turnOff(this)

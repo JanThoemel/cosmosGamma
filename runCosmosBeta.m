@@ -15,7 +15,15 @@
 %   make sense? does it always go if = true?
 %
 % To do:
+% - Divide simulation parameters into groups:
+%   simulationParameters
+%   satelliteParameters
+%   orbitParameters (maybe not required)
+% - Pass groups of parameters to simulation constructor:
+%   sim = Simulation(simulationParameters, satelliteParameters, ...
+%   orbitParameters)
 % - Add option opendocs('update') alias to option publish
+% - Add class HandleHidden with hidden handle methods
 % - Rename functions update to upd
 %   change the order of class functions to optimize uml diagram
 % - Rename function docs and uml to gendocs and genuml
@@ -57,6 +65,8 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [1] Translate function SSEquation into new function updState
+% - Update readme.md
 % - [14] Add html doc for runCosmosBeta
 % - [13] Rename run to runCosmosBeta
 % - [12] Update function openuml with new name CosmosSimulation
@@ -186,6 +196,7 @@ end
 %   NumSatellites    : Total number of satellites in the formation.
 %   FormationMode    : Mode for the satellites formation flight.
 %   Altitude         : Height above sea level [m].
+%   DeltaAngle       : Roll, pitch, yaw angles resolution [deg].
 %   AutoResponse     : If satellite should send responses [bool].
 %   AvailableGPS     : GPS availability [bool].
 %   AvailableTLE     : TLE availability [bool].
@@ -197,6 +208,7 @@ parameters = struct( ...
 	'NumSatellites'   , 4     , ...
 	'FormationMode'   , 1     , ...
 	'Altitude'        , 340000, ...
+	'DeltaAngle'      , 30    , ...
 	'AutoResponse'    , true  , ...
 	'AvailableGPS'    , true  , ...
 	'AvailableTLE'    , false , ...
@@ -213,8 +225,6 @@ sim = CosmosSimulation(parameters);
 % Initiate simulation.
 sim.start();
 
-%% Documentation
-
 % Create global alias for the array of satellites.
 sat = sim.Satellites; % Aliases: sat(1) to sat(n).
 
@@ -227,6 +237,8 @@ fc = sim.FlightControlModules; % Aliases: fc(1) to fc(n).
 % Create global alias for the array of GPS modules.
 gps = sim.GPSModules; % Aliases: gps(1) to gps(n).
 
+%% Documentation
+
 % Save current MATLAB workspace variables.
 warning off parallel:lang:spmd:CompositeSave;
 workspaceFileName = 'workspace.mat';
@@ -236,3 +248,7 @@ save(fullfile(filepath, workspaceFileName));
 sim.createListCustomClasses(filepath, workspaceFileName);
 
 fprintf('\nDone.\n\n');
+
+%% Plotting
+
+
