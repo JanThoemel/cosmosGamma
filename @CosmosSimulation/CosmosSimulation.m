@@ -23,6 +23,8 @@ classdef CosmosSimulation < handle
 		Satellites % Array of Satellite objects.
 		SatPositions % Satellite positions in relation to the reference.
 		SatPositionsLengths % Length of the satellite positions vectors.
+		SatStates % Satellites states for plotting.
+		SatStatesLength % Length of the satellite states vectors.
 		%Status % Simulation status.
 		TimeVector % Time vector for plotting.
 		TimeVectorLengths % Length of the time vector for each satellite.
@@ -57,6 +59,9 @@ classdef CosmosSimulation < handle
 			
 			this.SatPositions = zeros(this.NumSatellites,3,1);
 			this.SatPositionsLengths = ones(this.NumSatellites,1);
+			
+			this.SatStates = zeros(this.NumSatellites,9,1);
+			this.SatStatesLength = ones(this.NumSatellites,1);
 			
 			this.TimeVector = zeros(this.NumSatellites,1);
 			this.TimeVectorLengths = ones(this.NumSatellites,1);
@@ -118,6 +123,15 @@ classdef CosmosSimulation < handle
 			
 			this.TimeVectorLengths(satID) = ...
 				this.TimeVectorLengths(satID) + 1;
+		end
+		
+		function updSatStates(this, satID, satState)
+			nextPos = this.SatStatesLengths(satID) + 1;
+			
+			this.SatStates(satID, 1:9, nextPos) = satState;
+			
+			this.SatStatesLengths(satID) = ...
+				this.SatStatesLengths(satID) + 1;
 		end
 		
 		function updSatPositions(this, satID, newValue)

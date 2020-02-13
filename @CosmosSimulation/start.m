@@ -131,22 +131,6 @@ spmd(this.NumSatellites)
 			shift = -refPosChange(1:3);
 			fc.shiftState(shift);
 			
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			% Increment section counter.
 			this.incrementIDX();
 			
@@ -161,12 +145,8 @@ spmd(this.NumSatellites)
 			pause(this.OrbitSectionSize / orbit.MeanMotionDeg /...
 				this.AccelFactor - (now() - timeStartSection));
 			
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%% MORE CODE HERE %%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			
-			% For plotting.
-			% SST_PP = [SST_PP sst];
+			% Update vector with satellite states for plotting.
+			this.updSatStates(id, fc.State);
 			
 		end % While orbit sections loop.
 		
@@ -200,8 +180,10 @@ spmd(this.NumSatellites)
 	gpsModules = gcat(gps,1,1);
 	timeVectorLengths = gcat(this.TimeVectorLengths(id),1,1);
 	timeVector = gcat(this.TimeVector(id,:),1,1);
-	satPositionsLengths = gcat(this.SatPositionsLengths(id,:),1,1);
+	satPositionsLengths = gcat(this.SatPositionsLengths(id),1,1);
 	satPositions = gcat(this.SatPositions(id,:,:),1,1);
+	satStatesLength = gcat(this.SatStatesLength(id),1,1);
+	satStates = gcat(this.SatStates(id,:,:),1,1);
 	
 end % Parallel code.
 
@@ -215,6 +197,8 @@ this.TimeVectorLengths = timeVectorLengths{1};
 this.TimeVector = timeVector{1};
 this.SatPositionsLengths = satPositionsLengths{1};
 this.SatPositions = satPositions{1};
+this.SatStatesLength = satStatesLength{1};
+this.SatStates = satStates{1};
 
 % Terminate the existing parallel pool session.
 delete(gcp('nocreate'));
