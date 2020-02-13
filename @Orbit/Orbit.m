@@ -18,6 +18,7 @@ classdef Orbit < handle
 		R0 % Mean Earth's radius plus altitude [m].
 		Rho % Atmospheric density [kg/m^3].
 		SemiMajorAxis % Check function for possible simplification.
+		TempAtmos % Temperature of the atmosphere [K].
 		V % Velocity [m/s].
 		
 	end
@@ -39,7 +40,6 @@ classdef Orbit < handle
 		MeanEarthRadius = 6371000 % Mean Earth's radius [m].
 		Mu = 3.986004418e14 % Earth's gravitational parameter [m^3/s^2].
 		RhoArray % Constant array set in constructor.
-		TempAtmos = 900 % Temperature of the atmosphere [K].
 		
 	end
 	
@@ -62,8 +62,9 @@ classdef Orbit < handle
 % - Object of class Orbit.
 %_____________________________________________________________________
 			
-			% this.AtmosTemp:
-			% should be interpolated later [K].
+			% Constant atmospheric temperature.
+			% Should be interpolated later.
+			this.TempAtmos = 900; % [K].
 			
 			% Update orbital parameters.
 			this.Altitude = altitude;

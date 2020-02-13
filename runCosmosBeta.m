@@ -65,6 +65,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
+% - [2] Set prop Orbit.TempAtmos as public
 % - [1] Translate function SSEquation into new function updState
 % - Update readme.md
 % - [14] Add html doc for runCosmosBeta
