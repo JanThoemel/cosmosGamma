@@ -65,7 +65,7 @@
 %   for both Windows and Mac
 %
 % Recently done:
-% - [7] Add vector with satellite states for plotting
+% - [8] Fix vector with satellite states for plotting
 % - [6] Fix data handling after end of parpool
 % - [5] Fix function to update vector of satellite positions
 % - [3] Add change in reference position and shift state

@@ -182,7 +182,7 @@ spmd(this.NumSatellites)
 	timeVector = gcat(this.TimeVector(id,:),1,1);
 	satPositionsLengths = gcat(this.SatPositionsLengths(id),1,1);
 	satPositions = gcat(this.SatPositions(id,:,:),1,1);
-	satStatesLength = gcat(this.SatStatesLength(id),1,1);
+	satStatesLengths = gcat(this.SatStatesLengths(id),1,1);
 	satStates = gcat(this.SatStates(id,:,:),1,1);
 	
 end % Parallel code.
@@ -197,7 +197,7 @@ this.TimeVectorLengths = timeVectorLengths{1};
 this.TimeVector = timeVector{1};
 this.SatPositionsLengths = satPositionsLengths{1};
 this.SatPositions = satPositions{1};
-this.SatStatesLength = satStatesLength{1};
+this.SatStatesLengths = satStatesLengths{1};
 this.SatStates = satStates{1};
 
 % Terminate the existing parallel pool session.
