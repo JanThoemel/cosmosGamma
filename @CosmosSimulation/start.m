@@ -93,6 +93,10 @@ spmd(this.NumSatellites)
 			currentOrbitSection = this.OrbitSections(this.IDX);
 			sat.fly(currentOrbitSection, this.OrbitSectionSize);
 			
+			% Update time vector for plotting.
+			timestep = this.OrbitSectionSize / orbit.MeanMotionDeg;
+			this.updTimeVector(id, timestep);
+			
 			
 			
 			

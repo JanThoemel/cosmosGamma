@@ -22,6 +22,8 @@ classdef CosmosSimulation < handle
 		OrbitSections % Orbital sections for the simulation.
 		Satellites % Array of Satellite objects.
 		%Status % Simulation status.
+		TimeLength % Current length of the time vector for each satellite.
+		TimePlot % Time vector for plotting.
 		
 	end
 	
@@ -50,6 +52,9 @@ classdef CosmosSimulation < handle
 			this.NumOrbitSections = length(this.OrbitSections);
 			
 			this.NumSatellites = param.NumSatellites;
+			
+			this.TimePlot = zeros(this.NumSatellites,1);
+			this.TimeLength = ones(this.NumSatellites,1);
 			
 			% Create array with objects of class Satellite.
 			this.Satellites = Satellite.empty(this.NumSatellites,0);
@@ -94,9 +99,24 @@ classdef CosmosSimulation < handle
 	
 	methods (Access = public)
 		
+		function updTimeVector(this, satID, timestep)
+			% Increment length of the time vector for the current satellite.
+			% At the end of the simulation, the values in TimeLength
+			% should be equal for all satellites. Later, use this value to
+			% prealocate memory for the TimePlot vector in order to reduce
+			% computational time.
+			lastPos = this.TimeLength(satID);
+			nextPos = this.TimeLength(satID) + 1;
+			
+			this.TimePlot(satID, nextPos) = ...
+				this.TimePlot(satID, lastPos) + timestep;
+			
+			this.TimeLength(satID) = this.TimeLength(satID) + 1;
+		end
+		
+		updateIDX(this, meanAnomalyFromAN)
 		start(this)
 		incrementIDX(this)
-		updateIDX(this, meanAnomalyFromAN)
 		
 	end % Public methods.
 	
