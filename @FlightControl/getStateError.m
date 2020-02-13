@@ -1,4 +1,4 @@
-function error = getStateError(this)
+function stateErr = getStateError(this)
 %% Get updated satellite state error.
 %_____________________________________________________________________
 %
@@ -8,6 +8,6 @@ function error = getStateError(this)
 this.StateErrors(1:6, this.SatID) = ...
 	this.State(1:6) - this.StateDesired(1:6);
 
-error = this.StateErrors(1:6, this.SatID);
+stateErr = this.StateErrors(1:6, this.SatID);
 
 end % Function FlightControl.getStateError.

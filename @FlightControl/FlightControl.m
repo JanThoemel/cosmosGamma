@@ -107,7 +107,7 @@ classdef FlightControl < handle
 		avg = getStateErrorAverage(this)
 		
 		updateStateErrors(this, receivedStateErrors)
-		error = getStateError(this)
+		stateErr = getStateError(this)
 		
 		updateStateDesired(this, time, meanMotion)
 		

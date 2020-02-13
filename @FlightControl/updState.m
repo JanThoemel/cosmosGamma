@@ -83,6 +83,4 @@ this.State(1:6) = ...
 
 this.State(7:9) = [alphaOpt betaOpt gammaOpt]';
 
-this.State = this.State';
-
 end % Function FlightControl.updState.
