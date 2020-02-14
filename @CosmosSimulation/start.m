@@ -20,7 +20,7 @@ timeStartPool = posixtime(datetime('now')); % Posixtime [seconds].
 % Execute parallel code on workers of parallel pool.
 spmd(this.NumSatellites)
 	
-	% Get unique IDs for each of the satellites, from 1 to N.
+	% Get unique IDs for each of the satellites, from 1 to N. %! do we need id? isnt labindex enough?
 	id = labindex;
 	
 	% Create local aliases for the class objects.
@@ -52,10 +52,10 @@ spmd(this.NumSatellites)
 		endOfSectionsCycle = (this.IDX - 1) / this.NumOrbitSections;
 		
 		% From whereInWhatOrbit().
-		if endOfSectionsCycle
+		if endOfSectionsCycle % start a new section cycle
 			gps.MeanAnomalyFromAN = 0.01;
 		else
-			gps.MeanAnomalyFromAN = 120;
+			gps.MeanAnomalyFromAN = 120; % when starting a simulation, the s/c might be an arbitrary mean anomaly, e.g. 120
 		end
 		
 		% ^
@@ -82,6 +82,7 @@ spmd(this.NumSatellites)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		
+    % The orbit is divided into sections of few degrees size.
 		% Start orbit sections loop.
 		while this.IDX <= this.NumOrbitSections
 			

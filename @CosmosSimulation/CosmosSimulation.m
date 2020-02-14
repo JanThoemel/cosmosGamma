@@ -86,11 +86,9 @@ classdef CosmosSimulation < handle
 			end
 			
 			% Create aliases for satellite flight control modules.
-			this.FlightControlModules = ...
-				FlightControl.empty(this.NumSatellites,0);
+			this.FlightControlModules = FlightControl.empty(this.NumSatellites,0);
 			for i = 1 : this.NumSatellites
-				this.FlightControlModules(i) = ...
-					this.Satellites(i).FlightControl;
+				this.FlightControlModules(i) = this.Satellites(i).FlightControl;
 			end
 			
 			% Create aliases for GPS modules.
@@ -118,11 +116,9 @@ classdef CosmosSimulation < handle
 			lastPos = this.TimeVectorLengths(satID);
 			nextPos = this.TimeVectorLengths(satID) + 1;
 			
-			this.TimeVector(satID, nextPos) = ...
-				this.TimeVector(satID, lastPos) + timestep;
+			this.TimeVector(satID, nextPos) = this.TimeVector(satID, lastPos) + timestep;
 			
-			this.TimeVectorLengths(satID) = ...
-				this.TimeVectorLengths(satID) + 1;
+			this.TimeVectorLengths(satID) = this.TimeVectorLengths(satID) + 1;
 		end
 		
 		function updSatStates(this, satID, satState)
@@ -130,8 +126,7 @@ classdef CosmosSimulation < handle
 			
 			this.SatStates(satID, 1:9, nextPos) = satState;
 			
-			this.SatStatesLengths(satID) = ...
-				this.SatStatesLengths(satID) + 1;
+			this.SatStatesLengths(satID) = this.SatStatesLengths(satID) + 1;
 		end
 		
 		function updSatPositions(this, satID, newValue)
@@ -139,12 +134,11 @@ classdef CosmosSimulation < handle
 			
 			this.SatPositions(satID, 1:3, nextPos) = newValue;
 			
-			this.SatPositionsLengths(satID) = ...
-				this.SatPositionsLengths(satID) + 1;
+			this.SatPositionsLengths(satID) = this.SatPositionsLengths(satID) + 1;
 		end
 		
 		updateIDX(this, meanAnomalyFromAN)
-		start(this)
+		start(this) %! there seems to be Matlab built in function with the same name. we may want to rename ours
 		incrementIDX(this)
 		
 	end % Public methods.
