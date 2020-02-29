@@ -115,25 +115,19 @@ classdef CosmosSimulation < handle
 			% computational time.
 			lastPos = this.TimeVectorLengths(satID);
 			nextPos = this.TimeVectorLengths(satID) + 1;
-			
 			this.TimeVector(satID, nextPos) = this.TimeVector(satID, lastPos) + timestep;
-			
 			this.TimeVectorLengths(satID) = this.TimeVectorLengths(satID) + 1;
 		end
 		
 		function updSatStates(this, satID, satState)
 			nextPos = this.SatStatesLengths(satID) + 1;
-			
 			this.SatStates(satID, 1:9, nextPos) = satState;
-			
 			this.SatStatesLengths(satID) = this.SatStatesLengths(satID) + 1;
 		end
 		
 		function updSatPositions(this, satID, newValue)
 			nextPos = this.SatPositionsLengths(satID) + 1;
-			
 			this.SatPositions(satID, 1:3, nextPos) = newValue;
-			
 			this.SatPositionsLengths(satID) = this.SatPositionsLengths(satID) + 1;
 		end
 		
@@ -150,7 +144,6 @@ classdef CosmosSimulation < handle
 	methods (Static)
 		
 		plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
-		
 		createListCustomClasses(filepath, workspaceFileName)
 		
 	end % Static methods.

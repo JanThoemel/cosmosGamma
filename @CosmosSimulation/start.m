@@ -19,7 +19,7 @@ timeStartPool = posixtime(datetime('now')); % Posixtime [seconds].
 % Execute parallel code on workers of parallel pool.
 spmd(this.NumSatellites)
 	
-	% Get unique IDs for each of the satellites, from 1 to N. %! do we need id? isnt labindex enough?
+	% Get unique IDs for each of the satellites, from 1 to N. %! JT: do we need id? isnt labindex enough?
 	id = labindex;
 	
 	% Create local aliases for the class objects.
@@ -31,10 +31,16 @@ spmd(this.NumSatellites)
 	% Set satellite communication channel as the parpool data queue.
 	commChannel = dq;
 	
-	% Initialize satellites; examples:
+	sat.initialize(id, commChannel);
+  % Update time vector for plotting.
+  timestep = this.OrbitSectionSize / orbit.MeanMotionDeg;
+  this.updTimeVector(id, timestep);
+  % Update vector with satellite positions for plotting.
+  this.updSatPositions(id, [0 0 0]');
+  % Initialize satellites; examples:
 	% Satellite(1) will receive ID = 1.
 	% Satellite(N) will receive ID = N.
-	sat.initialize(id, commChannel);
+	this.updSatStates(id, fc.State);
 	
 	while sat.Alive % Sattelites turned on, but still doing nothing.
 		
@@ -115,7 +121,6 @@ spmd(this.NumSatellites)
 			
 			% Update vector with satellite positions for plotting.
 			this.updSatPositions(id, refPosChange);
-			
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -138,8 +143,7 @@ spmd(this.NumSatellites)
 			
 			% Pause #2:
 			% Add pause after subtracting this section's computing time.
-			pause(this.OrbitSectionSize / orbit.MeanMotionDeg /...
-				this.AccelFactor - (now() - timeStartSection));
+			pause(this.OrbitSectionSize / orbit.MeanMotionDeg /this.AccelFactor - (now() - timeStartSection));
 			
 			% Update vector with satellite states for plotting.
 			this.updSatStates(id, fc.State);
@@ -202,6 +206,6 @@ delete(gcp('nocreate'));
 timeEndPool = posixtime(datetime('now')); % Posixtime [seconds].
 timeDurationPool = timeEndPool - timeStartPool;
 fprintf('Total simulation time: %s seconds.\n',...
-	num2str(timeDurationPool));
+num2str(timeDurationPool));
 
 end % Function CosmosSimulation.start.
