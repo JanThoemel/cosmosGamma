@@ -8,6 +8,12 @@ function initialize(this, id, commChannel)
 % Update satellite ID in the formation flight.
 this.FlightControl.updateSatelliteID(id);
 
+if this.FlightControl.SatID ==2
+  this.FlightControl.State          = [-950 0 0 0 0 0 0 0 0]';
+else
+  this.FlightControl.State          = zeros(9, 1);
+end
+
 % Set satellite name.
 this.Name = ['sat ',num2str(id)];
 

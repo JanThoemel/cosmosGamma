@@ -50,7 +50,7 @@ end
 
 switch this.FormationMode % Solution for ISMission
 	case 1
-		A = 0; D = 1000;
+		A = 0; D = -1000;
 	otherwise
 		% To do: Throw error here if formation mode value is not expected.
 end

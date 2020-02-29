@@ -5,8 +5,7 @@ function updateIDX(this, meanAnomalyFromAN)
 % Details here.
 %_____________________________________________________________________
 
-this.IDX = find(...
-	this.OrbitSections >= meanAnomalyFromAN, 1, 'first');
+this.IDX = find(this.OrbitSections >= meanAnomalyFromAN, 1, 'first');
 
 this.incrementIDX();
 

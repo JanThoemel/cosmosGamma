@@ -4,7 +4,6 @@ function start(this)
 %
 % Details here.
 %_____________________________________________________________________
-
 % Create data queue for parallel pool.
 dq = parallel.pool.DataQueue;
 
@@ -24,10 +23,10 @@ spmd(this.NumSatellites)
 	id = labindex;
 	
 	% Create local aliases for the class objects.
-	sat = this.Satellites(id);
+	sat   = this.Satellites(id);
 	orbit = this.Orbits(id);
-	fc = this.FlightControlModules(id);
-	gps = this.GPSModules(id);
+	fc    = this.FlightControlModules(id);
+	gps   = this.GPSModules(id);
 	
 	% Set satellite communication channel as the parpool data queue.
 	commChannel = dq;
@@ -103,18 +102,14 @@ spmd(this.NumSatellites)
 			if id == 1
 				refPosChange(1:3) = fc.State(1:3) - fc.StateOld(1:3);
 				for satID = 2 : this.NumSatellites
-					tag = 1000000 * satID + ...
-						10000 * this.IDX + ...
-						100 * orbit.OrbitCounter + 1;
+					tag = 1000000 * satID + 10000 * this.IDX + 100 * orbit.OrbitCounter + 1;
 					labSend(refPosChange, satID, tag);
 				end
 			end
 			
 			% Receive reference position in other satellites.
 			if id ~= 1
-				tag = 1000000 * id + ...
-					10000 * this.IDX + ...
-					100 * orbit.OrbitCounter + 1;
+				tag = 1000000 * id + 10000 * this.IDX + 100 * orbit.OrbitCounter + 1;
 				refPosChange = labReceive(1, tag);
 			end
 			
@@ -166,8 +161,7 @@ spmd(this.NumSatellites)
 		% turn off the satellite.
 		if orbit.OrbitCounter >= this.MaxNumOrbits
 			pause(2);
-			send(dq,['[sim] Maximum number of orbits reached! ',...
-			         'Killing [',sat.Name,']']);
+			send(dq,['[sim] Maximum number of orbits reached! ','Killing [',sat.Name,']']);
 			sat.turnOff();
 		end
 		

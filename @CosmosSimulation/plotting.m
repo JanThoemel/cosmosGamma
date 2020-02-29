@@ -20,6 +20,7 @@ function plotting(angles,sst,refPosChange,time,ns,meanMotion,u,e)
       legend('x','y','z');title('reference position change')
     hold off;  
   end
+
   
   if 1 %% plot general variables
     figure
@@ -139,3 +140,6 @@ function plotting(angles,sst,refPosChange,time,ns,meanMotion,u,e)
         print('-painters','-dmeta','sst2d.emf')
     end
 end
+
+
+

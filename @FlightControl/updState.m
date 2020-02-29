@@ -4,7 +4,6 @@ function updState(this, P, IR, A, B, deltaTime)
 %
 % Details here.
 %_____________________________________________________________________
-
 this.StateOld = this.State;
 
 oldAlphas = this.State(7);
@@ -34,9 +33,8 @@ if masterSatellite == 0
 	for k = 1 : size(this.Gammas,2)
 		for j = 1 : size(this.Betas,2)
 			for i = 1 : size(this.Alphas,2)
-				usedTotalForceVector(:,i,j,k) = ...
-					this.WindPressureVector(:,i,j,k) + ...
-					rotatedSolarPressureVector(:,i,j,k);
+				usedTotalForceVector(:,i,j,k) = this.WindPressureVector(:,i,j,k) + ...
+                                        rotatedSolarPressureVector(:,i,j,k);
 			end
 		end
 	end
@@ -71,10 +69,8 @@ end
 % Re-check parenthesis: is that right? If so, it can be simplified.
 
 % Update satellite state: solve ODE with backward Euler step.
-this.State(1:6) = ...
-	(A * this.StateOld(1:6) + B * forceVector / this.SatelliteMass) *...
-	deltaTime + ...
-	this.StateOld(1:6);
+this.State(1:6) = (A * this.StateOld(1:6) + B * forceVector / this.SatelliteMass) *...
+                  deltaTime + this.StateOld(1:6);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

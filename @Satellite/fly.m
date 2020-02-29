@@ -13,12 +13,10 @@ meanAnomalyFromAN = this.GPSModule.getMeanAnomalyFromAN();
 this.Orbit.updateOrbitalParams(orbitFromGPS, meanAnomalyFromAN);
 
 % Update wind pressure.
-this.FlightControl.updWindPressures( ...
-	this.Orbit.Rho, this.Orbit.V, this.Orbit.TempAtmos);
+this.FlightControl.updWindPressures(this.Orbit.Rho, this.Orbit.V, this.Orbit.TempAtmos);
 
 % Settings for control algorithm, is this necessary in every loop?
-[P, IR, A, B] = this.FlightControl.riccatiequation(...
-	this.Orbit.MeanMotionRad, this.FlightControl.SSCoeff);
+[P, IR, A, B] = this.FlightControl.riccatiequation(this.Orbit.MeanMotionRad, this.FlightControl.SSCoeff);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

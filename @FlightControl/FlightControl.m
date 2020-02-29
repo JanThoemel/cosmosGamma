@@ -60,7 +60,6 @@ classdef FlightControl < handle
 			
 			this.NumSatellites = ns;
 			this.FormationMode = mode;
-			
 			this.State          = zeros(9, 1);
 			this.StateDesired   = zeros(6, 1);
 			this.StateErrors    = zeros(6, ns);
@@ -73,8 +72,10 @@ classdef FlightControl < handle
 			this.Betas  = 0:deltaAngle:180; % Pitch.
 			this.Gammas = 0:deltaAngle:360; % Yaw.
 			
-			this.SatelliteMass = 1; % Kilogram(s).
-			this.Panels = [0 0 2];
+			%this.SatelliteMass = 1; % Kilogram(s).
+			this.SatelliteMass = 2; % Kilogram(s).
+			%this.Panels = [0 0 2];
+			this.Panels = [0 0 3.5];
 			this.SurfacePanel = 0.01; % Squared meters.
 			this.SurfaceRef = this.SurfacePanel * this.Panels(3);
 			
