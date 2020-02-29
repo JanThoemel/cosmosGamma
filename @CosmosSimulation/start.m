@@ -32,15 +32,7 @@ spmd(this.NumSatellites)
 	commChannel = dq;
 	
 	sat.initialize(id, commChannel);
-  % Update time vector for plotting.
-  timestep = this.OrbitSectionSize / orbit.MeanMotionDeg;
-  this.updTimeVector(id, timestep);
-  % Update vector with satellite positions for plotting.
-  this.updSatPositions(id, [0 0 0]');
-  % Initialize satellites; examples:
-	% Satellite(1) will receive ID = 1.
-	% Satellite(N) will receive ID = N.
-	this.updSatStates(id, fc.State);
+	this.updSatStatesIni(id, fc.State);
 	
 	while sat.Alive % Sattelites turned on, but still doing nothing.
 		

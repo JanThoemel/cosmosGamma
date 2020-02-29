@@ -123,8 +123,12 @@ classdef CosmosSimulation < handle
 			nextPos = this.SatStatesLengths(satID) + 1;
 			this.SatStates(satID, 1:9, nextPos) = satState;
 			this.SatStatesLengths(satID) = this.SatStatesLengths(satID) + 1;
+    end
+
+ 		function updSatStatesIni(this, satID, satState)
+			this.SatStates(satID, 1:9, 1) = satState;
 		end
-		
+
 		function updSatPositions(this, satID, newValue)
 			nextPos = this.SatPositionsLengths(satID) + 1;
 			this.SatPositions(satID, 1:3, nextPos) = newValue;
