@@ -1,5 +1,5 @@
 function updateStateDesired(this, time, meanMotion)
-%% JT: this needs change: the size-determining values need to go to parameters, otherwise this files must be changed each time a new case is run
+% JT: this needs change: the size-determining values need to go to parameters, otherwise this files must be changed each time a new case is run
 
 %% Update desired satellite state.
 %_____________________________________________________________________

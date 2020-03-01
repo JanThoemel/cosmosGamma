@@ -79,7 +79,7 @@ classdef FlightControl < handle
 			this.SurfacePanel = 0.01; % Squared meters.
 			this.SurfaceRef = this.SurfacePanel * this.Panels(3);
 			
-			this.WindFactor = 1;
+			this.WindFactor = 1; 
 			this.SolarFactor = 0;
 			
 			% From main cosmosFS:
@@ -113,16 +113,16 @@ classdef FlightControl < handle
 		
 		updateStateDesired(this, time, meanMotion)
 		
-		updState(this, P, IR, A, B, deltaTime)
+		%updState(this, P, IR, A, B, deltaTime)
 		
 		function shiftState(this, shift)
 			this.State(1:3) = this.State(1:3) + shift;
 		end
 		
-		function shiftError(this)
-			this.StateErrors(1,this.SatID) = ...
-				this.StateErrors(1,this.SatID) - max(this.StateErrors(1,:));
-		end
+%JT: remove
+%		function shiftError(this)
+%			this.StateErrors(1,this.SatID) = this.StateErrors(1,this.SatID) - max(this.StateErrors(1,:));
+%		end
 		
 		function updateSatelliteID(this, satID)
 			this.SatID = satID;

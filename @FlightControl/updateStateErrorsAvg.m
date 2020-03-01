@@ -6,9 +6,7 @@ function updateStateErrorsAvg(this, receivedAverageStateErrors)
 %_____________________________________________________________________
 
 % Merge average state errors received with the one of this satellite.
-receivedAverageStateErrors(:,this.SatID) = ...
-	this.StateErrorsAvg(:,this.SatID);
-
+receivedAverageStateErrors(:,this.SatID) = this.StateErrorsAvg(:,this.SatID);
 this.StateErrorsAvg = receivedAverageStateErrors;
 
 end % Function FlightControl.updateStateErrorsAvg.

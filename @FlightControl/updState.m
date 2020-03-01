@@ -3,7 +3,9 @@ function updState(this, P, IR, A, B, deltaTime)
 %_____________________________________________________________________
 %
 % Details here.
+% method of FlightControl
 %_____________________________________________________________________
+
 this.StateOld = this.State;
 
 oldAlphas = this.State(7);
