@@ -3,6 +3,7 @@ function updState(this, P, IR, A, B, deltaTime)
 %_____________________________________________________________________
 %
 % Details here.
+% method of FlightControl
 %_____________________________________________________________________
 
 this.StateOld = this.State;
@@ -12,10 +13,8 @@ oldBetas  = this.State(8);
 oldGammas = this.State(9);
 
 % Vector of size 3 x sizeAlphas x sizeBetas x sizeGammas.
-usedTotalForceVector = zeros(3,...
-	size(this.Alphas, 2),...
-	size(this.Betas , 2),...
-	size(this.Gammas, 2));
+usedTotalForceVector = zeros(3,size(this.Alphas, 2),...
+	size(this.Betas , 2),size(this.Gammas, 2));
 
 % Compute control vector.
 e = this.StateErrors(:, this.SatID);
@@ -34,9 +33,8 @@ if masterSatellite == 0
 	for k = 1 : size(this.Gammas,2)
 		for j = 1 : size(this.Betas,2)
 			for i = 1 : size(this.Alphas,2)
-				usedTotalForceVector(:,i,j,k) = ...
-					this.WindPressureVector(:,i,j,k) + ...
-					rotatedSolarPressureVector(:,i,j,k);
+				usedTotalForceVector(:,i,j,k) = this.WindPressureVector(:,i,j,k) + ...
+                                        rotatedSolarPressureVector(:,i,j,k);
 			end
 		end
 	end
@@ -58,8 +56,7 @@ else
 end
 
 [forceVector, alphaOpt, betaOpt, gammaOpt] = this.findBestAttitude(...
-	usedTotalForceVector, controlVector, ...
-	this.Alphas, this.Betas, this.Gammas, ...
+	usedTotalForceVector, controlVector,this.Alphas, this.Betas, this.Gammas, ...
 	oldAlphas, oldBetas, oldGammas);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -71,10 +68,8 @@ end
 % Re-check parenthesis: is that right? If so, it can be simplified.
 
 % Update satellite state: solve ODE with backward Euler step.
-this.State(1:6) = ...
-	(A * this.StateOld(1:6) + B * forceVector / this.SatelliteMass) *...
-	deltaTime + ...
-	this.StateOld(1:6);
+this.State(1:6) = (A * this.StateOld(1:6) + B * forceVector / this.SatelliteMass) *...
+                  deltaTime + this.StateOld(1:6);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

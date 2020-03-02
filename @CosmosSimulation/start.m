@@ -4,7 +4,6 @@ function start(this)
 %
 % Details here.
 %_____________________________________________________________________
-
 % Create data queue for parallel pool.
 dq = parallel.pool.DataQueue;
 
@@ -20,22 +19,20 @@ timeStartPool = posixtime(datetime('now')); % Posixtime [seconds].
 % Execute parallel code on workers of parallel pool.
 spmd(this.NumSatellites)
 	
-	% Get unique IDs for each of the satellites, from 1 to N.
+	% Get unique IDs for each of the satellites, from 1 to N. %! JT: do we need id? isnt labindex enough?
 	id = labindex;
 	
 	% Create local aliases for the class objects.
-	sat = this.Satellites(id);
+	sat   = this.Satellites(id);
 	orbit = this.Orbits(id);
-	fc = this.FlightControlModules(id);
-	gps = this.GPSModules(id);
+	fc    = this.FlightControlModules(id);
+	gps   = this.GPSModules(id);
 	
 	% Set satellite communication channel as the parpool data queue.
 	commChannel = dq;
 	
-	% Initialize satellites; examples:
-	% Satellite(1) will receive ID = 1.
-	% Satellite(N) will receive ID = N.
 	sat.initialize(id, commChannel);
+	this.updSatStatesIni(id, fc.State);
 	
 	while sat.Alive % Sattelites turned on, but still doing nothing.
 		
@@ -52,10 +49,10 @@ spmd(this.NumSatellites)
 		endOfSectionsCycle = (this.IDX - 1) / this.NumOrbitSections;
 		
 		% From whereInWhatOrbit().
-		if endOfSectionsCycle
+		if endOfSectionsCycle % start a new section cycle
 			gps.MeanAnomalyFromAN = 0.01;
 		else
-			gps.MeanAnomalyFromAN = 120;
+			gps.MeanAnomalyFromAN = 120; % when starting a simulation, the s/c might be an arbitrary mean anomaly, e.g. 120
 		end
 		
 		% ^
@@ -82,6 +79,7 @@ spmd(this.NumSatellites)
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		
+    % The orbit is divided into sections of few degrees size.
 		% Start orbit sections loop.
 		while this.IDX <= this.NumOrbitSections
 			
@@ -102,24 +100,19 @@ spmd(this.NumSatellites)
 			if id == 1
 				refPosChange(1:3) = fc.State(1:3) - fc.StateOld(1:3);
 				for satID = 2 : this.NumSatellites
-					tag = 1000000 * satID + ...
-						10000 * this.IDX + ...
-						100 * orbit.OrbitCounter + 1;
+					tag = 1000000 * satID + 10000 * this.IDX + 100 * orbit.OrbitCounter + 1;
 					labSend(refPosChange, satID, tag);
 				end
 			end
 			
 			% Receive reference position in other satellites.
 			if id ~= 1
-				tag = 1000000 * id + ...
-					10000 * this.IDX + ...
-					100 * orbit.OrbitCounter + 1;
+				tag = 1000000 * id + 10000 * this.IDX + 100 * orbit.OrbitCounter + 1;
 				refPosChange = labReceive(1, tag);
 			end
 			
 			% Update vector with satellite positions for plotting.
 			this.updSatPositions(id, refPosChange);
-			
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -142,8 +135,7 @@ spmd(this.NumSatellites)
 			
 			% Pause #2:
 			% Add pause after subtracting this section's computing time.
-			pause(this.OrbitSectionSize / orbit.MeanMotionDeg /...
-				this.AccelFactor - (now() - timeStartSection));
+			pause(this.OrbitSectionSize / orbit.MeanMotionDeg /this.AccelFactor - (now() - timeStartSection));
 			
 			% Update vector with satellite states for plotting.
 			this.updSatStates(id, fc.State);
@@ -165,8 +157,7 @@ spmd(this.NumSatellites)
 		% turn off the satellite.
 		if orbit.OrbitCounter >= this.MaxNumOrbits
 			pause(2);
-			send(dq,['[sim] Maximum number of orbits reached! ',...
-			         'Killing [',sat.Name,']']);
+			send(dq,['[sim] Maximum number of orbits reached! ','Killing [',sat.Name,']']);
 			sat.turnOff();
 		end
 		
@@ -207,6 +198,6 @@ delete(gcp('nocreate'));
 timeEndPool = posixtime(datetime('now')); % Posixtime [seconds].
 timeDurationPool = timeEndPool - timeStartPool;
 fprintf('Total simulation time: %s seconds.\n',...
-	num2str(timeDurationPool));
+num2str(timeDurationPool));
 
 end % Function CosmosSimulation.start.

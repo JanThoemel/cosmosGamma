@@ -21,7 +21,7 @@ classdef Satellite < handle
 	end
 	
 	properties (GetAccess = public, SetAccess = private)
-		
+		%% n/a
 	end
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

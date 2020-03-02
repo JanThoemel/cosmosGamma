@@ -3,6 +3,7 @@ function fly(this, currentOrbitSection, sizeOrbitSection)
 %_____________________________________________________________________
 %
 % Details here.
+% method of class Satellite
 %_____________________________________________________________________
 
 % Get updated orbital parameters from GPS/TLE.
@@ -13,12 +14,10 @@ meanAnomalyFromAN = this.GPSModule.getMeanAnomalyFromAN();
 this.Orbit.updateOrbitalParams(orbitFromGPS, meanAnomalyFromAN);
 
 % Update wind pressure.
-this.FlightControl.updWindPressures( ...
-	this.Orbit.Rho, this.Orbit.V, this.Orbit.TempAtmos);
+this.FlightControl.updWindPressures(this.Orbit.Rho, this.Orbit.V, this.Orbit.TempAtmos);
 
 % Settings for control algorithm, is this necessary in every loop?
-[P, IR, A, B] = this.FlightControl.riccatiequation(...
-	this.Orbit.MeanMotionRad, this.FlightControl.SSCoeff);
+[P, IR, A, B] = this.FlightControl.riccatiequation(this.Orbit.MeanMotionRad, this.FlightControl.SSCoeff);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -33,28 +32,28 @@ this.FlightControl.updWindPressures( ...
 % Compute attitude for next section.
 % Determine desired trajectory.
 
-% Update desired state.
+
+% determine time in orbit
 time = currentOrbitSection / this.Orbit.MeanMotionDeg;
+
+% Update desired state.
 this.FlightControl.updateStateDesired(time, this.Orbit.MeanMotionRad);
 
-% Get state error.
+% Set and get state error for this satellite in array of errors of all satellites
 stateError = this.FlightControl.getStateError();
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Communicate new state error to other satellites.
+% Communicate new state error of this satellite to other satellites
 this.broadcastSend(stateError);
-
-% Receive the state errors from other satellites.
+% Receive the state errors from other satellites
 receivedStateErrors = this.broadcastReceive();
 
 % Update information on state errors from other satellites.
 this.FlightControl.updateStateErrors(receivedStateErrors);
 
+
+
+%{
+NOT USEFUL ANYMORE SINCE WORKING WITH FORCEVECTOR AVERAGES/SHIFTS
 % Calculate average of the state errors.
 avg = this.FlightControl.getStateErrorAverage();
 
@@ -64,18 +63,120 @@ this.broadcastSend(avg);
 % Receive the average state errors from other satellites.
 receivedAverageStateErrors = this.broadcastReceive();
 
+% compare different average state vectors as a fault detection methods
+
+% JT: I don't know what this is good for
 % Update information on the average state errors.
-this.FlightControl.updateStateErrorsAvg(receivedAverageStateErrors);
+%this.FlightControl.updateStateErrorsAvg(receivedAverageStateErrors);
+
+% Shift error in main force direction
+%JT: remove:this.FlightControl.shiftError();
+%JT: add
+this.FlightControl.StateErrors(1,this.FlightControl.SatID) = this.FlightControl.StateErrors(1,this.FlightControl.SatID) - max(this.FlightControl.StateErrors(1,:));
+
+% average error
 
 % From main cosmosFS:
 % Check whether all errors have the same value in all satellites.
-
-% Shift error.
-this.FlightControl.shiftError();
+%}
 
 % Compute attitude and update satellite state.
 deltaTime = sizeOrbitSection / this.Orbit.MeanMotionDeg;
-this.FlightControl.updState(P, IR, A, B, deltaTime);
+%deltaTime
+%JT removed:this.FlightControl.updState(P, IR, A, B, deltaTime);
+
+%JT added:----
+%------------------------------------------------
+this.FlightControl.StateOld = this.FlightControl.State;
+
+oldAlphas = this.FlightControl.State(7);oldBetas  = this.FlightControl.State(8);oldGammas = this.FlightControl.State(9);
+
+% Vector of size 3 x sizeAlphas x sizeBetas x sizeGammas.
+usedTotalForceVector = zeros(3,size(this.FlightControl.Alphas, 2),size(this.FlightControl.Betas , 2),size(this.FlightControl.Gammas, 2));
+
+% Compute control vector.
+for i=1:this.FlightControl.NumSatellites
+  controlVector(:,i) = -IR * B' * P * this.FlightControl.StateErrors(:, i);
+end
+
+%%
+
+    %% shift and average control force
+    controlVectorMin         = min(controlVector(1,:));
+    for i=1:this.FlightControl.NumSatellites %% transform error for each satellite
+      controlVector(1,i)     = controlVector(1,i) - controlVectorMin;
+    end
+    averagecontrolVector     = zeros(3,1);
+    for i=1:this.FlightControl.NumSatellites %% compute average error
+      averagecontrolVector(2:3)= averagecontrolVector(2:3)+controlVector(2:3,i)/this.FlightControl.NumSatellites;      
+    end
+    for i=1:this.FlightControl.NumSatellites %% assign average error
+      controlVector(2:3,i) = controlVector(2:3,i)-averagecontrolVector(2:3);
+    end
+%%
+
+
+
+
+
+% Sunlight rotation will be important for non dusk-dawn orbits.
+rotatedSolarPressureVector = this.FlightControl.SolarPressureVector;
+
+% To do:
+% Rotate solar pressure vector.
+
+masterSatellite = 0;
+
+% If no master satellite.
+if masterSatellite == 0
+	for k = 1 : size(this.FlightControl.Gammas,2)
+		for j = 1 : size(this.FlightControl.Betas,2)
+			for i = 1 : size(this.FlightControl.Alphas,2)
+				usedTotalForceVector(:,i,j,k) = this.FlightControl.WindPressureVector(:,i,j,k) + rotatedSolarPressureVector(:,i,j,k);
+			end
+		end
+	end
+else
+	% To do:
+	% Implement cases with master satellite.
+	% Will the formation mode with master satellite impact other 
+	% functions as well? Check it before implementing.
+	
+	% Wind and sunlight for dusk-dawn orbit.
+	% wind     = norm(this.WindPressure)  * [-1 0 0]';
+	% sunlight = norm(this.SolarPressure) * [0 -1 0]';
+	
+	% solarForceVectorOfMaster = [0 0 0]';
+	% maxSolarForce            = [0 0 0]';
+	% forceOnMaster = 0.5 * 2.8 * (wind + sunlight) * this.SurfaceRef;
+	
+	% usedTotalForceVector = ...
+end
+
+if norm(controlVector(:,this.FlightControl.SatID))==0
+  forceVector = [0 0 0]'; alphaOpt=0; betaOpt=0; gammaOpt=0;
+else
+  [forceVector, alphaOpt, betaOpt, gammaOpt] = this.FlightControl.findBestAttitude(...
+    usedTotalForceVector, controlVector(:,this.FlightControl.SatID),this.FlightControl.Alphas, this.FlightControl.Betas, this.FlightControl.Gammas, ...
+    oldAlphas, oldBetas, oldGammas);
+end
+if 2*norm(controlVector(:,this.FlightControl.SatID))<norm(forceVector)
+    forceVector=[0 0 0]'; alphaOpt=0; betaOpt=0; gammaOpt=0;
+end
+
+% Update satellite state: solve ODE with backward Euler step.
+this.FlightControl.State(1:6) = (A * this.FlightControl.StateOld(1:6) + B * forceVector / this.FlightControl.SatelliteMass) *...
+                                deltaTime + this.FlightControl.StateOld(1:6);
+
+this.FlightControl.State(7:9) = [alphaOpt betaOpt gammaOpt]';
+
+%------------------------------------------------
+%JT: end----
+
+
+
+
+
 
 % Update duration of the current orbit.
 this.Orbit.updateOrbitDuration();

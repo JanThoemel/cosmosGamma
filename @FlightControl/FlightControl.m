@@ -60,7 +60,6 @@ classdef FlightControl < handle
 			
 			this.NumSatellites = ns;
 			this.FormationMode = mode;
-			
 			this.State          = zeros(9, 1);
 			this.StateDesired   = zeros(6, 1);
 			this.StateErrors    = zeros(6, ns);
@@ -73,12 +72,14 @@ classdef FlightControl < handle
 			this.Betas  = 0:deltaAngle:180; % Pitch.
 			this.Gammas = 0:deltaAngle:360; % Yaw.
 			
-			this.SatelliteMass = 1; % Kilogram(s).
-			this.Panels = [0 0 2];
+			%this.SatelliteMass = 1; % Kilogram(s).
+			this.SatelliteMass = 2; % Kilogram(s).
+			%this.Panels = [0 0 2];
+			this.Panels = [0 0 3.5];
 			this.SurfacePanel = 0.01; % Squared meters.
 			this.SurfaceRef = this.SurfacePanel * this.Panels(3);
 			
-			this.WindFactor = 1;
+			this.WindFactor = 1; 
 			this.SolarFactor = 0;
 			
 			% From main cosmosFS:
@@ -112,16 +113,16 @@ classdef FlightControl < handle
 		
 		updateStateDesired(this, time, meanMotion)
 		
-		updState(this, P, IR, A, B, deltaTime)
+		%updState(this, P, IR, A, B, deltaTime)
 		
 		function shiftState(this, shift)
 			this.State(1:3) = this.State(1:3) + shift;
 		end
 		
-		function shiftError(this)
-			this.StateErrors(1,this.SatID) = ...
-				this.StateErrors(1,this.SatID) - max(this.StateErrors(1,:));
-		end
+%JT: remove
+%		function shiftError(this)
+%			this.StateErrors(1,this.SatID) = this.StateErrors(1,this.SatID) - max(this.StateErrors(1,:));
+%		end
 		
 		function updateSatelliteID(this, satID)
 			this.SatID = satID;
