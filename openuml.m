@@ -46,14 +46,22 @@ end
 !git checkout -B temp-branch
 
 % Force-push the new HEAD commit to the remote branch.
-% !git push -u origin out +HEAD
-!git push -f -u origin HEAD:out
+% !git push -f -u origin HEAD:out
 
 % Merge the previous active branch into 'temp-branch'.
 % !git merge dev
 
 % Apply stashed changes into 'temp-branch'.
 !git stash apply
+
+% Commit changes.
+!git commit -am "Apply changes from stashed state"
+
+fprintf(2,'\nWait for current branch to be updated...\n');
+for t = 5:-1:1
+	fprintf('%s...\n',num2str(t));
+	pause(1);
+end
 
 % Notes on how to set relations between classes:
 % - Association occurs when two classes in a model need to ...
@@ -133,7 +141,7 @@ end
 
 fprintf(2,'\nSuccessfully generated UML diagram\n');
 fprintf(2,'Wait for connection with PlantUML server...\n');
-for t = 5:-1:1
+for t = 9:-1:1
 	fprintf('%s...\n',num2str(t));
 	pause(1);
 end

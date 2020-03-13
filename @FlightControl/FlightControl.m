@@ -114,7 +114,7 @@ classdef FlightControl < handle
 		updateStateDesired(this, time, meanMotion)
 		
 		% Testing git/uml, later remove method updState...
-		updStateREMOVE(this, P, IR, A, B, deltaTime)
+		updState_OLD(this, P, IR, A, B, deltaTime)
 		
 		function shiftState(this, shift)
 			this.State(1:3) = this.State(1:3) + shift;
