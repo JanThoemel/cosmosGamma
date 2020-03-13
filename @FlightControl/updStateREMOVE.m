@@ -1,4 +1,4 @@
-function updState(this, P, IR, A, B, deltaTime)
+function updStateREMOVE(this, P, IR, A, B, deltaTime)
 %% Summary here.
 %_____________________________________________________________________
 %
@@ -79,4 +79,4 @@ this.State(1:6) = (A * this.StateOld(1:6) + B * forceVector / this.SatelliteMass
 
 this.State(7:9) = [alphaOpt betaOpt gammaOpt]';
 
-end % Function FlightControl.updState.
+end % Function FlightControl.updStateREMOVE.
