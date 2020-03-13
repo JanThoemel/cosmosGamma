@@ -38,7 +38,7 @@ classdef 	UmlScript < m2uml.ScriptComposite
 			time = currentTime{2};
 			
 			this.Title = sprintf('  == <b>%s</b>', this.Title);
-			subtitle   = sprintf('  <size:10>Last updated by PlantUML on %s at %s</size>', date, time);
+			subtitle   = sprintf('  <size:10>Last updated on %s at %s</size>', date, time);
                                 
             uml2doc.addString( sprintf( '%s%s title\n %s\n %s\n %s\n %s\n end title\n'  ...
                                     ,   indentation(depth)      ...
