@@ -10,7 +10,7 @@ classdef    run < handle
         code
     end
     methods
-        function    this = run( title_str, class_list, other_arrows )        %
+        function    this = run( title_str, umlfile, class_list, other_arrows )        %
             % m2uml.run generates a PlantUML script, which defines an UML class diagram. 
             %
             % Syntax: 
@@ -55,7 +55,7 @@ classdef    run < handle
 %               
 %   <http://uk.mathworks.com/help/matlab/matlab_oop/scoping-classes-with-packages.html>
 %
-            uml2doc.setupWindow();
+            uml2doc.setupWindow(umlfile);
             nextID('none');
 
             ffs = m2uml.FolderFileSpec();

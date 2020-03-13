@@ -15,8 +15,8 @@ classdef    ( Sealed ) uml2doc < handle
         document
         folderspec
     end
-    properties  ( Constant = true )                 %
-        filename = 'temp.uml';
+    properties  %( Constant = true )                 %
+        filename %= 'temp.uml';
     end
     
     methods     ( Access = private )                %
@@ -24,9 +24,10 @@ classdef    ( Sealed ) uml2doc < handle
         end
     end
     methods     ( Static = true, Access = public )  %
-        function    ffs = setupWindow()             %
+        function    ffs = setupWindow(umlfile)             %
 % dbk            
-            this = uml2doc.Instance;            
+            this = uml2doc.Instance;      
+			this.filename = umlfile;
             this.folderspec = fileparts(fileparts(which(mfilename)));
             ffs = fullfile( this.folderspec, this.filename );
             if exist(ffs,'file') == 2

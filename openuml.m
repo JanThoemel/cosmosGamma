@@ -75,8 +75,12 @@ end
 fprintf('\n');
 fprintf(2,'Generating code for UML diagram...\n');
 
+% Set filename with current date/time.
+umlfile = strcat('tempUML',datestr(now,'yyyymmddHHMMSS'),'.uml');
+dateStringNow = datestr(datetime('now'));
+
 % Run tool m2uml.
-[~] = m2uml.run('UML Class Diagram for Cosmos Software', ...
+[~] = m2uml.run('UML Class Diagram for Cosmos Software', umlfile, ...
 	{
 		'CosmosSimulation', ...
 		'Satellite', ...
@@ -91,21 +95,26 @@ fprintf(2,'Generating code for UML diagram...\n');
 	} ...
 );
 
-% Close file 'temp.uml' in MATLAB editor.
-matlab.desktop.editor.findOpenDocument('temp.uml').close();
+% Close UML file in MATLAB editor.
+matlab.desktop.editor.findOpenDocument('tempUML').close();
 
-% Append date/time to file 'temp.uml'.
+% Append date/time to UML file.
 % In PlantUML, a single quote char (') precedes a comment.
-fid = fopen('temp.uml','a');
-fprintf(fid,'\n'' %s\n',datestr(datetime('now')));
+fid = fopen(umlfile,'a');
+fprintf(fid,'\n'' %s\n',dateStringNow);
 fclose(fid);
 
-% Upload file 'temp.uml' to GitHub on branch 'out'.
+% Upload UML file to GitHub on branch 'out'.
 fprintf('\n');
 fprintf(2,'Now uploading UML output to branch ''out''...\n');
 
 % Commit UML diagram file to remote branch.
-!git add -f temp.uml
+setenv('umlFileName',umlfile);
+if ispc
+	!git add -f "%umlFileName%"
+else
+	!git add -f "$umlFileName"
+end
 !git add .
 !git commit -m "Update UML diagram"
 !git push -f -u origin HEAD:out
@@ -122,12 +131,19 @@ end
 !git stash pop
 !git branch -D temp-branch
 
+fprintf(2,'\nSuccessfully generated UML diagram\n');
+fprintf(2,'Wait for connection with PlantUML server...\n');
+for t = 5:-1:1
+	fprintf('%s...\n',num2str(t));
+	pause(1);
+end
+
 % Set URL to the proxy service of the PlantUML server.
 plantProxy = 'http://www.plantuml.com/plantuml/proxy?';
 
 % Set complete URL of the raw document containing the PlantUML code.
 src = strcat('https://raw.githubusercontent.com/rodweber/',...
-	'beta-cosmos/out/temp.uml');
+	'beta-cosmos/out/',umlfile);
 
 % Specify the format of the output file (default: png).
 fmt = 'png'; % [png], [svg], [eps], [epstext], [txt].
