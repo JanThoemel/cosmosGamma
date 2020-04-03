@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.68/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.68/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Default size: style="width:700px; height:400px" -->
+  <div id="cesiumContainer" style="width:95vw; height:95vh"></div>
+  <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1NmU2YzBhMC01OWRiLTQ3YTQtOWVlMi1mY2JiZjU0Njc3MmEiLCJpZCI6MjU0NDUsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1ODU5MjE1ODF9.TMOqE30xyWsGPhqycw2A-X2XAroHyQ_fH10nseSKYnY';
+
+    var viewer = new Cesium.Viewer('cesiumContainer', {
+      // shouldAnimate : true
+    });
+
+    var campusKirchberg = viewer.entities.add({
+        name : 'University of Luxembourg Kirchberg Campus',
+        position : Cesium.Cartesian3.fromDegrees(6.15900, 49.62600),
+        point : {
+            pixelSize : 5,
+            color : Cesium.Color.RED,
+            outlineColor : Cesium.Color.WHITE,
+            outlineWidth : 2
+        },
+        billboard : {
+          image : "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/University_of_Luxembourg_logo_%28fr%29.svg/567px-University_of_Luxembourg_logo_%28fr%29.svg.png",
+          width : 64,
+          height : 64,
+          pixelOffset : new Cesium.Cartesian2(0, 40)
+        },
+        label : {
+            text : 'University of Luxembourg Kirchberg Campus',
+            font : '14pt monospace',
+            style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+            outlineWidth : 2,
+            verticalOrigin : Cesium.VerticalOrigin.BOTTOM,
+            pixelOffset : new Cesium.Cartesian2(0, -9)
+        }
+    });
+    // viewer.zoomTo(viewer.entities);
+
+    var sampleSatellite = viewer.dataSources.add(Cesium.CzmlDataSource.load('cesium/sampleSatellite.czml'));
+
+
+
+  </script>
+</body>
+</html>
