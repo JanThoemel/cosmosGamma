@@ -8,7 +8,7 @@ gridm('GLineStyle','-','Gcolor',[.7 .8 .9],'Grid','on');
 
 % Show the axes, but hide the edges of the figure's box, and view it in 
 % perspective rather than orthographically (the default perspective).
-set(gca,'Box','off','Projection','perspective');
+set(ax,'Box','off','Projection','perspective','Clipping','off');
 
 % Plot orbit.
 radius = 1.25;
@@ -37,7 +37,7 @@ copperColor = [0.62 0.38 0.24];
 hs = geoshow(base,baseR,'FaceColor',copperColor);
 
 % Pop up the grid so it appears to float 2.5% above the surface.
-setm(gca,'Galtitude',0.025);
+setm(ax,'Galtitude',0.025);
 
 % Freeze the aspect ratio properties and prevent the display from 
 % stretching to fit the window.
@@ -61,12 +61,12 @@ topo = topo*exaggeration_01 / 1000 / earthRadius('km');
 hs = meshm(topo,topolegend,size(topo),topo);
 demcmap(topo);
 
-% Set grid on Earth's surface to on/off.
-setm(gca,'Grid','off');
-
 % Set height of the grid above the surface, in percentage.
 grid_height = 20; % [percentage].
-setm(gca,'Galtitude',grid_height/100);
+setm(ax,'Galtitude',grid_height/100);
+
+% Set grid on Earth's surface to on/off.
+setm(ax,'Grid','off');
 
 % Show the Earth in space. Blacken the figure background, turn off the 
 % three axes, and spin again.
@@ -77,7 +77,7 @@ axis off;
 camlight right;
 lighting Gouraud;
 material ([.7, .9, .8]);
-spin();
+% spin();
 
 % Add world coastlines from the global landareas shapefile and plot 
 % them in light gray.
@@ -97,9 +97,11 @@ plotm([lakes.Lat],[lakes.Lon],'Color','cyan');
 lux = struct('Lat',49.6116,'Lon',6.1319);
 plotm([lux.Lat],[lux.Lon],'Marker','.','MarkerSize',10,'Color','red');
 
+zoom(1.5);
+
 spin();
 
-
+% Rotate globe without rotating orbits.
 
 
 
