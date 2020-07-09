@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.3//EN" "http://www.web3d.org/specifications/x3d-3.3.dtd">
+<X3D profile='Immersive' version='3.3' xmlns:xsd='http://www.w3.org/2001/XMLSchema-instance' xsd:noNamespaceSchemaLocation='http://www.web3d.org/specifications/x3d-3.3.xsd'>
+<head>
+</head>
+<Scene>
+<WorldInfo title='COSMOS Simulation'>
+</WorldInfo>
+<Transform DEF='Earth' >
+  <Transform DEF='EarthTopo'  scale='6.3781 6.3568 6.3781'>
+    <Inline url='"earthAnim.wrl" '>
+    </Inline>
+  </Transform>
+  <Transform DEF='Satellite3'  scale='2 2 2' center='12 1 0'>
+    <Shape DEF='SatelliteBus_0001' >
+      <Appearance>
+        <ImageTexture url='"texture/cubesat.jpg" '>
+        </ImageTexture>
+        <Material specularColor='1 1 1' shininess='1' emissiveColor='0.2 0.2 0.2' diffuseColor='0.2 0.2 0.2' ambientIntensity='0.6'>
+        </Material>
+      </Appearance>
+      <Box size='0.3 0.3 0.3'>
+      </Box>
+    </Shape>
+    <Transform DEF='SolarPanel2_0001'  translation='0 0.16 -0.3'>
+      <Shape>
+        <Appearance>
+          <ImageTexture url='"texture/solarpanel.jpg" '>
+          </ImageTexture>
+          <Material shininess='1' diffuseColor='0.9 0.76733 0.61963' ambientIntensity='0'>
+          </Material>
+        </Appearance>
+        <Box size='0.3 0.02 0.3'>
+        </Box>
+      </Shape>
+    </Transform>
+    <Transform DEF='SolarPanel1_0001'  translation='0 0.16 0.3'>
+      <Shape>
+        <Appearance>
+          <ImageTexture url='"texture/solarpanel.jpg" '>
+          </ImageTexture>
+          <Material shininess='1' diffuseColor='0.9 0.76733 0.61963' ambientIntensity='0'>
+          </Material>
+        </Appearance>
+        <Box size='0.3 0.02 0.3'>
+        </Box>
+      </Shape>
+    </Transform>
+    <Transform DEF='Antenna_0001' >
+      <Transform DEF='AntennaDish_0001'  translation='0 -0.15 0'>
+        <Shape>
+          <Appearance>
+            <Material specularColor='1 1 1' shininess='1' diffuseColor='0.9 0.65504 0.31917'>
+            </Material>
+          </Appearance>
+          <Cone height='0.07' bottomRadius='0.06'>
+          </Cone>
+        </Shape>
+      </Transform>
+    </Transform>
+    <Transform DEF='FollowSat_0001'  translation='-5.5 2 0' rotation='-0.0923 -0.7011 -0.0923 1.5878'>
+      <Viewpoint DEF='FollowSatView_0001'  fieldOfView='0.7854' description='Lock Satellite-3' position='0 0 0'>
+      </Viewpoint>
+    </Transform>
+  </Transform>
+  <Transform DEF='Satellite2'  scale='2 2 2' center='10 2 0'>
+    <Shape DEF='SatelliteBus_0002' >
+      <Appearance>
+        <ImageTexture url='"texture/cubesat.jpg" '>
+        </ImageTexture>
+        <Material specularColor='1 1 1' shininess='1' emissiveColor='0.2 0.2 0.2' diffuseColor='0.2 0.2 0.2' ambientIntensity='0.6'>
+        </Material>
+      </Appearance>
+      <Box size='0.3 0.3 0.3'>
+      </Box>
+    </Shape>
+    <Transform DEF='SolarPanel2_0002'  translation='0 0.16 -0.3'>
+      <Shape>
+        <Appearance>
+          <ImageTexture url='"texture/solarpanel.jpg" '>
+          </ImageTexture>
+          <Material shininess='1' diffuseColor='0.9 0.76733 0.61963' ambientIntensity='0'>
+          </Material>
+        </Appearance>
+        <Box size='0.3 0.02 0.3'>
+        </Box>
+      </Shape>
+    </Transform>
+    <Transform DEF='SolarPanel1_0002'  translation='0 0.16 0.3'>
+      <Shape>
+        <Appearance>
+          <ImageTexture url='"texture/solarpanel.jpg" '>
+          </ImageTexture>
+          <Material shininess='1' diffuseColor='0.9 0.76733 0.61963' ambientIntensity='0'>
+          </Material>
+        </Appearance>
+        <Box size='0.3 0.02 0.3'>
+        </Box>
+      </Shape>
+    </Transform>
+    <Transform DEF='Antenna_0002' >
+      <Transform DEF='AntennaDish_0002'  translation='0 -0.15 0'>
+        <Shape>
+          <Appearance>
+            <Material specularColor='1 1 1' shininess='1' diffuseColor='0.9 0.65504 0.31917'>
+            </Material>
+          </Appearance>
+          <Cone height='0.07' bottomRadius='0.06'>
+          </Cone>
+        </Shape>
+      </Transform>
+    </Transform>
+    <Transform DEF='FollowSat_0002'  translation='-5.5 2 0' rotation='-0.0923 -0.7011 -0.0923 1.5878'>
+      <Viewpoint DEF='FollowSatView_0002'  fieldOfView='0.7854' description='Lock Satellite-2' position='0 0 0'>
+      </Viewpoint>
+    </Transform>
+  </Transform>
+  <Transform DEF='Satellite1'  scale='2 2 2' center='10 0 0'>
+    <Shape DEF='SatelliteBus' >
+      <Appearance>
+        <ImageTexture url='"texture/cubesat.jpg" '>
+        </ImageTexture>
+        <Material specularColor='1 1 1' shininess='1' emissiveColor='0.2 0.2 0.2' diffuseColor='0.2 0.2 0.2' ambientIntensity='0.6'>
+        </Material>
+      </Appearance>
+      <Box size='0.3 0.3 0.3'>
+      </Box>
+    </Shape>
+    <Transform DEF='SolarPanel2'  translation='0 0.16 -0.3'>
+      <Shape>
+        <Appearance>
+          <ImageTexture url='"texture/solarpanel.jpg" '>
+          </ImageTexture>
+          <Material shininess='1' diffuseColor='0.9 0.76733 0.61963' ambientIntensity='0'>
+          </Material>
+        </Appearance>
+        <Box size='0.3 0.02 0.3'>
+        </Box>
+      </Shape>
+    </Transform>
+    <!--def: 0 0 0-->
+    <Transform DEF='SolarPanel1'  translation='0 0.16 0.3'>
+      <Shape>
+        <Appearance>
+          <ImageTexture url='"texture/solarpanel.jpg" '>
+          </ImageTexture>
+          <!--def 0.2-->
+          <!--def 	0.8 	0.8 	0.8-->
+          <!--def 0.2-->
+          <Material shininess='1' diffuseColor='0.9 0.76733 0.61963' ambientIntensity='0'>
+          </Material>
+        </Appearance>
+        <Box size='0.3 0.02 0.3'>
+        </Box>
+      </Shape>
+    </Transform>
+    <Transform DEF='Antenna' >
+      <Transform DEF='AntennaDish'  translation='0 -0.15 0'>
+        <Shape>
+          <Appearance>
+            <!--def	0	0	0-->
+            <!--def 0.2-->
+            <!--def:	0.8	0.8	0.8-->
+            <Material specularColor='1 1 1' shininess='1' diffuseColor='0.9 0.65504 0.31917'>
+            </Material>
+          </Appearance>
+          <Cone height='0.07' bottomRadius='0.06'>
+          </Cone>
+        </Shape>
+      </Transform>
+    </Transform>
+    <!--def	0	0	0-->
+    <!--def	0	0	1	0-->
+    <Transform DEF='FollowSat'  translation='-5.5 2 0' rotation='-0.0923 -0.7011 -0.0923 1.5878'>
+      <!--def	0	0	10-->
+      <Viewpoint DEF='FollowSatView'  fieldOfView='0.7854' description='Lock Satellite-1' position='0 0 0'>
+      </Viewpoint>
+    </Transform>
+  </Transform>
+  <Transform DEF='AntennaCone1' >
+  </Transform>
+  <Transform DEF='AntennaCone2' >
+  </Transform>
+  <Transform DEF='AntennaCone3' >
+  </Transform>
+  <!--def: 0 0 0-->
+  <Transform DEF='Sun'  translation='-135.283 -56.6874 10.1179'>
+    <Shape DEF='SunOrb' >
+      <Appearance>
+        <ImageTexture url='"texture/sun.jpg" '>
+        </ImageTexture>
+        <!--def 0 0 0 -->
+        <!--def 0.2-->
+        <!--def : 0 0 0 -->
+        <!--def: 0.8 0.8 0.8-->
+        <!--def : 0.2-->
+        <Material specularColor='1 0.8 0' shininess='1' emissiveColor='1 1 0' diffuseColor='1 0.8 0' ambientIntensity='0.5'>
+        </Material>
+      </Appearance>
+      <Sphere solid='false' radius='0.69551'>
+      </Sphere>
+    </Shape>
+  </Transform>
+</Transform>
+<!--default: 1-->
+<!--default:-->
+<!--EXAMINE-->
+<!--ANY-->
+<NavigationInfo visibilityLimit='200000' type='"EXAMINE" ' speed='10'>
+</NavigationInfo>
+<Transform DEF='SkyDome_0001'  scale='0.05 0.05 0.05'>
+  <Inline url='"skyAnim.wrl" '>
+  </Inline>
+  <Fog color='0 0 0'>
+  </Fog>
+</Transform>
+<!--def: 1 1 1-->
+<Transform DEF='SkyDome'  scale='1e-05 1e-05 1e-05'>
+  <Inline url='"skyAnim.wrl" '>
+  </Inline>
+</Transform>
+<!--def: 0 0 0-->
+<Transform DEF='EarthSide'  translation='0 0 12'>
+  <Viewpoint fieldOfView='0.7854' description='Earth Side'>
+  </Viewpoint>
+</Transform>
+</Scene>
+</X3D>
