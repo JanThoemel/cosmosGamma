@@ -1,0 +1,67 @@
+%implements s41_b0_gsdak_1_Start "C"
+
+%function Start(block, system) Output
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+%openfile localVarDecl
+
+void *catalog;
+void *catalog_p;
+void *catalog_e;
+void *catalog_i;
+%closefile localVarDecl
+if (rt_slioCatalogue()) {
+    catalog = rtwGetPointerFromUniquePtr(rt_slioCatalogue());
+} else {
+    catalog = sdiGetSlioCatalogue(%<(SLibGetInstancePath())>);
+}
+localDW->kohckdzmxe = rt_SlioAccessorAddClientAssessmentSdi(1, 4, catalog, localDW->kohckdzmxe, "Assertion", "asbCubeSatACS/Attitude Control/Pointing Mode Selection/On.Earth/Calculate Quaternion ECEF to ORF/Direction Cosine Matrix  to Quaternions/Validate DCM/If Warning//Error/Else If Not Orthogonal/Error/Assertion");
+if (rt_slioCatalogue()) {
+    catalog_p = rtwGetPointerFromUniquePtr(rt_slioCatalogue());
+} else {
+    catalog_p = sdiGetSlioCatalogue(%<(SLibGetInstancePath())>);
+}
+localDW->o0zwdfrkn4 = rt_SlioAccessorAddClientAssessmentSdi(1, 4, catalog_p, localDW->o0zwdfrkn4, "Assertion", "asbCubeSatACS/Attitude Control/Pointing Mode Selection/On.Earth/Calculate Quaternion ECEF to ORF/Direction Cosine Matrix  to Quaternions/Validate DCM/If Warning//Error/Else If Not Orthogonal/Warning/Assertion");
+if (rt_slioCatalogue()) {
+    catalog_e = rtwGetPointerFromUniquePtr(rt_slioCatalogue());
+} else {
+    catalog_e = sdiGetSlioCatalogue(%<(SLibGetInstancePath())>);
+}
+localDW->hunrq3wyal = rt_SlioAccessorAddClientAssessmentSdi(1, 4, catalog_e, localDW->hunrq3wyal, "Assertion", "asbCubeSatACS/Attitude Control/Pointing Mode Selection/On.Earth/Calculate Quaternion ECEF to ORF/Direction Cosine Matrix  to Quaternions/Validate DCM/If Warning//Error/If Not Proper/Error/Assertion");
+if (rt_slioCatalogue()) {
+    catalog_i = rtwGetPointerFromUniquePtr(rt_slioCatalogue());
+} else {
+    catalog_i = sdiGetSlioCatalogue(%<(SLibGetInstancePath())>);
+}
+localDW->kb3srtthe1 = rt_SlioAccessorAddClientAssessmentSdi(1, 4, catalog_i, localDW->kb3srtthe1, "Assertion", "asbCubeSatACS/Attitude Control/Pointing Mode Selection/On.Earth/Calculate Quaternion ECEF to ORF/Direction Cosine Matrix  to Quaternions/Validate DCM/If Warning//Error/If Not Proper/Warning/Assertion");
+%<SFLibRegSignalLogging(0, 28)>\
+%closefile cfgTxt
+%<cfgTxt>
+%assign rtmArgSys = ::CompiledModel.System[::CompiledModel.System[::CompiledModel.RTWCGModules.RTWCGModule[1].CGSystemIdx].NonInlinedParentSystemIdx]
+%if SysFcnArgNeeded("Start", rtmArgSys.Interface.RTMArgDef, rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "Start"))
+%<SLibCG_AccessArg(1, 0, 0)>
+%endif
+%if SLibCG_ArgAccessed(1, 0, 0)
+%<SLibAccessArg(rtmArgSys.Interface.RTMArgDef, "Start", rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "Start"))>
+%endif
+%if (IsModelReferenceBaseSys(rtmArgSys) && (IsModelRefScalableBuild() || GenerateClassInterface)) ||...
+(GenerateClassInterface && SLibIsMultiInstanceServer(rtmArgSys))
+%<SLibCG_UndoAccessArg(1, 0, 0)>
+%endif
+%<LibSetSystemField(system, "CachedStartLocalVars", localVarDecl)>
+%endfunction
+%function StartFcnProtoType(block, system) Output
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void ie553oink0(\
+%assign comma = ""
+%if SLibCG_ArgAccessed(1, 0, 0)
+%<comma>%<::tSimStructType> * const %<::tSimStruct>\
+%assign comma = ", "
+%endif
+%<comma>due31ddxq5 *localDW\
+%assign comma = ", "
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(1, 0, fcnProtoType)>
+%endfunction

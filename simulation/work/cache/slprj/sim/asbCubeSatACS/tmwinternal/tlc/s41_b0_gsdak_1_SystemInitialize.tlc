@@ -1,0 +1,57 @@
+%implements s41_b0_gsdak_1_SystemInitialize "C"
+
+%function SystemInitialize(block, system) Output
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+%<SLibWriteMachineInitialize()>
+localDW->ck3q4trat2 = mbfvbx3cau;
+localDW->jrxil14s5x = 0U;
+localDW->gvwlamizy1 = mbfvbx3cau;
+localDW->csgaj2fyjn[0] = abopqckbgq.P_2;
+localDW->drbjvug1h2[0] = abopqckbgq.P_1;
+localB->au2rrfanhd[0] = 0.0;
+localDW->csgaj2fyjn[1] = abopqckbgq.P_2;
+localDW->drbjvug1h2[1] = abopqckbgq.P_1;
+localB->au2rrfanhd[1] = 0.0;
+localDW->csgaj2fyjn[2] = abopqckbgq.P_2;
+localDW->drbjvug1h2[2] = abopqckbgq.P_1;
+localB->au2rrfanhd[2] = 0.0;
+localB->kisoy4t2cf[0] = abopqckbgq.P_39[0];
+localB->kisoy4t2cf[1] = abopqckbgq.P_39[1];
+localB->kisoy4t2cf[2] = abopqckbgq.P_39[2];
+localB->kisoy4t2cf[3] = abopqckbgq.P_39[3];
+localB->ik2arsnaov.Roll = localB->au2rrfanhd[0];
+localB->ik2arsnaov.Pitch = localB->au2rrfanhd[1];
+localB->ik2arsnaov.Yaw = localB->au2rrfanhd[2];
+%closefile cfgTxt
+%<cfgTxt>
+%assign rtmArgSys = ::CompiledModel.System[::CompiledModel.System[::CompiledModel.RTWCGModules.RTWCGModule[1].CGSystemIdx].NonInlinedParentSystemIdx]
+%if SysFcnArgNeeded("SystemInitialize", rtmArgSys.Interface.RTMArgDef, rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "SystemInitialize"))
+%<SLibCG_AccessArg(1, 1, 0)>
+%endif
+%if SLibCG_ArgAccessed(1, 1, 0)
+%<SLibAccessArg(rtmArgSys.Interface.RTMArgDef, "SystemInitialize", rtmArgSys.CurrentTID, FcnSysModuleIsRateGrouping(rtmArgSys, "SystemInitialize"))>
+%endif
+%if (IsModelReferenceBaseSys(rtmArgSys) && (IsModelRefScalableBuild() || GenerateClassInterface)) ||...
+(GenerateClassInterface && SLibIsMultiInstanceServer(rtmArgSys))
+%<SLibCG_UndoAccessArg(1, 1, 0)>
+%endif
+%<LibSetSystemField(system, "CachedSystemInitializeLocalVars", localVarDecl)>
+%endfunction
+%function SystemInitializeFcnProtoType(block, system) Output
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void pm1oeto4u5(\
+%assign comma = ""
+%if SLibCG_ArgAccessed(1, 1, 0)
+%<comma>%<::tSimStructType> * const %<::tSimStruct>\
+%assign comma = ", "
+%endif
+%<comma>ophodr0x0g *localB\
+%assign comma = ", "
+%<comma>due31ddxq5 *localDW\
+%assign comma = ", "
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(1, 1, fcnProtoType)>
+%endfunction

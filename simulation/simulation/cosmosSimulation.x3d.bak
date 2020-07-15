@@ -64,7 +64,7 @@
       </Transform>
     </Transform>
     <Transform DEF='FollowSat_0001'  translation='-5.5 2 0' rotation='-0.0923 -0.7011 -0.0923 1.5878'>
-      <Viewpoint DEF='FollowSatView_0001'  fieldOfView='0.7854' description='Lock Satellite-3' orientation='0 1 1 1' position='0 0 0'>
+      <Viewpoint DEF='FollowSatView_0001'  fieldOfView='0.7854' description='Lock Satellite-3' position='0 0 0'>
       </Viewpoint>
     </Transform>
   </Transform>

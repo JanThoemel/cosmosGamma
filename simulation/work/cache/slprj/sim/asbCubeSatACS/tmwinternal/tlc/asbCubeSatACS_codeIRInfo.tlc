@@ -1,0 +1,48 @@
+%function FcnLoadCodeIRInfo() Output 
+codeIRInfoStruct = load('C:\Users\rodrigo.weber\Dropbox\cosmos-simulation-test3\work\cache\slprj\sim\asbCubeSatACS\tmwinternal\tlc\codeIRInfo.mat');
+codeInfo = codeIRInfoStruct.codeInfo;
+%endfunction
+
+%function FcnGetIsInheritedSampleTime() void
+%assign tmpIdx = 0
+%return tmpIdx 
+%endfunction
+
+%function FcnGetUnsetDSMIdxFromIRInfo() void
+%assign tmpIdx = []
+%return tmpIdx 
+%endfunction
+
+%function FcnGetUnsetEIIdxFromIRInfo() void
+%assign tmpIdx = []
+%return tmpIdx 
+%endfunction
+
+%function FcnGetRootInportsMapFromIRInfo() void
+%assign tmpIdx = Matrix(12,2)[[0, 0]; [1, 1]; [2, 2]; [3, 3]; ...
+[4, 4]; [5, 5]; [6, 6]; [7, 7]; [8, 8]; ...
+[9, 9]; [10, 10]; [11, 11]; ]
+%return tmpIdx 
+%endfunction
+
+%function FcnGetUnsetEOIdxFromIRInfo() void
+%assign tmpIdx = []
+%return tmpIdx 
+%endfunction
+
+%function FcnGetUnsetParamIdxFromIRInfo() void
+%assign tmpIdx = Matrix(6,2)[[1, 1]; [2, 2]; [3, 3]; [4, 4]; ...
+[5, 5]; [6, 6]; ]
+%return tmpIdx 
+%endfunction
+
+%function FcnGetArSharedParamIdxFromIRInfo() void
+%assign tmpIdx = []
+%return tmpIdx 
+%endfunction
+
+%function FcnGetInstanceSpecificParamIdxFromIRInfo() void
+%assign tmpIdx = []
+%return tmpIdx 
+%endfunction
+
