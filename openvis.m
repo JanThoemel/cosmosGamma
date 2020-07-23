@@ -5,6 +5,9 @@ warning on verbose;
 delete(gcp('nocreate'));
 close all; clc; % Do not clear variables, it makes the project unstable.
 
+% Set parameter to automatically run Simulink visualization.
+AUTORUN = 1; % [true: 1 | false: 0]
+
 % Inform the name of this file without the extension "m".
 THIS_FILE_NAME = 'openvis';
 
@@ -13,7 +16,7 @@ PROJECT_FILE_NAME = 'cosmosVisualization'; % Without extension 'prj'.
 PROJECT_FOLDER = 'visualization';
 
 % Files with coordinates data for satellites.
-coordfileSat1 = 'sat1LLR';
+coordfiles = {'sat1LLR'};
 
 %% Set paths
 if(~isdeployed)
@@ -55,19 +58,43 @@ else
     end
 end
 
-coord = readmatrix(coordfileSat1);
-timestamps = coord(:,1); % [seconds]
-latDeg = coord(:,2); % [degrees]
-longDeg = coord(:,3); % [degrees]
-smaKm = coord(:,4); % [km]
+% Define satellite struct.
+sat(1).lat = struct('time',0,'signals',struct('dimensions',0,'values',0));
+sat(1).long = struct('time',0,'signals',struct('dimensions',0,'values',0));
+sat(1).sma = struct('time',0,'signals',struct('dimensions',0,'values',0));
 
-% Convert data to SI units
-lat = latDeg * (pi/180); % [rad]
-long = longDeg * (pi/180); % [rad]
-sma = smaKm * 1000; % [m]
+% Allocate memory for array of satellites.
+numsats = length(coordfiles);
+sat = repmat(sat(1),numsats,1);
+
+for n = 1:numsats
+    coord = readmatrix(coordfiles{n});
+    timestamps = coord(:,1); % [seconds]
+    latDeg = coord(:,2); % [degrees]
+    longDeg = coord(:,3); % [degrees]
+    smaKm = coord(:,4); % [km]
+    
+    % Convert data to SI units
+    latRad = latDeg * (pi/180); % [rad]
+    longRad = longDeg * (pi/180); % [rad]
+    smaMeters = smaKm * 1000; % [m]
+    
+    % Place data into satellite struct.
+    sat(n).lat.time = timestamps;
+    sat(n).lat.signals.dimensions = 1;
+    sat(n).lat.signals.values = latRad;
+    
+    sat(n).long.time = timestamps;
+    sat(n).long.signals.dimensions = 1;
+    sat(n).long.signals.values = longRad;
+    
+    sat(n).sma.time = timestamps;
+    sat(n).sma.signals.dimensions = 1;
+    sat(n).sma.signals.values = smaMeters;
+end
 
 % Get last timestamp of the time vector, set it as simulation time.
-simTime = timestamps(end);
+stopTime = sat(1).lat.time(end);
 
 % Check length of lat and long vectors.
 
@@ -146,4 +173,27 @@ cd(fullfile(filepath,PROJECT_FOLDER));
 
 % Open Simulink model and run it.
 open_system('asbCubeSat');
-sim('asbCubeSat',simTime);
+
+% To see all object handles open in MATLAB, enter in Command Window:
+% object_handles = findall(groot)
+% To find object handle of the figure window for 3D visualization, enter
+% in Command Window:
+% findall(groot, 'Name', 'COSMOS Visualization')
+
+if AUTORUN
+    % Try to get handle of the figure window for 3D visualization.
+    cosmosVisHandle = findall(groot, 'Name', 'COSMOS Visualization');
+    if isempty(cosmosVisHandle)
+        % If handle is empty, means that the figure is closed.
+        % Open figure.
+        open('cosmosSimulation.x3d');
+        cosmosVisHandle = findall(groot, 'Name', 'COSMOS Visualization');
+        % Find VRSimMenu in cosmosVisHandle.Children(5)
+        % Find submenus in cosmosVisHandle.Children(5).Children(1) to (3)
+    else
+        % If handle is found, figure is already open. Bring it to front.
+        figure(cosmosVisHandle);
+    end
+    % Start Simulink visualization.
+    sim('asbCubeSat',stopTime);
+end
