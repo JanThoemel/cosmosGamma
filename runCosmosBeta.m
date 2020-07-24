@@ -261,22 +261,23 @@ parametersISMission = struct( ...
 %% parameters for riccati equation can be found in riccatiequation
 
 %% Instantiate a simulation object with the selected parameters.
-sim = CosmosSimulation(parametersIvanov);
-%sim = CosmosSimulation(parametersCluxter);
-%sim = CosmosSimulation(parametersISMission);
+% Don't use variable name 'sim'. It is a reserved name needed for Simulink.
+csim = CosmosSimulation(parametersIvanov);
+%csim = CosmosSimulation(parametersCluxter);
+%csim = CosmosSimulation(parametersISMission);
 
 %% Initiate and run simulation.
-sim.start();
+csim.start();
 
 %% create objects needed for documentation generation
 % Create global alias for the array of satellites.
-sat = sim.Satellites; % Aliases: sat(1) to sat(n).
+sat = csim.Satellites; % Aliases: sat(1) to sat(n).
 % Create global alias for the array of orbits.
-orbit = sim.Orbits; % Aliases: orbit(1) to orbit(n).
+orbit = csim.Orbits; % Aliases: orbit(1) to orbit(n).
 % Create global alias for the array of flight control modules.
-fc = sim.FlightControlModules; % Aliases: fc(1) to fc(n).
+fc = csim.FlightControlModules; % Aliases: fc(1) to fc(n).
 % Create global alias for the array of GPS modules.
-gps = sim.GPSModules; % Aliases: gps(1) to gps(n).
+gps = csim.GPSModules; % Aliases: gps(1) to gps(n).
 
 %% save data for documentation generation
 % Save current MATLAB workspace variables.
@@ -284,17 +285,17 @@ warning off parallel:lang:spmd:CompositeSave;
 workspaceFileName = 'workspace.mat';
 save(fullfile(filepath, workspaceFileName));
 % Print custom objects and classes used.
-sim.createListCustomClasses(filepath, workspaceFileName);
+csim.createListCustomClasses(filepath, workspaceFileName);
 
 %% Plot results
-angles = sim.SatStates(:,7:9,:);
-sst = sim.SatStates(:,1:6,:);
-refPosChange = sim.SatPositions(1,:,:);
-time = sim.TimeVector';
-ns = sim.NumSatellites;
+angles = csim.SatStates(:,7:9,:);
+sst = csim.SatStates(:,1:6,:);
+refPosChange = csim.SatPositions(1,:,:);
+time = csim.TimeVector';
+ns = csim.NumSatellites;
 meanMotion = orbit.MeanMotionRad;
-u = zeros(sim.NumSatellites, 3, size(sim.SatStates,3));
-e = zeros(sim.NumSatellites, 6, size(sim.SatStates,3));
-sim.plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e);
+u = zeros(csim.NumSatellites, 3, size(csim.SatStates,3));
+e = zeros(csim.NumSatellites, 6, size(csim.SatStates,3));
+csim.plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e);
 
 fprintf('\nDone.\n\n');

@@ -59,13 +59,13 @@ else
 end
 
 % Define satellite struct.
-sat(1).lat = struct('time',0,'signals',struct('dimensions',0,'values',0));
-sat(1).long = struct('time',0,'signals',struct('dimensions',0,'values',0));
-sat(1).sma = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).lat = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).long = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).sma = struct('time',0,'signals',struct('dimensions',0,'values',0));
 
 % Allocate memory for array of satellites.
 numsats = length(coordfiles);
-sat = repmat(sat(1),numsats,1);
+simsat = repmat(simsat(1),numsats,1);
 
 for n = 1:numsats
     coord = readmatrix(coordfiles{n});
@@ -80,21 +80,21 @@ for n = 1:numsats
     smaMeters = smaKm * 1000; % [m]
     
     % Place data into satellite struct.
-    sat(n).lat.time = timestamps;
-    sat(n).lat.signals.dimensions = 1;
-    sat(n).lat.signals.values = latRad;
+    simsat(n).lat.time = timestamps;
+    simsat(n).lat.signals.dimensions = 1;
+    simsat(n).lat.signals.values = latRad;
     
-    sat(n).long.time = timestamps;
-    sat(n).long.signals.dimensions = 1;
-    sat(n).long.signals.values = longRad;
+    simsat(n).long.time = timestamps;
+    simsat(n).long.signals.dimensions = 1;
+    simsat(n).long.signals.values = longRad;
     
-    sat(n).sma.time = timestamps;
-    sat(n).sma.signals.dimensions = 1;
-    sat(n).sma.signals.values = smaMeters;
+    simsat(n).sma.time = timestamps;
+    simsat(n).sma.signals.dimensions = 1;
+    simsat(n).sma.signals.values = smaMeters;
 end
 
 % Get last timestamp of the time vector, set it as simulation time.
-stopTime = sat(1).lat.time(end);
+stopTime = simsat(1).lat.time(end);
 
 % Check length of lat and long vectors.
 
