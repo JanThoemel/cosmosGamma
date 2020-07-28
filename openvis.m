@@ -141,65 +141,85 @@ for i = 1:dataLength
         simsat(n).pos.signals.values(i,2) = y;
         simsat(n).pos.signals.values(i,3) = z;
         
-        % ---------------------------------------------------------------------
+        % -----------------------------------------------------------------
         % Method 1 (more complex, stop here, implement Method 2)
         % For each pair of lat-long, compute vector to center of Earth.
         % Start with vector1 = [1 0 0].
-
+        
         % Rotate on ECEF's Z-axis with angle = longitude.
         % Outputs rotated vector2.
-
+        
         % Compute ortogonal vector between vector2 and Z-axis positive.
         % Ortogonal vector must be the rotation axis for vector2 to meet Z+.
         % Check it.
-
+        
         % Compute rotation matrix on ortogonal vector with angle = latitude.
         % Use Rodrigues' rotation equations.
-
+        
         % Use rotation matrix on vector2.
         % Outputs vector3.
-        % ---------------------------------------------------------------------
-
-        % Method 2
-        % For each pair of lat-long, compute vector to center of Earth.
-        % Start with vector1 = [1 0 0].
+        % -----------------------------------------------------------------
         
-        % Compute rotation to set initial attitude:
-        % - payload to Nadir, and
-        % - wings perpendicular to flight direction.
-
+        % Method 2: Pseudo-code here, implementation has been changed below
+        % For each pair of lat-long, compute vector to center of Earth.
+        % Initial vector is [SMA, 0, 0].
+        % Normalize vector to start with vector0 = [1 0 0].
+        
+        % Rotate to set initial attitude:
+        %   - payload to Nadir, and
+        %   - wings perpendicular to Equator line.
+        % Output vector1.
+        
         % Rotate on ECEF's Y-axis with angle -latitude.
         % Output vector2.
-
+        
         % Rotate on ECEF's Z-axis with angle +longitude.
         % Output vector3.
-
+        
         % Compute Rodrigues' matrix for rotation around vector3.
-
         % Use Rodrigues' matrix with two different angles.
         % Case 1: angle = +orbit_inclination
         % Case 2: angle = -orbit_inclination
-
+        
         % If the lat-long point is in the ascending portion of the orbit, the 
         % inclination will be positive.
         % If the lat-long point is in the descending portion of the orbit, the 
         % inclination will be negative.
-
+        
         % Compute the derivative of the latitude.
         % If derivative is positive, orbit is ascending.
         % If derivative is negative, orbit is descending.
-
+        
         % Therefore,
         % Derivative+ : ascending : angle = +orbit_inclination
         % Derivative- : ascending : angle = -orbit_inclination
-        % ---------------------------------------------------------------------
-        
-        % Set original vector1 as [SMA, 0, 0].
-        % vector1 = [simsat(n).sma.signals.values(i), 0, 0];
+        % -----------------------------------------------------------------
         
         % For each pair of lat-long, compute vector to center of Earth.
-        % Start with vector1 = [1 0 0].
-        vector1 = [1 0 0];
+        % Initial vector is [SMA, 0, 0].
+        % Normalize vector to start with vector0 = [1 0 0].
+        vector0 = [1 0 0];
+        
+        % Rotate to set initial attitude:
+        %   - payload pointing to Nadir, and
+        %   - wings perpendicular to Equator line.
+        % To correct orientation of the 3D satellite to initial attitude,
+        % rotate -90deg (-pi/2) on ECEF's Y-axis.
+        a = -pi/2;
+        rot1 = [cos(a/2), 0, sin(a/2), 0]; % [quaternion]
+        vector1 = quatrotate(rot1, vector0);
+        
+        % -----------------------------------------------------------------
+        % Correct for orbit inclination.
+        
+        % If the lat-long point is in the ascending portion of the orbit, the 
+        % inclination will be positive.
+        % If the lat-long point is in the descending portion of the orbit, the 
+        % inclination will be negative.
+        
+        % Compute the derivative of the latitude.
+        % If derivative is positive, orbit is ascending.
+        % If derivative is negative, orbit is descending.
         
         % Check for positive or negative change in latitude.
         if i > 1
@@ -213,61 +233,72 @@ for i = 1:dataLength
         % Example A:
         % If lat_now = 0, lat_before = -1,
         % diff = +1,
-        % diff positive -> latitude increasing
+        % diff positive -> latitude increasing, ascending portion of the orbit
         % latitude increasing -> use positive orbit inclination for roll
         
         % Example B:
         % If lat_now = 85, lat_before = 86,
         % diff = -1,
-        % diff negative -> latitude decreasing
+        % diff negative -> latitude decreasing, descending portion of the orbit
         % latitude decreasing -> use negative orbit inclination for roll
         
         if diff < 0
-            simsat(n).inc.signals.values(i) = -inclination;
+            inclinationToUse = -inclination;
         else
-            simsat(n).inc.signals.values(i) = inclination;
+            inclinationToUse = inclination;
         end
         
-        % Correct orientation of the 3D satellite.
-        % Rotate -90deg (-pi/2) on ECEF's Y-axis.
-        a = -pi/2;
-        rot1 = [cos(a/2), 0, sin(a/2), 0]; % [quaternion]
+        a = inclinationToUse;
+        rotInclination = [cos(a/2), sin(a/2), 0, 0]; % [quaternion]
+        % Update quaternion rotation.
+        rot = quatmultiply(rotInclination, rot1);
         
-        
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        a = simsat(n).inc.signals.values(i);
-        rotWrong = [cos(a/2), sin(a/2), 0, 0]; % [quaternion]
-        
-        
+        % -----------------------------------------------------------------
         
         % Rotate on ECEF's Y-axis with angle -latitude.
         % Output vector2.
         a = -lat;
         rot2 = [cos(a/2), 0, sin(a/2), 0]; % [quaternion]
+        vector2 = quatrotate(rot2, vector1);
+        % Update quaternion rotation.
+        rot = quatmultiply(rot2, rot);
         
         % Rotate on ECEF's Z-axis with angle +longitude.
         % Output vector3.
         a = long;
         rot3 = [cos(a/2), 0, 0, sin(a/2)]; % [quaternion]
-        
-        
-        
-        
-        
-        
-        % Multiply all rotation quaternions to get final rotation.
-        %rot = quatmultiply(rot2, rot1);
-        rot = quatmultiply(rotWrong, rot1);
-        rot = quatmultiply(rot2, rot);
+        vector3 = quatrotate(rot3, vector2);
+        % Update quaternion rotation.
         rot = quatmultiply(rot3, rot);
         
+        % Compute Rodrigues' matrix for rotation around vector3.
+        % Use Rodrigues' matrix with two different angles.
+        % Case 1: angle = +orbit_inclination
+        % Case 2: angle = -orbit_inclination
+        
+        % Compute Rodrigues matrix here.
+        % References:
+        % https://math.stackexchange.com/questions/142821/matrix-for-rotation-around-a-vector
+        % https://mathworld.wolfram.com/RodriguesRotationFormula.html
+        u = vector3; % rotation matrix will be around u, must be normalized
+        a = inclinationToUse; % angle to rotate around vector u
+        W = [  0  -u(3)  u(2);
+             u(3)   0   -u(1);
+            -u(2)  u(1)   0 ];
+        I = eye(3); % identity matrix 3x3
+        rodriguesRotMatrix = I + sin(a)*W + (2*sin(a/2)^2)*(W^2);
+        
+        % [Disabled]
+        % Convert Rodrigues rotation matrix to quaternions.
+        % rot4 = rotm2quat(rodriguesRotMatrix);
+        % Update quaternion rotation.
+        % rot = quatmultiply(rot4, rot);
+        
+        % Multiplied all rotation quaternions to get final rotation.
         % Loop to save all elements of the final rotation quaternion.
         for q = 1:4
             simsat(n).rot.signals.values(i,q) = rot(q);
         end
-
-
-
         
     end
 end
