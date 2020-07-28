@@ -6,7 +6,7 @@ delete(gcp('nocreate'));
 close all; clc; % Do not clear variables, it makes the project unstable.
 
 % Set parameter to automatically run Simulink visualization.
-AUTORUN = 0; % [true: 1 | false: 0]
+AUTORUN = 1; % [true: 1 | false: 0]
 
 % Inform the name of this file without the extension "m".
 THIS_FILE_NAME = 'openvis';
