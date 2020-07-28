@@ -16,8 +16,8 @@ PROJECT_FILE_NAME = 'cosmosVisualization'; % Without extension 'prj'.
 PROJECT_FOLDER = 'visualization';
 
 % Files with coordinates data for satellites.
-coordfiles = {'sat1LLR'};
-%coordfiles = {'sat1LLR','sat2LLR','sat3LLR'};
+%coordfiles = {'sat1LLR'};
+coordfiles = {'sat1LLR','sat2LLR','sat3LLR'};
 %coordfiles = {'sat1_LLR_PYR','sat2_LLR_PYR','sat3_LLR_PYR'};
 
 % Inclination for the satellite orbits, in radians.
