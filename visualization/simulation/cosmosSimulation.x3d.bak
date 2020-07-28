@@ -215,7 +215,7 @@
           <Material transparency='0.4' diffuseColor='0 0 0' ambientIntensity='1'>
           </Material>
         </Appearance>
-        <Cone side='false' height='1384' bottomRadius='6.5'>
+        <Cone side='false' height='1384' bottomRadius='6.5' bottom='false'>
         </Cone>
       </Shape>
     </Transform>
