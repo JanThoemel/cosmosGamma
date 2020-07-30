@@ -20,8 +20,12 @@ PROJECT_FOLDER = 'visualization';
 %coordfiles = {'sat1LLR','sat2LLR','sat3LLR','sat4LLR'};
 %coordfiles = {'sat1_LLR_PYR','sat2_LLR_PYR','sat3_LLR_PYR','sat4_LLR_PYR'};
 %coordfiles = {'LLR_sat_1','LLR_sat_2','LLR_sat_3','LLR_sat_4'};
-coordfiles = {'inc000-LLR_PYR_sat-1','inc000-LLR_PYR_sat-2',...
-    'inc000-LLR_PYR_sat-3','inc000-LLR_PYR_sat-ref'};
+coordfiles = {
+    'inc000-LLR_PYR_sat-1';
+    'inc000-LLR_PYR_sat-2';
+    'inc000-LLR_PYR_sat-3';
+    'inc000-LLR_PYR_sat-ref'
+    };
 inclination = 0; % Inclination of the satellite orbits, in degrees.
 
 % Conversion of the orbital inclination, from degrees to radians.
