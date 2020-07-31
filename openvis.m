@@ -26,10 +26,17 @@ coordfiles = {
     'inc000-LLR_PYR_sat-3';
     'inc000-LLR_PYR_sat-ref'
     };
-inclination = 0; % Inclination of the satellite orbits, in degrees.
+
+COORD_FOLDER_FLAG = 1; % [true: 1 | false: 0]
+coordfolder = strcat('coordinates',filesep,'dataSet2_vizScale100');
+if COORD_FOLDER_FLAG
+    coordfiles = {dir(strcat(coordfolder,filesep,'*.csv')).name};
+end
+
+INCLINATION = 0; % Inclination of the satellite orbits, in degrees.
 
 % Conversion of the orbital inclination, from degrees to radians.
-inclination = inclination * (pi/180);
+INCLINATION = INCLINATION * (pi/180);
 
 %% Set paths
 if(~isdeployed)
@@ -47,6 +54,9 @@ if(~isdeployed)
 	% Change working directory to the directory of this m-file.
 	cd(filepath);
 end
+
+rmpath(genpath(strcat('coordinates',filesep)));
+addpath(coordfolder);
 
 %% Run Simulink file
 
@@ -145,7 +155,7 @@ for n = 1:numsats
     simsat(n).roll.signals.dimensions = 1;
     simsat(n).roll.signals.values = roll;
 end
-
+%%
 % Get last timestamp of the time vector, set it as simulation time.
 stopTime = simsat(1).lat.time(end);
 
@@ -274,9 +284,9 @@ for i = 1:dataLength
         % latitude decreasing -> use negative orbit inclination for roll
         
         if diff < 0
-            inclinationToUse = -inclination;
+            inclinationToUse = -INCLINATION;
         else
-            inclinationToUse = inclination;
+            inclinationToUse = INCLINATION;
         end
         
         a = inclinationToUse;
