@@ -63,7 +63,7 @@ classdef Satellite < handle
 	
 	methods (Access = public)
 		
-		initialize(this, id, commChannel)
+		initialize(this, id, commChannel, iniConditions)
 		comm(this, msg)
 		fly(this, currentOrbitSection, sizeOrbitSection)
 		broadcastSend(this, msg)

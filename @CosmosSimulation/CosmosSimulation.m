@@ -10,6 +10,8 @@ classdef CosmosSimulation < handle
 	
 	properties (GetAccess = public, SetAccess = private)
 		
+    iniConditions %% initial conditions
+    
 		AccelFactor % Acceleration factor for the simulation.
 		FlightControlModules % Array of FlightControl objects.
 		GPSModules % Array of GPS objects.
@@ -37,7 +39,7 @@ classdef CosmosSimulation < handle
 	
 	methods % Constructor.
 		
-		function this = CosmosSimulation(param)
+		function this = CosmosSimulation(param, iniConditions)
 %% Constructor for class CosmosSimulation.
 %_____________________________________________________________________
 %
@@ -48,6 +50,8 @@ classdef CosmosSimulation < handle
 % - Object of class Simulation.
 %_____________________________________________________________________
 			
+        this.iniConditions=iniConditions;
+
 			this.MaxNumOrbits = param.MaxNumOrbits;
 			this.AccelFactor = param.AccelFactor;
 			this.IDX = param.InitIDX;
@@ -97,7 +101,7 @@ classdef CosmosSimulation < handle
 				this.GPSModules(i) = this.Satellites(i).GPSModule;
 			end
 			
-		end
+        end % Function.
 		
 	end % Constructor.
 	
@@ -147,6 +151,8 @@ classdef CosmosSimulation < handle
 	
 	methods (Static)
 		
+        visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,pitch,yaw,roll,altitude)
+        
 		plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
 		createListCustomClasses(filepath, workspaceFileName)
 		

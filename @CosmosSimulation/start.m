@@ -31,12 +31,17 @@ spmd(this.NumSatellites)
 	% Set satellite communication channel as the parpool data queue.
 	commChannel = dq;
 	
-	sat.initialize(id, commChannel);
+    % Set up some parameters, such as battery status, sat status, initial conditions.
+	sat.initialize(id, commChannel,this.iniConditions(id,:));
+    
+    %% for sim
+  % for simulation output, set initial conditions
 	this.updSatStatesIni(id, fc.State);
 	
 	while sat.Alive % Sattelites turned on, but still doing nothing.
 		
 		% Update orbit counter.
+        % Orbit counter holds the current orbit number, not the total number of orbits completed.
 		gps.incrementOrbitCounter();
 		
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -44,11 +49,13 @@ spmd(this.NumSatellites)
 		%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		
+        
+        % Put endOfSectionsCycle into flight control.
 		% Calculate endOfSectionsCycle.
 		endOfSectionsCycle = (this.IDX - 1) / this.NumOrbitSections;
 		
 		% From whereInWhatOrbit().
+        %% This implementation can bring bugs later
 		if endOfSectionsCycle % start a new section cycle
 			gps.MeanAnomalyFromAN = 0.01;
 		else
@@ -60,12 +67,8 @@ spmd(this.NumSatellites)
 		% For now, simulation updates this value.
 		% Later, this value will be obtained from GPS/TLE.
 		
-		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		
+		%% IDX into flight control?
 		this.updateIDX(gps.MeanAnomalyFromAN);
 		
 		% Pause #1:
@@ -88,8 +91,10 @@ spmd(this.NumSatellites)
 			timeStartSection = now();
 			
 			% Start flying on orbital loop.
-			currentOrbitSection = this.OrbitSections(this.IDX);
-			sat.fly(currentOrbitSection, this.OrbitSectionSize);
+            currentOrbitSection = this.OrbitSections(this.IDX);
+            %send(DQ,'bef');
+            sat.fly(currentOrbitSection, this.OrbitSectionSize);
+            %send(DQ,'after');
 			
 			% Update time vector for plotting.
 			timestep = this.OrbitSectionSize / orbit.MeanMotionDeg;
@@ -113,25 +118,15 @@ spmd(this.NumSatellites)
 			
 			% Update vector with satellite positions for plotting.
 			this.updSatPositions(id, refPosChange);
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			
 			% Move coordinate system.
 			% Should the old state be shifted as well?
 			shift = -refPosChange(1:3);
 			fc.shiftState(shift);
 			
+            %% Move to flight control
 			% Increment section counter.
 			this.incrementIDX();
-			
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			
 			% Pause #2:
 			% Add pause after subtracting this section's computing time.

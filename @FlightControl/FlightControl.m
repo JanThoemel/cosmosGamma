@@ -10,6 +10,10 @@ classdef FlightControl < handle
 	
 	properties (GetAccess = public, SetAccess = public)
 		
+        DeltaAngle % Angular granularity for force vector determination.
+        FFPS % Formation flight parameters.
+        FFPSFilePath % Location of the file with the FFPS.
+        
 		FormationMode % Mode for the satellites formation flight.
 		NumSatellites % Total number of satellites in the formation.
 		Panels % Satellite panels.
@@ -58,9 +62,12 @@ classdef FlightControl < handle
 % - Object of class FlightControl.
 %_____________________________________________________________________
 			
-			this.NumSatellites = ns;
+			this.FFPSFilePath = ffpsFilePath;
+            
+            this.NumSatellites = ns;
 			this.FormationMode = mode;
-			this.State          = zeros(9, 1);
+			%this.State          = zeros(9, 1);
+            this.State          =[-950 0 0 0 0 0 0 0 0]';% zeros(9, 1);
 			this.StateDesired   = zeros(6, 1);
 			this.StateErrors    = zeros(6, ns);
 			this.StateErrorsAvg = zeros(6, ns);
