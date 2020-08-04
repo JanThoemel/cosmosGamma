@@ -304,7 +304,7 @@ csim = CosmosSimulation(parametersCLUSTER,iniConditionsCLUSTER);
 %csim = CosmosSimulation(parametersISMission,iniConditionsISMission);
 
 %% Initiate and run simulation.
-csim.start();
+csim.startSimulation();
 
 %% create objects needed for documentation generation
 % Create global alias for the array of satellites.

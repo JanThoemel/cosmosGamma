@@ -156,7 +156,7 @@ classdef CosmosSimulation < handle
     end
     
     updateIDX(this, meanAnomalyFromAN)
-    start(this) %! JT: there seems to be a Matlab built-in function with the same name. we may want to rename ours
+    startSimulation(this) %! JT: there seems to be a Matlab built-in function with the same name. we may want to rename ours
     incrementIDX(this)
     
   end % Public methods.
@@ -168,7 +168,7 @@ classdef CosmosSimulation < handle
 	methods (Static)
     
     %visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,pitch,yaw,roll,altitude)
-    visualizationLONLATALT(ns,altitude)
+    visualizationLONLATALT(ns,VIZaltitude)
     
 		%plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
     plotting(ns, meanMotionRad)
