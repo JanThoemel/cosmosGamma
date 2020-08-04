@@ -71,6 +71,14 @@ classdef Satellite < handle
 		broadcastSend(this, msg)
 		msg = broadcastReceive(this)
 		turnOff(this)
+    
+    function updControlVectorTM(this, id)
+      this.controlVectorTM = [this.controlVectorTM; this.controlVector(:,id)'];
+    end
+    
+    function updForceVectorTM(this)
+      this.forceVectorTM = [this.forceVectorTM; this.forceVector'];
+    end
 		
 	end % Public methods.
 	

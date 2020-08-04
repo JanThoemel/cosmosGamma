@@ -34,7 +34,7 @@ end
           plot(cosmosTime(:,j)/2/pi*meanMotionRad,squeeze(e(j,i,:)));hold on;
         end
         legend;
-        title(strcat('error coordinate',num2str(i)))
+        title(strcat('BETA: error coordinate',num2str(i)))
       end
     hold off;
   end
@@ -43,7 +43,8 @@ end
 	  refPosChange = squeeze(refPosChange);
     figure
       plot(cosmosTime(:,1),refPosChange(1,:),cosmosTime(:,1),refPosChange(2,:),cosmosTime(:,1),refPosChange(3,:));
-      legend('x','y','z');title('reference position change')
+      legend('x','y','z');
+      title('BETA: reference position change')
     hold off;  
   end
   
@@ -58,6 +59,8 @@ end
       legend(names);
       axis([-inf inf -10 370])
       yticks([0 45 90 135 180 225 270 315 360])
+      title('BETA');
+      
       subplot(2,3,2)%% pitch
       for i=1:ns
          plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(angles(i,2,:)));hold on
@@ -97,6 +100,8 @@ end
          plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(controlVector(i,1,:)));hold on
       end
       ylabel('control vector x [?]');xlabel('no. of orbits');grid on;hold off
+      title('BETA');
+      
       subplot(2,3,2)%% control vector y
       for i=1:ns
          plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(controlVector(i,2,:)));hold on
@@ -151,6 +156,7 @@ end
       %view([1 -0.5 0.5]);
       %set(gcf, 'InvertHardCopy', 'off');
       %title('3d');
+      title('BETA');
       hold off;
 
       %savefig('sst3d.fig');
@@ -173,6 +179,7 @@ end
         set(gca,'units','centimeters','position',[5.5 3 20 15]);
         set(gca,'FontSize',fontSize);
         print('-painters','-dmeta','sst2d.emf')
+        title('BETA');
     end
 end
 

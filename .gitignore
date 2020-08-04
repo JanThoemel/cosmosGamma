@@ -8,3 +8,7 @@ workspace.mat
 tempUML*
 *.avi
 *.zip
+fc_*
+TM*
+*.csv
+*.json

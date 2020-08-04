@@ -94,9 +94,13 @@ spmd(this.NumSatellites)
     %% The orbit is divided into sections of few degrees size.
     % IDX tells in which section we are in
     
-    %%add here:
-    % GPS determines ephemerides and IDX
-    % pause until the end of the orbitSection(IDX)
+    % JT: add here:
+    % get meanAnomalyFromAAN from GPS:
+    % meanAnomalyFromAN = sat.GPSModule.getMeanAnomalyFromAN();
+    % calculate current IDX: this.updateIDX(gps.MeanAnomalyFromAN);
+    % pause until the end of the orbitSection(IDX):
+    % pause( (this.OrbitSections(this.IDX) - gps.MeanAnomalyFromAN) / orbit.MeanMotionDeg / this.AccelFactor);
+    % JT: OrbitSections and IDX should be renamed to OrbitSectionsMeanAnomalyFromAN and orbitSectionsID
     
     timeStep = this.OrbitSectionSize / orbit.MeanMotionDeg;
     % ^^^^
@@ -152,9 +156,9 @@ spmd(this.NumSatellites)
       % Update time vector
       this.updTimeVector(id, timeStep);
       % add instantaneous controlVector to controlVectorTM
-      sat.controlVectorTM=[sat.controlVectorTM; sat.controlVector(:,id)'];
+      sat.updControlVectorTM(id);
       % add instantaneous forceVector to forceVectorTM
-      sat.forceVectorTM=[sat.forceVectorTM; sat.forceVector'];
+      sat.updForceVectorTM();
       
 %% Move to flight control
 			% Increment section counter.
@@ -176,7 +180,7 @@ spmd(this.NumSatellites)
 			msg = ['Orbit ',num2str(orbit.OrbitCounter),' finished ',...
 				'(',num2str(orbit.TimeOrbitDuration(2)),' s)'];
 			sat.comm(msg);
-      this.IDX=1;
+      this.setIDX(1);
 		end
 		
     % If maximum number of orbits has been reached, turn off the satellite.

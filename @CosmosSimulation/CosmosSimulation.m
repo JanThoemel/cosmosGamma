@@ -159,6 +159,10 @@ classdef CosmosSimulation < handle
     startSimulation(this)
     incrementIDX(this)
     
+    function setIDX(this, value)
+      this.IDX = value;
+    end
+    
   end % Public methods.
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
