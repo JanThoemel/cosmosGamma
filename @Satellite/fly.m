@@ -6,6 +6,8 @@ function fly(this, currentOrbitSection, sizeOrbitSection)
 % method of class Satellite
 % ______________________________________________________________________________
 
+% Rod: I added some random lines here
+
 % Get updated orbital parameters from GPS/TLE.
 orbitFromGPS = this.GPSModule.getOrbitCounter();
 meanAnomalyFromAN = this.GPSModule.getMeanAnomalyFromAN();
