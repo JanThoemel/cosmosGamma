@@ -62,7 +62,7 @@ classdef FlightControl < handle
       fclose(fid);
       
 			this.FFPSFilePath = ffpsFilePath;
-            
+      
       this.NumSatellites = ns;
 			this.FormationMode = mode;
 			%this.State         = zeros(9, 1);
@@ -74,6 +74,7 @@ classdef FlightControl < handle
 			this.SSCoeff = 1;
 			
 			% Force vector determination and angular granularity.
+      this.DeltaAngle = deltaAngle; % Angular granularity.
 			this.Alphas = 0:deltaAngle:360; % Roll.
 			this.Betas  = 0:deltaAngle:180; % Pitch.
 			this.Gammas = 0:deltaAngle:360; % Yaw.
