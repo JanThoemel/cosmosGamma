@@ -10,6 +10,11 @@ classdef Satellite < handle
   
   properties (GetAccess = public, SetAccess = public)
     
+    controlVector
+    controlVectorTM
+    forceVector
+    forceVectorTM
+    
     Alive % If satellite is alive or not [true/false].
     AutoResponse % If satellite should send responses [true/false].
     CommChannel % Communication channel.
@@ -48,6 +53,11 @@ classdef Satellite < handle
 			this.FlightControl = FlightControl(numSats, mode, deltaAngle, ffpsPath);
 			this.Orbit = Orbit(altitude, gpsAvailability, tleAvailability);
 			this.GPSModule = GPS();
+      
+      this.controlVector=zeros(3,numSats);
+      this.controlVectorTM=zeros(1,3);
+      this.forceVector=zeros(1,3);
+      this.forceVectorTM=zeros(1,3);
 			
 		end
 		

@@ -54,7 +54,7 @@ classdef CosmosSimulation < handle
       this.AccelFactor = param.AccelFactor;
       this.IDX = param.InitIDX;
       this.OrbitSectionSize = param.OrbitSectionSize;
-      this.OrbitSections = 1:param.OrbitSectionSize:360;
+      this.OrbitSections = param.OrbitSectionSize:param.OrbitSectionSize:360;
       this.NumOrbitSections = length(this.OrbitSections);
       
       this.NumSatellites = param.NumSatellites;
@@ -156,7 +156,7 @@ classdef CosmosSimulation < handle
     end
     
     updateIDX(this, meanAnomalyFromAN)
-    startSimulation(this) %! JT: there seems to be a Matlab built-in function with the same name. we may want to rename ours
+    startSimulation(this)
     incrementIDX(this)
     
   end % Public methods.

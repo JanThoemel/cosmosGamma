@@ -39,8 +39,11 @@ spmd(this.NumSatellites)
 	fc    = this.FlightControlModules(id);
   gps   = this.GPSModules(id);
   
-  %!JT: we should have a dedicated class COM where we hide all details of the communication
-  %between the satellites. Communication with the screen could be kept as is
+  %!JT: we should have
+  % - a class COM where we hide all details of the communication between the
+  %   satellites. Communication with the screen could be kept as is.
+  % - a class for communication with the screen
+  % - a class for the communication with VIZ
   % Set satellite communication channel as the parpool data queue.
 	commChannel = dq;
 	
@@ -51,52 +54,57 @@ spmd(this.NumSatellites)
   % for simulation output, set initial conditions
   this.updSatStatesIni(id, fc.State);
   
+  % Loop for each orbit.
 	while sat.Alive % Sattelites turned on, but still doing nothing.
-		
-		% Update orbit counter.
+    
+    %!R:
+    % Simulate GPS data here.
+    
+    %% Before:
+    %---------------------------------------------------------------------------
+    % Update orbit counter.
     % Orbit counter holds current orbit number, not total orbits completed.
-		gps.incrementOrbitCounter();
-		
-		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        
-        % Put endOfSectionsCycle into flight control.
-		% Calculate endOfSectionsCycle.
-		endOfSectionsCycle = (this.IDX - 1) / this.NumOrbitSections;
-		
-		% From whereInWhatOrbit().
-        %% This implementation can bring bugs later
-		if endOfSectionsCycle % start a new section cycle
-			gps.MeanAnomalyFromAN = 0.01;
-		else
-			gps.MeanAnomalyFromAN = 120; % when starting a simulation, the s/c might be an arbitrary mean anomaly, e.g. 120
-		end
-		
-		% ^
-		% Update mean anomaly from ascending node.
-		% For now, simulation updates this value.
-		% Later, this value will be obtained from GPS/TLE.
-		
-		
-		%% IDX into flight control?
-		this.updateIDX(gps.MeanAnomalyFromAN);
-		
-		% Pause #1:
-		% Wait until end of orbit sections.
-		pause( (this.OrbitSections(this.IDX) - gps.MeanAnomalyFromAN) /...
-			orbit.MeanMotionDeg / this.AccelFactor);
-		
-		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		%%%%%%%%%%%%%%%%%%%%%%%%%% RE-CHECK %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-		
-    % The orbit is divided into sections of few degrees size.
-		% Start orbit sections loop.
+    gps.incrementOrbitCounter();
+    
+    % Put endOfSectionsCycle into flight control.
+    % Calculate endOfSectionsCycle.
+%     endOfSectionsCycle = (this.IDX - 1) / this.NumOrbitSections;
+    
+    % From whereInWhatOrbit().
+    % This implementation can bring bugs later
+%     if endOfSectionsCycle % start a new section cycle
+%       gps.MeanAnomalyFromAN = 0.01;
+%     else
+%       gps.MeanAnomalyFromAN = 120; % when starting a simulation, the s/c might be an arbitrary mean anomaly, e.g. 120
+%     end
+    % ^
+    % Update mean anomaly from ascending node.
+    % For now, simulation updates this value.
+    % Later, this value will be obtained from GPS/TLE.
+    % IDX into flight control?
+    %this.updateIDX(gps.MeanAnomalyFromAN);
+    
+    % Pause #1:
+    % Wait until end of orbit sections.
+    %pause( (this.OrbitSections(this.IDX) - gps.MeanAnomalyFromAN) /...
+    %	orbit.MeanMotionDeg / this.AccelFactor);
+    %---------------------------------------------------------------------------
+    %% End
+    
+    %% The orbit is divided into sections of few degrees size.
+    % IDX tells in which section we are in
+    
+    %%add here:
+    % GPS determines ephemerides and IDX
+    % pause until the end of the orbitSection(IDX)
+    
+    timeStep = this.OrbitSectionSize / orbit.MeanMotionDeg;
+    % ^^^^
+    %!R:
+    % Will OrbitSectionSize and MeanMotionDeg be always constant?
+    
+    
+    %% Start orbit sections loop.
 		while this.IDX <= this.NumOrbitSections
 			
 			% Determine start time of this cycle, in order to subtract the 
@@ -104,54 +112,62 @@ spmd(this.NumSatellites)
 			timeStartSection = now();
 			
 			% Start flying on orbital loop.
+      % in which section (in degree) are we?
       currentOrbitSection = this.OrbitSections(this.IDX);
       %send(DQ,'bef');
+      
+      % run the formation flight algorithm
       sat.fly(currentOrbitSection, this.OrbitSectionSize);
       %send(DQ,'after');
 			
-			% Update time vector for plotting.
-			timestep = this.OrbitSectionSize / orbit.MeanMotionDeg;
-			this.updTimeVector(id, timestep);
-			
-			% Send reference position to all non 1-satellites.
+      %Before:::
+			%timestep = this.OrbitSectionSize / orbit.MeanMotionDeg;
+      
+      % Send reference position to all non 1-satellites.
       %! this should go into a new COM module
-			refPosChange = zeros(3,1);
-			if id == 1
-				refPosChange(1:3) = fc.State(1:3) - fc.StateOld(1:3);
-				for satID = 2 : this.NumSatellites
-					tag = 1000000 * satID + 10000 * this.IDX + 100 * orbit.OrbitCounter + 1;
-					labSend(refPosChange, satID, tag);
-				end
-			end
-			
-			% Receive reference position in other satellites.
-			if id ~= 1
-				tag = 1000000 * id + 10000 * this.IDX + 100 * orbit.OrbitCounter + 1;
-				refPosChange = labReceive(1, tag);
-			end
-			
-			% Update vector with satellite positions for plotting.
-			this.updSatPositions(id, refPosChange);
-			
+      refPosChange = zeros(3,1);
+      if id == 1
+        refPosChange(1:3) = fc.State(1:3) - fc.StateOld(1:3);
+        for satID = 2 : this.NumSatellites
+          tag = 1000000 * satID + 10000 * this.IDX + 100 * orbit.OrbitCounter + 1;
+          labSend(refPosChange, satID, tag);
+        end
+      end
+      
+      % Receive reference position in other satellites.
+      if id ~= 1
+        tag = 1000000 * id + 10000 * this.IDX + 100 * orbit.OrbitCounter + 1;
+        refPosChange = labReceive(1, tag);
+      end
+      			
 			% Move coordinate system.
 			% Should the old state be shifted as well?
 			shift = -refPosChange(1:3);
-			fc.shiftState(shift);
-			
-            %% Move to flight control
+      fc.shiftState(shift);
+      
+      % Update vector with satellite positions
+      this.updSatPositions(id, refPosChange);
+      % Update vector with satellite states
+      this.updSatStates(id, fc.State);
+      % Update time vector
+      this.updTimeVector(id, timeStep);
+      % add instantaneous controlVector to controlVectorTM
+      sat.controlVectorTM=[sat.controlVectorTM; sat.controlVector(:,id)'];
+      % add instantaneous forceVector to forceVectorTM
+      sat.forceVectorTM=[sat.forceVectorTM; sat.forceVector'];
+      
+%% Move to flight control
 			% Increment section counter.
 			this.incrementIDX();
 			
 			% Pause #2:
-			% Add pause after subtracting this section's computing time.
+			% Pause after subtracting this section's computing time.
 			pause(this.OrbitSectionSize / orbit.MeanMotionDeg /this.AccelFactor - (now() - timeStartSection));
-			
-			% Update vector with satellite states for plotting.
-			this.updSatStates(id, fc.State);
 			
 		end % While orbit sections loop.
 		
 		% Check if orbit counter identifiers do not match.
+    %JT: what is this good for?
 		if (orbit.OrbitCounter ~= orbit.TimeOrbitDuration(1))
 			msg = ['Orbit identifiers in orbit.OrbitCounter and ',...
 				'orbit.TimeOrbitDuration do not match.'];
@@ -160,6 +176,7 @@ spmd(this.NumSatellites)
 			msg = ['Orbit ',num2str(orbit.OrbitCounter),' finished ',...
 				'(',num2str(orbit.TimeOrbitDuration(2)),' s)'];
 			sat.comm(msg);
+      this.IDX=1;
 		end
 		
     % If maximum number of orbits has been reached, turn off the satellite.
@@ -177,7 +194,8 @@ spmd(this.NumSatellites)
   writematrix(this.TimeVector(id,:)',strcat('TMTimeVector',num2str(id),'.csv'));
   writematrix(squeeze(this.SatPositions(id,:,:))',strcat('TMSatPosition',num2str(id),'.csv'));
   writematrix(squeeze(this.SatStates(id,:,:))',strcat('TMSatStates',num2str(id),'.csv'));
-  
+  writematrix(sat.controlVectorTM,strcat('TMControlVector',num2str(id),'.csv'));
+  writematrix(sat.forceVectorTM,strcat('TMForceVector',num2str(id),'.csv'));
 	
   % Needed for autonomous documentation generation tool.
 	% Globally concatenate all output variables on lab index 1.
