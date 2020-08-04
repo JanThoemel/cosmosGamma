@@ -1,14 +1,14 @@
 function updateStateDesired(this, time, meanMotion)
-% JT: this needs change: the size-determining values need to go to parameters, otherwise this files must be changed each time a new case is run
-
-%% Update desired satellite state.
-%_____________________________________________________________________
+%% Update desired satellite state
+% JT: this needs change: the size-determining values need to go to parameters,
+% otherwise this files must be changed each time a new case is run
+% ______________________________________________________________________________
 %
 % Desired solution for Ivanov's case.
 %
 % Input:
 % - Mean motion [rad/s].
-%_____________________________________________________________________
+% ______________________________________________________________________________
 
 % Does this make sense?
 % Isn't the size of 'time' always 1?

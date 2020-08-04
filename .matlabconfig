@@ -1,0 +1,56 @@
+Optimal MATLAB Configuration for Collaborative Coding
+________________________________________________________________________
+
+MATLAB -> Home -> Preferences
+
+-> Editor/Debugger -> Display
+
+	Right-hand text limit - Show line: True
+	Right-hand text limit - Placement: 80 columns
+	Right-hand text limit - Width: 1 pixel
+
+-> Editor/Debugger -> Tab
+
+	Tab size: 2
+	Indent size: 2
+	Tab key inserts spaces: True
+	Emacs-style Tab key smart indenting: True
+
+-> Editor/Debugger -> Language
+
+	Maximum column width: 80 (Start from beginning of line)
+	Wrap comments automatically while typing: True
+	Apply smart indenting while typing: True
+
+-> Editor/Debugger -> Code Folding
+
+	Enable code folding: False
+
+-> Fonts
+
+	Code font: Monospaced
+	Font size (Mac): 12
+	Font size (Win): 10-14
+________________________________________________________________________
+
+Reasons for Standard Configuration
+________________________________________________________________________
+
+- Limiting code width to 80 characters:
+  - Leaves space for putting two versions side by side for comparison
+  - Removes the really annoying horizontal scrolling
+  - Readable with a larger font on laptops with smaller screen
+  - Forces the programmer to write concise code lines
+  - Forces long and complex code to be implemented as a function
+  - Leaves space for navigation views in IDEs
+  - Prints code for documentation without arbitrarily breaking lines
+  - A great deal of real estate goes to waste when you have a few lines
+    that extend far to the right when most of the other lines don't
+
+- Setting tab size to 2:
+  - Allows more space for the actual code
+
+- Setting tab to insert spaces instead of a tab character:
+  - Tab characters have different sizes in different programs
+  - Inserting spaces guarantees consistency when copying/pasting between
+    different editors or when viewing code online

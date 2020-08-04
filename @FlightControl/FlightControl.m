@@ -1,10 +1,10 @@
-%% Instantiate flight control objects.
-%_____________________________________________________________________
+%% Instantiate flight control objects
+% ______________________________________________________________________________
 %
 % Class FlightControl:
 %
 % Detailed explanation goes here.
-%_____________________________________________________________________
+% ______________________________________________________________________________
 
 classdef FlightControl < handle
 	
@@ -42,32 +42,31 @@ classdef FlightControl < handle
 		Betas % Pitch.
 		Gammas % Yaw.
 		
-	end
-	
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%% Constructor Method %%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  end
 	
 	methods % Constructor.
 		
-		function this = FlightControl(ns, mode, deltaAngle)
-%% Constructor for class FlightControl.
-%_____________________________________________________________________
-%
-% Input:
-% - Total number of satellites in the formation.
-% - Mode for the satellites formation flight.
-%
-% Output:
-% - Object of class FlightControl.
-%_____________________________________________________________________
-			
+    function this = FlightControl(ns, mode, deltaAngle, ffpsFilePath)
+      %% Constructor for class FlightControl
+      %
+      % Input:
+      % - Total number of satellites in the formation.
+      % - Mode for the satellites formation flight.
+      %
+      % Output:
+      % - Object of class FlightControl.
+      
+      % Read formation flight parameters from JSON file.
+      fid = fopen(ffpsFilePath,'r');
+      this.FFPS = jsondecode(fscanf(fid,'%s'));
+      fclose(fid);
+      
 			this.FFPSFilePath = ffpsFilePath;
             
-            this.NumSatellites = ns;
+      this.NumSatellites = ns;
 			this.FormationMode = mode;
-			%this.State          = zeros(9, 1);
-            this.State          =[-950 0 0 0 0 0 0 0 0]';% zeros(9, 1);
+			%this.State         = zeros(9, 1);
+      this.State          = [-950 0 0 0 0 0 0 0 0]';
 			this.StateDesired   = zeros(6, 1);
 			this.StateErrors    = zeros(6, ns);
 			this.StateErrorsAvg = zeros(6, ns);

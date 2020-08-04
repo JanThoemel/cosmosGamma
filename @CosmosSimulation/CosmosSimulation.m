@@ -1,15 +1,16 @@
-%% Create a simulation environment for satellite formation flight.
-%_____________________________________________________________________
+%% Create simulation environment for satellite formation flight
+% ______________________________________________________________________________
 %
 % Class CosmosSimulation:
 %
 % Detailed explanation goes here.
-%_____________________________________________________________________
+% ______________________________________________________________________________
 
 classdef CosmosSimulation < handle
 	
 	properties (GetAccess = public, SetAccess = private)
 		
+    param
     iniConditions %% initial conditions
     
 		AccelFactor % Acceleration factor for the simulation.
@@ -40,17 +41,16 @@ classdef CosmosSimulation < handle
 	methods % Constructor.
 		
 		function this = CosmosSimulation(param, iniConditions)
-%% Constructor for class CosmosSimulation.
-%_____________________________________________________________________
-%
-% Input:
-% - Struct of parameters.
-%
-% Output:
-% - Object of class Simulation.
-%_____________________________________________________________________
-			
-        this.iniConditions=iniConditions;
+      %% Constructor for class CosmosSimulation
+      %
+      % Input:
+      % - Struct of parameters.
+      %
+      % Output:
+      % - Object of class Simulation.
+      
+      this.param = param;
+      this.iniConditions=iniConditions;
 
 			this.MaxNumOrbits = param.MaxNumOrbits;
 			this.AccelFactor = param.AccelFactor;
@@ -72,7 +72,23 @@ classdef CosmosSimulation < handle
 			
 			% Create array with objects of class Satellite.
 			this.Satellites = Satellite.empty(this.NumSatellites,0);
+      
+      % Get location in which to save file with FFPS for the satellites.
+      ffpsFolder = param.FolderFFPS;
+      [~,~,~] = mkdir(ffpsFolder); % [status,msg,msgID]
+      
+      % Set common part of the name for FFPS files.
+      ffpsFileName = 'fc_FFP_sat';
+      
 			for i = 1 : this.NumSatellites
+        % Create a JSON file for each satellite's formation flight parameters.
+        ffpsPath = strcat(ffpsFolder,filesep,ffpsFileName,num2str(i),'.json');
+        fid = fopen(ffpsPath,'w');
+        fprintf(fid,'%s',jsonencode( param.FFPS(i) ) );
+        fclose(fid);
+        
+        % Bring each satellite to life.
+        % Inform the location of the FFPS file to each satellite.
 				this.Satellites(i) = Satellite( ...
 					param.Altitude, ...
 					param.DeltaAngle, ...
@@ -80,7 +96,8 @@ classdef CosmosSimulation < handle
 					param.AvailableGPS, ...
 					param.AvailableTLE, ...
 					param.NumSatellites, ...
-					param.FormationMode);
+					param.FormationMode,...
+          ffpsPath);
 			end
 			
 			% Create aliases for satellite orbits.

@@ -1,9 +1,10 @@
 function start(this)
-%% Initiate Cosmos simulation.
-%_____________________________________________________________________
+%% Initiate Cosmos simulation
+% ______________________________________________________________________________
 %
 % Details here.
-%_____________________________________________________________________
+% ______________________________________________________________________________
+
 % Create data queue for parallel pool.
 dq = parallel.pool.DataQueue;
 
@@ -17,10 +18,14 @@ parpool(this.NumSatellites);
 timeStartPool = posixtime(datetime('now')); % Posixtime [seconds].
 
 % Execute parallel code on workers of parallel pool.
+% For better debugging, comment spmd command and its end line.
+% Set id = 1 (instead of labindex).
 spmd(this.NumSatellites)
 	
-	% Get unique IDs for each of the satellites, from 1 to N. %! JT: do we need id? isnt labindex enough?
-	id = labindex;
+	% Get unique IDs for each of the satellites, from 1 to N.
+  %! JT: do we need id? isnt labindex enough?
+	% for the fsw, the sat needs to find its own id in a different way, for instance from the file that read later
+  id = labindex;
 	
 	% Create local aliases for the class objects.
 	sat   = this.Satellites(id);
@@ -33,11 +38,11 @@ spmd(this.NumSatellites)
 	
     % Set up some parameters, such as battery status, sat status, initial conditions.
 	sat.initialize(id, commChannel,this.iniConditions(id,:));
-    
+  
     %% for sim
   % for simulation output, set initial conditions
-	this.updSatStatesIni(id, fc.State);
-	
+  this.updSatStatesIni(id, fc.State);
+  
 	while sat.Alive % Sattelites turned on, but still doing nothing.
 		
 		% Update orbit counter.
@@ -91,10 +96,10 @@ spmd(this.NumSatellites)
 			timeStartSection = now();
 			
 			% Start flying on orbital loop.
-            currentOrbitSection = this.OrbitSections(this.IDX);
-            %send(DQ,'bef');
-            sat.fly(currentOrbitSection, this.OrbitSectionSize);
-            %send(DQ,'after');
+      currentOrbitSection = this.OrbitSections(this.IDX);
+      %send(DQ,'bef');
+      sat.fly(currentOrbitSection, this.OrbitSectionSize);
+      %send(DQ,'after');
 			
 			% Update time vector for plotting.
 			timestep = this.OrbitSectionSize / orbit.MeanMotionDeg;
@@ -148,10 +153,9 @@ spmd(this.NumSatellites)
 			sat.comm(msg);
 		end
 		
-		% If maximum number of orbits for the simulation has been reached,
-		% turn off the satellite.
+    % If maximum number of orbits has been reached, turn off the satellite.
 		if orbit.OrbitCounter >= this.MaxNumOrbits
-			pause(2);
+% 			pause(2);
 			send(dq,['[sim] Maximum number of orbits reached! ','Killing [',sat.Name,']']);
 			sat.turnOff();
 		end
