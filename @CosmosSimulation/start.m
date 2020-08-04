@@ -46,7 +46,7 @@ spmd(this.NumSatellites)
 	while sat.Alive % Sattelites turned on, but still doing nothing.
 		
 		% Update orbit counter.
-        % Orbit counter holds the current orbit number, not the total number of orbits completed.
+    % Orbit counter holds current orbit number, not total orbits completed.
 		gps.incrementOrbitCounter();
 		
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -106,6 +106,7 @@ spmd(this.NumSatellites)
 			this.updTimeVector(id, timestep);
 			
 			% Send reference position to all non 1-satellites.
+      %! this should go into a new COM module
 			refPosChange = zeros(3,1);
 			if id == 1
 				refPosChange(1:3) = fc.State(1:3) - fc.StateOld(1:3);
@@ -161,7 +162,16 @@ spmd(this.NumSatellites)
 		end
 		
 	end % While alive (main orbital loop).
+  
+  
+  % write telemetry to files, should be a function of satellite
+  % also the data containers need to be properties of the Satellite, not Simulation
+  writematrix(this.TimeVector(id,:)',strcat('TMTimeVector',num2str(id),'.csv'));
+  writematrix(squeeze(this.SatPositions(id,:,:))',strcat('TMSatPosition',num2str(id),'.csv'));
+  writematrix(squeeze(this.SatStates(id,:,:))',strcat('TMSatStates',num2str(id),'.csv'));
+  
 	
+  % Needed for autonomous documentation generation tool.
 	% Globally concatenate all output variables on lab index 1.
 	% Must be the last lines of code of the parallel pool.
 	satellites = gcat(sat,1,1);
@@ -177,6 +187,7 @@ spmd(this.NumSatellites)
 	
 end % Parallel code.
 
+% Needed for autonomous documentation generation tool.
 % Get the globally concatenated values stored on lab index 1.
 % Must be placed right after the end of the parallel pool.
 this.Satellites = satellites{1};
@@ -199,4 +210,4 @@ timeDurationPool = timeEndPool - timeStartPool;
 fprintf('Total simulation time: %s seconds.\n',...
 num2str(timeDurationPool));
 
-end % Function CosmosSimulation.start.
+end % Function CosmosSimulation.start

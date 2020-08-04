@@ -12,6 +12,7 @@ classdef CosmosSimulation < handle
 		
     param
     iniConditions %% initial conditions
+    vizScale
     
 		AccelFactor % Acceleration factor for the simulation.
 		FlightControlModules % Array of FlightControl objects.
@@ -32,11 +33,7 @@ classdef CosmosSimulation < handle
 		TimeVector % Time vector for plotting.
 		TimeVectorLengths % Length of the time vector for each satellite.
 		
-	end
-	
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%% Constructor Method %%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  end
 	
 	methods % Constructor.
 		
@@ -51,27 +48,28 @@ classdef CosmosSimulation < handle
       
       this.param = param;
       this.iniConditions=iniConditions;
-
-			this.MaxNumOrbits = param.MaxNumOrbits;
-			this.AccelFactor = param.AccelFactor;
-			this.IDX = param.InitIDX;
-			this.OrbitSectionSize = param.OrbitSectionSize;
-			this.OrbitSections = 1:param.OrbitSectionSize:360;
-			this.NumOrbitSections = length(this.OrbitSections);
-			
-			this.NumSatellites = param.NumSatellites;
-			
-			this.SatPositions = zeros(this.NumSatellites,3,1);
-			this.SatPositionsLengths = ones(this.NumSatellites,1);
-			
-			this.SatStates = zeros(this.NumSatellites,9,1);
-			this.SatStatesLengths = ones(this.NumSatellites,1);
-			
-			this.TimeVector = zeros(this.NumSatellites,1);
-			this.TimeVectorLengths = ones(this.NumSatellites,1);
-			
-			% Create array with objects of class Satellite.
-			this.Satellites = Satellite.empty(this.NumSatellites,0);
+      this.vizScale = param.vizScale;
+      
+      this.MaxNumOrbits = param.MaxNumOrbits;
+      this.AccelFactor = param.AccelFactor;
+      this.IDX = param.InitIDX;
+      this.OrbitSectionSize = param.OrbitSectionSize;
+      this.OrbitSections = 1:param.OrbitSectionSize:360;
+      this.NumOrbitSections = length(this.OrbitSections);
+      
+      this.NumSatellites = param.NumSatellites;
+      
+      this.SatPositions = zeros(this.NumSatellites,3,1);
+      this.SatPositionsLengths = ones(this.NumSatellites,1);
+      
+      this.SatStates = zeros(this.NumSatellites,9,1);
+      this.SatStatesLengths = ones(this.NumSatellites,1);
+      
+      this.TimeVector = zeros(this.NumSatellites,1);
+      this.TimeVectorLengths = ones(this.NumSatellites,1);
+      
+      % Create array with objects of class Satellite.
+      this.Satellites = Satellite.empty(this.NumSatellites,0);
       
       % Get location in which to save file with FFPS for the satellites.
       ffpsFolder = param.FolderFFPS;
@@ -80,7 +78,7 @@ classdef CosmosSimulation < handle
       % Set common part of the name for FFPS files.
       ffpsFileName = 'fc_FFP_sat';
       
-			for i = 1 : this.NumSatellites
+      for i = 1 : this.NumSatellites
         % Create a JSON file for each satellite's formation flight parameters.
         ffpsPath = strcat(ffpsFolder,filesep,ffpsFileName,num2str(i),'.json');
         fid = fopen(ffpsPath,'w');
@@ -89,88 +87,91 @@ classdef CosmosSimulation < handle
         
         % Bring each satellite to life.
         % Inform the location of the FFPS file to each satellite.
-				this.Satellites(i) = Satellite( ...
-					param.Altitude, ...
-					param.DeltaAngle, ...
-					param.AutoResponse, ...
-					param.AvailableGPS, ...
-					param.AvailableTLE, ...
-					param.NumSatellites, ...
-					param.FormationMode,...
+        this.Satellites(i) = Satellite( ...
+          param.Altitude, ...
+          param.DeltaAngle, ...
+          param.AutoResponse, ...
+          param.AvailableGPS, ...
+          param.AvailableTLE, ...
+          param.NumSatellites, ...
+          param.FormationMode,...
           ffpsPath);
-			end
-			
-			% Create aliases for satellite orbits.
-			this.Orbits = Orbit.empty(this.NumSatellites,0);
-			for i = 1 : this.NumSatellites
-				this.Orbits(i) = this.Satellites(i).Orbit;
-			end
-			
-			% Create aliases for satellite flight control modules.
-			this.FlightControlModules = FlightControl.empty(this.NumSatellites,0);
-			for i = 1 : this.NumSatellites
-				this.FlightControlModules(i) = this.Satellites(i).FlightControl;
-			end
-			
-			% Create aliases for GPS modules.
-			this.GPSModules = GPS.empty(this.NumSatellites,0);
-			for i = 1 : this.NumSatellites
-				this.GPSModules(i) = this.Satellites(i).GPSModule;
-			end
-			
-        end % Function.
-		
-	end % Constructor.
-	
+      end
+      
+      % Create aliases for satellite orbits.
+      this.Orbits = Orbit.empty(this.NumSatellites,0);
+      for i = 1 : this.NumSatellites
+        this.Orbits(i) = this.Satellites(i).Orbit;
+      end
+      
+      % Create aliases for satellite flight control modules.
+      this.FlightControlModules = FlightControl.empty(this.NumSatellites,0);
+      for i = 1 : this.NumSatellites
+        this.FlightControlModules(i) = this.Satellites(i).FlightControl;
+      end
+      
+      % Create aliases for GPS modules.
+      this.GPSModules = GPS.empty(this.NumSatellites,0);
+      for i = 1 : this.NumSatellites
+        this.GPSModules(i) = this.Satellites(i).GPSModule;
+      end
+      
+    end % Constructor function.
+    
+  end % Constructor section.
+  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%% Public Methods %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	
-	methods (Access = public)
-		
-		function updTimeVector(this, satID, timestep)
-			% Increment length of the time vector for the current satellite.
-			% At the end of the simulation, the values in TimeLength
-			% should be equal for all satellites. Later, use this value to
-			% prealocate memory for the TimePlot vector in order to reduce
-			% computational time.
-			lastPos = this.TimeVectorLengths(satID);
-			nextPos = this.TimeVectorLengths(satID) + 1;
-			this.TimeVector(satID, nextPos) = this.TimeVector(satID, lastPos) + timestep;
-			this.TimeVectorLengths(satID) = this.TimeVectorLengths(satID) + 1;
-		end
-		
-		function updSatStates(this, satID, satState)
-			nextPos = this.SatStatesLengths(satID) + 1;
-			this.SatStates(satID, 1:9, nextPos) = satState;
-			this.SatStatesLengths(satID) = this.SatStatesLengths(satID) + 1;
+
+  methods (Access = public)
+    
+    function updTimeVector(this, satID, timestep)
+      % Increment length of the time vector for the current satellite.
+      % At the end of the simulation, the values in TimeLength
+      % should be equal for all satellites. Later, use this value to
+      % prealocate memory for the TimePlot vector in order to reduce
+      % computational time.
+      lastPos = this.TimeVectorLengths(satID);
+      nextPos = this.TimeVectorLengths(satID) + 1;
+      this.TimeVector(satID, nextPos) = this.TimeVector(satID, lastPos) + timestep;
+      this.TimeVectorLengths(satID) = this.TimeVectorLengths(satID) + 1;
     end
-
- 		function updSatStatesIni(this, satID, satState)
-			this.SatStates(satID, 1:9, 1) = satState;
-		end
-
-		function updSatPositions(this, satID, newValue)
-			nextPos = this.SatPositionsLengths(satID) + 1;
-			this.SatPositions(satID, 1:3, nextPos) = newValue;
-			this.SatPositionsLengths(satID) = this.SatPositionsLengths(satID) + 1;
-		end
-		
-		updateIDX(this, meanAnomalyFromAN)
-		start(this) %! JT: there seems to be a Matlab built-in function with the same name. we may want to rename ours
-		incrementIDX(this)
-		
-	end % Public methods.
-	
+    
+    function updSatStates(this, satID, satState)
+      nextPos = this.SatStatesLengths(satID) + 1;
+      this.SatStates(satID, 1:9, nextPos) = satState;
+      this.SatStatesLengths(satID) = this.SatStatesLengths(satID) + 1;
+    end
+    
+    function updSatStatesIni(this, satID, satState)
+      this.SatStates(satID, 1:9, 1) = satState;
+    end
+    
+    %! give better name this is the reference position change
+    function updSatPositions(this, satID, newValue)
+      nextPos = this.SatPositionsLengths(satID) + 1;
+      this.SatPositions(satID, 1:3, nextPos) = newValue;
+      this.SatPositionsLengths(satID) = this.SatPositionsLengths(satID) + 1;
+    end
+    
+    updateIDX(this, meanAnomalyFromAN)
+    start(this) %! JT: there seems to be a Matlab built-in function with the same name. we may want to rename ours
+    incrementIDX(this)
+    
+  end % Public methods.
+  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%% Static Methods %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	
 	methods (Static)
-		
-        visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,pitch,yaw,roll,altitude)
-        
-		plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
+    
+    %visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,pitch,yaw,roll,altitude)
+    visualizationLONLATALT(ns,altitude)
+    
+		%plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
+    plotting(ns, meanMotionRad)
 		createListCustomClasses(filepath, workspaceFileName)
 		
 	end % Static methods.
