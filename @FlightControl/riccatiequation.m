@@ -1,4 +1,4 @@
-function [P, IR, A, B] = riccatiequation(meanMotion, SSCoeff)
+function [P, IR, A, B] = riccatiequation(meanMotion, SSCoeff,R)
 %% according to:
 %% C. Traub, G. H. Herdrich, and S. Fasoulas, “Influence of energy accommodation on a robust spacecraft rendezvous maneuver using differential aerodynamic forces,” CEAS Sp. J., 2019.
 %% but with Ivanov's coordinate system and variable renaming
@@ -24,7 +24,7 @@ function [P, IR, A, B] = riccatiequation(meanMotion, SSCoeff)
   %R=diag([1e11 1e11 1e11]);    %%
   %R=diag([1e12 1e12 1e12]);    %% This is an R of Traub
   %R=diag([1e13 1e14 1e14]);    %% this is my R assuming Ivanov made a sign error (reported IR/R^-1 instead of R)
-  R=diag([1e13 1e13 1e13]);    %%
+%%%%%%%  R=diag([1e13 1e13 1e13]);    %%
   %R=diag([1e14 1e14 1e14]);     %%  This R seems to work generally well
   %R=diag([1e15 1e15 1e15]);    %%
   %R=diag([1e16 1e16 1e16]);    %%

@@ -19,17 +19,17 @@ for i=1:ns
       sstX =zeros(ns,timeSteps);
       sstY =zeros(ns,timeSteps);
       sstZ =zeros(ns,timeSteps);
+      roll =zeros(ns,timeSteps);
       pitch=zeros(ns,timeSteps);
       yaw  =zeros(ns,timeSteps);
-      roll =zeros(ns,timeSteps);
   end
   cosmosTime(:,i)=tempTime(:);
   sstX(i,:)=tempSatStates(:,1)';
   sstY(i,:,:)=tempSatStates(:,2)';
   sstZ(i,:,:)=tempSatStates(:,3)';
-  pitch(i,:)=tempSatStates(:,7)';
-  yaw(i,:)  =tempSatStates(:,8)';
-  roll(i,:) =tempSatStates(:,9)';
+  roll(i,:)  =tempSatStates(:,7)';
+  pitch(i,:) =tempSatStates(:,8)';
+  yaw(i,:)   =tempSatStates(:,9)';
 end
 
 
@@ -147,18 +147,18 @@ end
     sstYvizgrid(j,:)=interp1(cosmosTime(:,j),sstY(j,:),vizgridtime);
     sstZvizgrid(j,:)=interp1(cosmosTime(:,j),sstZ(j,:),vizgridtime);
     
+    rollVizGrid(j,:)  =interp1(cosmosTime(:,j),squeeze(roll(j,:)),vizgridtime);
     pitchVizGrid(j,:) =interp1(cosmosTime(:,j),squeeze(pitch(j,:)),vizgridtime);
     yawVizGrid(j,:)   =interp1(cosmosTime(:,j),squeeze(yaw(j,:)),vizgridtime);
-    rollVizGrid(j,:)  =interp1(cosmosTime(:,j),squeeze(roll(j,:)),vizgridtime);
   end
   %% centerpoint
   lat(1,:)      = asin(sin(inclination).*sin(theta))/pi*180;           % Latitude             [deg]
   lon(1,:)      = wrapTo360((atan2(ys./rs,xs./rs)-rot_earth')/pi*180); % Longitude            [deg]
   rad(1,:)      = rs;                                                  % radius                [km]
    
+  rollVizGrid   = [zeros(1,size(pitchVizGrid,2)); rollVizGrid];
   pitchVizGrid  = [zeros(1,size(pitchVizGrid,2)); pitchVizGrid];
   yawVizGrid    = [zeros(1,size(pitchVizGrid,2)); yawVizGrid];
-  rollVizGrid   = [zeros(1,size(pitchVizGrid,2)); rollVizGrid];
   
   %% off set of the formation satellites
   for i=1:size(vizgridtime,2)-1
@@ -212,7 +212,7 @@ end
        
   %% write file   
   for i=1:ns+1
-    writematrix([vizgridtime' lat(i,:)' lon(i,:)' rad(i,:)' pitchVizGrid(i,:)' yawVizGrid(i,:)' rollVizGrid(i,:)' ],strcat('sat',num2str(i),'_LLR_PYR.csv'));
+    writematrix([vizgridtime' lat(i,:)' lon(i,:)' rad(i,:)' rollVizGrid(i,:)' pitchVizGrid(i,:)' yawVizGrid(i,:)'  ],strcat('sat',num2str(i),'_LLR_PYR.csv'));
   end
   
   

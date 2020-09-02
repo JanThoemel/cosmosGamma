@@ -66,7 +66,7 @@ classdef FlightControl < handle
       this.NumSatellites = ns;
 			this.FormationMode = mode;
 			%this.State         = zeros(9, 1);
-      this.State          = [-950 0 0 0 0 0 0 0 0]';
+      this.State          = [-950 0 0 0 0 0 0 0 0]'; %%% this is a problem
 			this.StateDesired   = zeros(6, 1);
 			this.StateErrors    = zeros(6, ns);
 			this.StateErrorsAvg = zeros(6, ns);
@@ -87,18 +87,7 @@ classdef FlightControl < handle
 			this.SurfaceRef = this.SurfacePanel * this.Panels(3);
 			
 			this.WindFactor = 1; 
-			this.SolarFactor = 0;
-			
-			% From main cosmosFS:
-			% Constant value for solar pressure.
-			this.SolarPressure = this.SolarFactor * 2 * 4.5e-6 * [0 -1 0]';
-			
-			% Compute the experienced force caused by solar pressure for all
-			% satellite attitudes (roll, pitch, yaw).
-			this.SolarPressureVector = this.getSolarPressureVector( ...
-				this.SolarPressure, this.SurfacePanel, ...
-				this.Panels(1), this.Panels(2), this.Panels(3), ...
-				this.Alphas, this.Betas, this.Gammas);
+			this.SolarFactor = 1;
 			
 		end
 		
@@ -111,6 +100,8 @@ classdef FlightControl < handle
 	methods (Access = public)
 		
 		updWindPressures(this, rho, v, tempAtmos)
+
+    updSolarPressures(this)
 		
 		updateStateErrorsAvg(this, receivedAverageStateErrors)
 		avg = getStateErrorAverage(this)
@@ -165,14 +156,15 @@ classdef FlightControl < handle
 		
 		vRot = rodriguesRotation(v, k, theta)
 		
-		[P, IR, A, B] = riccatiequation(meanMotion, SSCoeff)
+		[P, IR, A, B] = riccatiequation(meanMotion, SSCoeff,R)
 		
 		[forceVector, alphaOpt, betaOpt, gammaOpt] = findBestAttitude( ...
 			totalForceVector, controlVector, alphas, betas, gammas, ...
 			oldAlphaOpt, oldBetaOpt, oldGammaOpt)
 		
 		[CD, CL] = aeroDragLiftSentman(theta, Tatmos, v, rho)
-		
+		sunforceVector=solarDragLift(solarPressure, sunlight,normal, theta,...
+      panelSurface,noPanels,gammaSunSpecular,gammaSunDiffusive)
 	end % Static methods.
 	
 end % Class FlightControl.

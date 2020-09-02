@@ -6,18 +6,25 @@ function fly(this, currentOrbitSection, sizeOrbitSection)
 % method of class Satellite
 % ______________________________________________________________________________
 
-% Get updated orbital parameters from GPS/TLE.
-orbitFromGPS = this.GPSModule.getOrbitCounter();
-meanAnomalyFromAN = this.GPSModule.getMeanAnomalyFromAN();
 
-% Update orbital parameters.
-this.Orbit.updateOrbitalParams(orbitFromGPS, meanAnomalyFromAN);
 
-% Update wind pressure.
-this.FlightControl.updWindPressures(this.Orbit.Rho, this.Orbit.V, this.Orbit.TempAtmos);
+
+%this.Orbit.whereIsTheSun(someAngle)
+%this.FlightControl.rotateSun
 
 % Settings for control algorithm, is this necessary in every loop?
-[P, IR, A, B] = this.FlightControl.riccatiequation(this.Orbit.MeanMotionRad, this.FlightControl.SSCoeff);
+%% to-be-double-checked theory: if R is large then the control error is secondary to the minimization of the control action
+R=diag([1e13 1e13 1e13]);
+
+% if labindex==2
+%   R=diag([1e12 1e12 1e12]);
+% elseif labindex==3
+%   R=diag([1e14 1e14 1e14]);
+% else
+%   R=diag([1e13 1e13 1e13]);
+% end
+
+[P, IR, A, B] = this.FlightControl.riccatiequation(this.Orbit.MeanMotionRad, this.FlightControl.SSCoeff,R);
 
 % determine time elapsed since last ascending equator crossing
 time = currentOrbitSection / this.Orbit.MeanMotionDeg;
@@ -40,9 +47,9 @@ deltaTime = sizeOrbitSection / this.Orbit.MeanMotionDeg;
 
 this.FlightControl.StateOld = this.FlightControl.State;
 
-oldAlphas = this.FlightControl.State(7);
-oldBetas  = this.FlightControl.State(8);
-oldGammas = this.FlightControl.State(9);
+oldAlphas = this.FlightControl.State(7); %% roll
+oldBetas  = this.FlightControl.State(8); %% pitch
+oldGammas = this.FlightControl.State(9); %% yaw
 
 % Vector of size 3 x sizeAlphas x sizeBetas x sizeGammas.
 usedTotalForceVector = zeros(3,...
@@ -56,17 +63,28 @@ for i=1:this.FlightControl.NumSatellites
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
-
-%!solve ODE with many small steps until end of timestep
-% 
-varPassedOut=zeros(3,1);
-[intermediateSST intermediateTime]=ode45(@(t,y) myODE(intermediateTime,intermediateSST,IR,B,P,A,this.FlightControl.StateOld),[0 deltaTime],this.FlightControl.StateOld);
-varPassedOut=varPassedOut(:,2:end);
-
-%!average controlvector
-% controlVector=sum(intermediateControlVector.*intermediateTime)/deltaTime;
-% for testing: compare averageControlVector to previous controlVector
-% for testing, down: compare new stateVector with the one from the ODE solver
+if 0%labindex==2 || labindex==3%!solve ODE with many small steps until end of timestep
+  
+  intermediateTime=0;
+  intermediateSST=0;
+  [dSSTdt, intermediateControlVector2,intermediateTime]=ode15s(@(intermediateTime,intermediateSST) myODE(intermediateTime,intermediateSST,IR,B,P,A,this.FlightControl.StateOld(1:6),this),[0 deltaTime],this.FlightControl.StateOld(1:6));
+  [~, intermediateControlVector2,intermediateTime]=myODE([],[],[],[],[],[],[],[]);
+  
+  %   size(intermediateControlVector2)
+  %   size(intermediateTime)
+  %   this.controlVector(:,2)
+  this.controlVector(:,2)=[0 0 0]';
+  for i=1:3
+    for j=2:size(intermediateTime,2)
+      this.controlVector(i,2)=this.controlVector(i,2)+intermediateControlVector2(i,j)*(intermediateTime(j)-intermediateTime(j-1))/deltaTime;
+    end
+  end
+  %   this.controlVector(:,2)
+  %   mean(intermediateControlVector2(1,:))
+  %   mean(intermediateControlVector2(2,:))
+  %   mean(intermediateControlVector2(3,:))
+  %   fprintf('\n------------');
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -85,11 +103,9 @@ varPassedOut=varPassedOut(:,2:end);
     end
 
 
-% Sunlight rotation will be important for non dusk-dawn orbits.
-rotatedSolarPressureVector = this.FlightControl.SolarPressureVector;
-
 % To do:
 % Rotate solar pressure vector.
+% Rotate controlvector shifting/avarageing
 
 masterSatellite = 0;
 if masterSatellite == 0
@@ -97,7 +113,7 @@ if masterSatellite == 0
 	for k = 1 : size(this.FlightControl.Gammas,2)
 		for j = 1 : size(this.FlightControl.Betas,2)
 			for i = 1 : size(this.FlightControl.Alphas,2)
-				usedTotalForceVector(:,i,j,k) = this.FlightControl.WindPressureVector(:,i,j,k) + rotatedSolarPressureVector(:,i,j,k);
+				usedTotalForceVector(:,i,j,k) = this.FlightControl.WindPressureVector(:,i,j,k) + this.FlightControl.SolarPressureVector(:,i,j,k);
 			end
 		end
 	end
@@ -113,6 +129,7 @@ else
         usedTotalForceVector, this.controlVector(:,this.FlightControl.SatID),...
         this.FlightControl.Alphas, this.FlightControl.Betas, this.FlightControl.Gammas, ...
         oldAlphas, oldBetas, oldGammas);
+  %% alpha is roll, beta is pitch, gamma is yaw
 end
 if 2*norm(this.controlVector(:,this.FlightControl.SatID))<norm(this.forceVector)
     this.forceVector=[0 0 0]'; alphaOpt=0; betaOpt=0; gammaOpt=0;
@@ -123,7 +140,7 @@ this.FlightControl.State(1:6) = (A * this.FlightControl.StateOld(1:6) + B * ...
                                 deltaTime + this.FlightControl.StateOld(1:6);
 
 
-this.FlightControl.State(7:9) = [alphaOpt betaOpt gammaOpt]';
+this.FlightControl.State(7:9) = [alphaOpt betaOpt gammaOpt]'; %% roll, pitch, yaw
 
 
 % Update duration of the current orbit.
@@ -133,15 +150,31 @@ this.Orbit.updateOrbitDuration();
 end % Function Satellite.fly
 
 
- function [dSSTdt intermediateTime]=myODE(intermediateTime,intermediateSST,IR,B,P,A,StateOld)
+ function [dSSTdt intermediateControlVector2 intermediateTime3]=myODE(intermediateTime,intermediateSST,IR,B,P,A,StateOld,this)
 
-   this.FlightControl.updateStateDesired(intermediateTime, this.Orbit.MeanMotionRad);
-
-   intermediateControlVector = -IR*B'*P * (StateOld-intermediateDesiredStateVector)';
-   dSSTdt=(A * StateOld(1:6)' + B * intermediateControlVector);
-
-   varToPassOut=intermediateControlVector;
-   assignin('base','varInBase',varToPassOut);
-   evalin('base','varPassedOut(:,end+1)=varInBase');
+  persistent intermediateControlVector;
+  persistent intermediateTime2;
+   
+  if isempty(intermediateTime)
+    intermediateControlVector2=intermediateControlVector(:,2:end);
+    intermediateTime3=intermediateTime2(2:end);
+    dSSTdt=0;
+    clear intermediateControlVector;
+    clear intermediateTime2;
+  else
+    if isempty(intermediateControlVector)
+      intermediateControlVector=zeros(3,1);
+      intermediateTime2=0;
+    end
+    this.FlightControl.updateStateDesired(intermediateTime, this.Orbit.MeanMotionRad);
+    intermediateControlVectorTemp = -IR*B'*P * (StateOld-this.FlightControl.StateDesired);
+    dSSTdt=(A * StateOld + B * intermediateControlVectorTemp);
+    intermediateControlVector=[intermediateControlVector intermediateControlVectorTemp];    
+    intermediateTime2=[intermediateTime2 intermediateTime];
+  end
+  
+  %varToPassOut=intermediateControlVector;
+  %assignin('base','varInBase',varToPassOut);
+  %evalin('base','varPassedOut(:,end+1)=varInBase');
 
  end

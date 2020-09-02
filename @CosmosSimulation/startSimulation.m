@@ -53,12 +53,25 @@ spmd(this.NumSatellites)
 % sat.initialize(id, commChannel, this.iniConditions(id,:));
   sat.initialize(id, commChannel, this.InitConditions(id,:));
   
+ 
+  % % Update wind pressure.
+ %? does this needs to be computed in each segment?  A: most likely not
+ sat.FlightControl.updWindPressures(sat.Orbit.Rho, sat.Orbit.V, sat.Orbit.TempAtmos);
+ 
+ % Update solar pressure.
+ %? does this needs to be computed in each segment? A: most likely not
+ sat.FlightControl.updSolarPressures();
+
+  
+  
+  
+  
     %% for sim
   % for simulation output, set initial conditions
   this.updSatStatesIni(id, fc.State);
   
   % Loop for each orbit.
-	while sat.Alive % Sattelites turned on, but still doing nothing.
+	while sat.Alive % Satellites turned on, but still doing nothing.
     
     %!R:
     % Simulate GPS data here.
@@ -68,6 +81,16 @@ spmd(this.NumSatellites)
     % Update orbit counter.
     % Orbit counter holds current orbit number, not total orbits completed.
     gps.incrementOrbitCounter();
+    
+    % Get updated orbital parameters from GPS/TLE.
+    orbitFromGPS = sat.GPSModule.getOrbitCounter();
+    meanAnomalyFromAN = sat.GPSModule.getMeanAnomalyFromAN();
+    
+    % Update orbital parameters.
+    sat.Orbit.updateOrbitalParams(orbitFromGPS, meanAnomalyFromAN);
+    
+    
+    
     
     % Put endOfSectionsCycle into flight control.
     % Calculate endOfSectionsCycle.

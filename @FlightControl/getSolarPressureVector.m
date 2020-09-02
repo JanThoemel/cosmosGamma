@@ -14,6 +14,25 @@ function  solarpressureforcevector = getSolarPressureVector(sunlight,panelSurfac
 %%  -the vector sunlight is nondimensionalized, which seems not necessary
 %%  -there is visualization possible, which should not be necessary anymore
 
+  %% model as per:
+  %% 'Modelling of Solar Radiation Pressure Effects: Parameter Analysis for the MICROSCOPE Mission'
+  %% by Meike List, Stefanie Bremer, Benny Rievers, and Hanns Selig
+  %% Equation 6
+  %% beginning of life (BOL)  
+  gammaSunSpecular=0.072;
+  gammaSunDiffusive=0.007;
+  %% end of life (EOL)
+  %gammaSunSpecular=0.05;
+  %gammaSunDiffusive=0.03;
+
+  %gammaSunSpecular=0.268; %% average value for 50% BOL value and 50% 1
+  %gammaSunDiffusive=0.00175; %% average value for 50% BOL value and 50% 1
+
+  %gammaSunSpecular=0.168; %% average value for 50% BOL value and 50% 1
+  %gammaSunDiffusive=0.00475; %% average value for 50% BOL value and 50% 1
+
+
+
   solarpressureforcevector=zeros(3,size(alphas,2),size(betas,2),size(gammas,2));
 
   if norm(sunlight)==0
@@ -62,7 +81,7 @@ function  solarpressureforcevector = getSolarPressureVector(sunlight,panelSurfac
           %end            
           %%% determine lift vector
           %sunforcevectorZ=nozpanels*(-liftvector  *sunliftcoef(i,j,k)*solarPressure*panelSurface  +  sunforcevectorZ)
-          sunforcevectorZ=solarPressureForce(solarPressure, sunlight,normalZ/norm(normalZ), thetasun(i,j,k),panelSurface,nozpanels);
+          sunforcevectorZ=FlightControl.solarDragLift(solarPressure, sunlight,normalZ/norm(normalZ), thetasun(i,j,k),panelSurface,nozpanels,gammaSunSpecular,gammaSunDiffusive);
         end
         if noxpanels %% xpanel
           normalX=RzY*Ry*RzR*Ix;
@@ -76,7 +95,7 @@ function  solarpressureforcevector = getSolarPressureVector(sunlight,panelSurfac
           %  liftvector = [0 0 0]';
           %end
           %sunforcevectorX=noxpanels*(-liftvector         *  sunliftcoef(i,j,k)*solarPressure*panelSurface  +  sunforcevectorX);
-          sunforcevectorX=solarPressureForce(solarPressure, sunlight,normalX/norm(normalX), thetasun(i,j,k),panelSurface,noxpanels);
+          sunforcevectorX=FlightControl.solarDragLift(solarPressure, sunlight,normalX/norm(normalX), thetasun(i,j,k),panelSurface,noxpanels,gammaSunSpecular,gammaSunDiffusive);
         end
         if noypanels %% ypanel
           normalY=RzY*Ry*RzR*Iy;
@@ -90,7 +109,7 @@ function  solarpressureforcevector = getSolarPressureVector(sunlight,panelSurfac
           %  liftvector = [0 0 0]';
           %end                        
           %sunforcevectorY=noypanels*(-liftvector   *    sunliftcoef(i,j,k)*solarPressure*panelSurface+sunforcevectorY);
-          sunforcevectorY=solarPressureForce(solarPressure, sunlight,normalY/norm(normalY), thetasun(i,j,k),panelSurface,noypanels);
+          sunforcevectorY=FlightControl.solarDragLift(solarPressure, sunlight,normalY/norm(normalY), thetasun(i,j,k),panelSurface,noypanels,gammaSunSpecular,gammaSunDiffusive);
         end
         %%draw
         if draw

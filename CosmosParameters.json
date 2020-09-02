@@ -1,9 +1,11 @@
 {
   "SelectedFormationFlightMode": 1,
-  "SimMaxNumOrbits": 2,
+  "SimMaxNumOrbits": 10,
   "SimAccelerationFactor": 100e3,
   "VizScale": 1,
   "Modes": [
+
+
     {
       "ModeID": 1,
       "ModeName": "Cluster",
@@ -16,6 +18,115 @@
       "AvailableGPS": true,
       "AvailableTLE": false,
       "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "ffpsCluster",
+      "FFPSValues": [
+        {
+          "ffp1": 0,
+          "ffp2": 0,
+          "ffp3": 0,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        },
+        {
+          "ffp1": 50,
+          "ffp2": -115,
+          "ffp3": 50,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        },
+        {
+          "ffp1": 0,
+          "ffp2": -230,
+          "ffp3": 0,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        }
+      ]
+    }
+
+
+,
+    {
+      "ModeID": 2,
+      "ModeName": "Cluster2",
+      "NumSatellites": 3,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude": 453e3,
+      "SizeOrbitSectionDeg": 1,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "ffpsCluster",
+      "FFPSValues": [
+        {
+          "ffp1": 0,
+          "ffp2": 0,
+          "ffp3": 0,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        },
+        {
+          "ffp1": 30,
+          "ffp2": -115,
+          "ffp3": 30,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        },
+        {
+          "ffp1": 0,
+          "ffp2": -230,
+          "ffp3": 0,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        }
+      ]
+    }
+
+
+,
+
+
+    {
+      "ModeID": 3,
+      "ModeName": "Cluster4Testing",
+      "NumSatellites": 4,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude": 453e3,
+      "SizeOrbitSectionDeg": 0.5,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -51,11 +162,26 @@
           "ffp6": 0,
           "ffp7": 0,
           "ffp8": 0
+        },
+        {
+          "ffp1": 30,
+          "ffp2": -115,
+          "ffp3": 30,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
         }
       ]
-    },
+    }
+
+
+,
+
+
     {
-      "ModeID": 2,
+      "ModeID": 4,
       "ModeName": "ISMission",
       "NumSatellites": 2,
       "AttitudeResolutionDeg": 45,
@@ -93,6 +219,63 @@
         }
       ]
     }
+
+
+,
+
+
+    {
+      "ModeID": 5,
+      "ModeName": "ISMission4Test",
+      "NumSatellites": 3,
+      "AttitudeResolutionDeg": 15,
+      "InitOrbitAltitude": 353e3,
+      "SizeOrbitSectionDeg": 0.2,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-1005, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-2005, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "ffpsISMission",
+      "FFPSValues": [
+        {
+          "ffp1": 0,
+          "ffp2": 0,
+          "ffp3": 0,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        },
+        {
+          "ffp1": 0,
+          "ffp2": -1000,
+          "ffp3": 0,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        },
+        {
+          "ffp1": 0,
+          "ffp2": -2000,
+          "ffp3": 0,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        }
+      ]
+    }
+
+
   ],
   "_Comment": "Field for comment of any kind. Leave it to use when needed."
 }
