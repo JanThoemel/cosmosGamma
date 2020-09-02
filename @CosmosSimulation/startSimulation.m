@@ -45,37 +45,40 @@ spmd(this.NumSatellites)
   % - a class for communication with the screen
   % - a class for the communication with VIZ
   % Set satellite communication channel as the parpool data queue.
-	commChannel = dq;
 	
 %!RW: transfer configuration of initial conditions to simulation, leave
 %satellite initialization only with real-case-like instructions.
   % Set up some parameters, such as battery status, sat status, initial conditions.
-% sat.initialize(id, commChannel, this.iniConditions(id,:));
-  sat.initialize(id, commChannel, this.InitConditions(id,:));
+
+sat.initialize(id,dq, this.InitConditions(id,:));
   
  
-  % % Update wind pressure.
- %? does this needs to be computed in each segment?  A: most likely not
- sat.FlightControl.updWindPressures(sat.Orbit.Rho, sat.Orbit.V, sat.Orbit.TempAtmos);
- 
- % Update solar pressure.
- %? does this needs to be computed in each segment? A: most likely not
- sat.FlightControl.updSolarPressures();
+% define nominal wind magnitude and direction
+sat.FlightControl.WindPressure = this.WindFactor * sat.Orbit.Rho/2 * sat.Orbit.V^2 * [-1 0 0]';
+% compute for each roll, pitch and yaw angle the aerodynamic force
+sat.FlightControl.WindPressureVector = FlightControl.getWindPressureVector(...
+                                              sat.FlightControl.WindPressure, sat.FlightControl.SurfacePanel, ...
+	                                            sat.FlightControl.Panels(1), sat.FlightControl.Panels(2), ...
+                                              sat.FlightControl.Panels(3), sat.FlightControl.Alphas, sat.FlightControl.Betas,...
+                                              sat.FlightControl.Gammas, sat.Orbit.Rho, sat.Orbit.V, sat.Orbit.TempAtmos);
+
+
+% define nominal solar radiation pressure magnitude and direction
+sat.FlightControl.SolarPressure = this.SolarFactor * 2 * 4.5e-6 * [0 -1 0]';
+% compute for each roll, pitch and yaw angle the solar radiation force
+sat.FlightControl.SolarPressureVector = sat.FlightControl.getSolarPressureVector( ...
+                                             sat.FlightControl.SolarPressure, sat.FlightControl.SurfacePanel, ...
+ 				                                     sat.FlightControl.Panels(1), sat.FlightControl.Panels(2), sat.FlightControl.Panels(3), ...
+ 				                                     sat.FlightControl.Alphas, sat.FlightControl.Betas, sat.FlightControl.Gammas);
 
   
-  
-  
-  
-    %% for sim
+  %% for sim
   % for simulation output, set initial conditions
   this.updSatStatesIni(id, fc.State);
   
   % Loop for each orbit.
 	while sat.Alive % Satellites turned on, but still doing nothing.
-    
-    %!R:
-    % Simulate GPS data here.
-    
+        
     %% Before:
     %---------------------------------------------------------------------------
     % Update orbit counter.
@@ -88,35 +91,7 @@ spmd(this.NumSatellites)
     
     % Update orbital parameters.
     sat.Orbit.updateOrbitalParams(orbitFromGPS, meanAnomalyFromAN);
-    
-    
-    
-    
-    % Put endOfSectionsCycle into flight control.
-    % Calculate endOfSectionsCycle.
-%     endOfSectionsCycle = (this.IDX - 1) / this.NumOrbitSections;
-    
-    % From whereInWhatOrbit().
-    % This implementation can bring bugs later
-%     if endOfSectionsCycle % start a new section cycle
-%       gps.MeanAnomalyFromAN = 0.01;
-%     else
-%       gps.MeanAnomalyFromAN = 120; % when starting a simulation, the s/c might be an arbitrary mean anomaly, e.g. 120
-%     end
-    % ^
-    % Update mean anomaly from ascending node.
-    % For now, simulation updates this value.
-    % Later, this value will be obtained from GPS/TLE.
-    % IDX into flight control?
-    %this.updateIDX(gps.MeanAnomalyFromAN);
-    
-    % Pause #1:
-    % Wait until end of orbit sections.
-    %pause( (this.OrbitSections(this.IDX) - gps.MeanAnomalyFromAN) /...
-    %	orbit.MeanMotionDeg / this.AccelFactor);
-    %---------------------------------------------------------------------------
-    %% End
-    
+        
     %% The orbit is divided into sections of few degrees size.
     % IDX tells in which section we are in
     
@@ -128,11 +103,7 @@ spmd(this.NumSatellites)
     % pause( (this.OrbitSections(this.IDX) - gps.MeanAnomalyFromAN) / orbit.MeanMotionDeg / this.AccelFactor);
     % JT: OrbitSections and IDX should be renamed to OrbitSectionsMeanAnomalyFromAN and orbitSectionsID
     
-    timeStep = this.OrbitSectionSize / orbit.MeanMotionDeg;
-    % ^^^^
-    %!R:
-    % Will OrbitSectionSize and MeanMotionDeg be always constant?
-    
+    timeStep = this.OrbitSectionSize / orbit.MeanMotionDeg;    
     
     %% Start orbit sections loop.
 		while this.OrbitSectionNow <= this.NumOrbitSections
@@ -147,6 +118,7 @@ spmd(this.NumSatellites)
 %variable currentOrbitSection holds the value in degrees. This implementation is
 %very confusing. Maybe change name of variables or the implemenation method to
 %be more clear and avoid bugs/errors later.
+
       currentOrbitSection = this.OrbitSections(this.OrbitSectionNow);
       %send(DQ,'bef');
       
@@ -251,16 +223,16 @@ spmd(this.NumSatellites)
   % Needed for autonomous documentation generation tool.
 	% Globally concatenate all output variables on lab index 1.
 	% Must be the last lines of code of the parallel pool.
-	satellites = gcat(sat,1,1);
-	orbits = gcat(orbit,1,1);
-	flightControlModules = gcat(fc,1,1);
-	gpsModules = gcat(gps,1,1);
-	timeVectorLengths = gcat(this.TimeVectorLengths(id),1,1);
-	timeVector = gcat(this.TimeVector(id,:),1,1);
-	satPositionsLengths = gcat(this.SatPositionsLengths(id),1,1);
-	satPositions = gcat(this.SatPositions(id,:,:),1,1);
-	satStatesLengths = gcat(this.SatStatesLengths(id),1,1);
-	satStates = gcat(this.SatStates(id,:,:),1,1);
+  	satellites = gcat(sat,1,1);
+  	orbits = gcat(orbit,1,1);
+  	flightControlModules = gcat(fc,1,1);
+  	gpsModules = gcat(gps,1,1);
+  	timeVectorLengths = gcat(this.TimeVectorLengths(id),1,1);
+  	timeVector = gcat(this.TimeVector(id,:),1,1);
+  	satPositionsLengths = gcat(this.SatPositionsLengths(id),1,1);
+  	satPositions = gcat(this.SatPositions(id,:,:),1,1);
+ 	satStatesLengths = gcat(this.SatStatesLengths(id),1,1);
+ 	satStates = gcat(this.SatStates(id,:,:),1,1);
 	
 end % Parallel code.
 

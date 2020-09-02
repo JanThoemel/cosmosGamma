@@ -37,6 +37,9 @@ properties (GetAccess = public, SetAccess = public)
   TimeVector % Time vector for plotting.
   TimeVectorLengths % Length of the time vector for each satellite.
   VizScale % Scale for satellite distances in visualization.
+  WindFactor %% switch on whether aerodynamics shall be simulated
+	SolarFactor  %% switch on whether solar radiation pressure shall be simulated
+
 
 end
 
@@ -56,7 +59,7 @@ end
       fid = fopen(filename,'r');
       params = jsondecode(fscanf(fid,'%s'));
       fclose(fid);
-      
+            
       % Get all parameters that are contained in the JSON file.
       modeID = params.SelectedFormationFlightMode;
       maxNumOrbits = params.SimMaxNumOrbits;
@@ -142,6 +145,9 @@ end
         this.FlightControlModules(i) = this.Satellites(i).FlightControl;
         this.GPSModules(i) = this.Satellites(i).GPSModule;
       end
+      
+      this.WindFactor = 1;      %% shall aerodynamics be simulated?
+      this.SolarFactor = 1;     %% shall solar radiation pressure be simulated?
       
     end % Constructor function.
     

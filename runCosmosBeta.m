@@ -44,7 +44,6 @@ orbit = csim.Orbits; % Aliases: orbit(1) to orbit(n).
 fc    = csim.FlightControlModules; % Aliases: fc(1) to fc(n).
 gps   = csim.GPSModules; % Aliases: gps(1) to gps(n).
 
-
 %% Plot and visualize results
 %! this should go to sim.start
 %! empty place holders for now

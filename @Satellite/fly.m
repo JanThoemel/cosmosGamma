@@ -6,11 +6,11 @@ function fly(this, currentOrbitSection, sizeOrbitSection)
 % method of class Satellite
 % ______________________________________________________________________________
 
+%LTAN=6;
+%inclination=23.4;
+%[rotate1,rotate2]this.Orbit.whereIsTheSun(currentOrbitSection,LTAN)
+%this.FlightControl.rotateSun(rotate1,rotate2)
 
-%this.Orbit.whereIsTheSun(someAngle)
-%this.FlightControl.rotateSun
-
-% Settings for control algorithm, is this necessary in every loop?
 %% to-be-double-checked theory: if R is large then the control error is secondary to the minimization of the control action
 R=diag([1e13 1e13 1e13]);
 
@@ -71,6 +71,8 @@ if 0%labindex==2 || labindex==3%!solve ODE with many small steps until end of ti
   %   size(intermediateControlVector2)
   %   size(intermediateTime)
   %   this.controlVector(:,2)
+  
+  % compute mean of control vector
   this.controlVector(:,2)=[0 0 0]';
   for i=1:3
     for j=2:size(intermediateTime,2)
@@ -83,46 +85,39 @@ if 0%labindex==2 || labindex==3%!solve ODE with many small steps until end of ti
   %   mean(intermediateControlVector2(3,:))
   %   fprintf('\n------------');
 end
-
-
-%!solve ODE with many small steps until end of timestep
-% 
-%varPassedOut=zeros(3,1);
-%[intermediateSST intermediateTime]=ode45(@(t,y) myODE(intermediateTime,intermediateSST,IR,B,P,A,this.FlightControl.StateOld),[0 deltaTime],this.FlightControl.StateOld,this);
-%varPassedOut=varPassedOut(:,2:end);
-
-%!average controlvector
-% controlVector=sum(intermediateControlVector.*intermediateTime)/deltaTime;
-% for testing: compare averageControlVector to previous controlVector
-% for testing, down: compare new stateVector with the one from the ODE solver
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+totalPressureDirection=this.FlightControl.WindPressure+this.FlightControl.SolarPressure;
 
-    %% shift and average control force
-    controlVectorMin         = min(this.controlVector(1,:));
-    for i=1:this.FlightControl.NumSatellites %% transform error for each satellite
-      this.controlVector(1,i)     = this.controlVector(1,i) - controlVectorMin;
-    end
-    averagecontrolVector     = zeros(3,1);
-    for i=1:this.FlightControl.NumSatellites %% compute average error
-      averagecontrolVector(2:3)= averagecontrolVector(2:3)+this.controlVector(2:3,i)/this.FlightControl.NumSatellites;      
-    end
-    for i=1:this.FlightControl.NumSatellites %% assign average error
-      this.controlVector(2:3,i) = this.controlVector(2:3,i)-averagecontrolVector(2:3);
-    end
+errorRotation      = vrrotvec(totalPressureDirection,[1 0 0]);
+angleErrorRotation = errorRotation(4)/pi*180;
+axisErrorRotation  = errorRotation(1:3);
 
+%% compute transformed control force
+for i=1:this.FlightControl.NumSatellites %% transform error for each satellite
+  controlVectorTransformed(:,i)  = this.FlightControl.rodriguesRotation(this.controlVector(:,i),axisErrorRotation',angleErrorRotation/180*pi);
+end %%
 
-%<<<<<<< HEAD
-%=======
-% Sunlight rotation will be important for non dusk-dawn orbits.
-%rotatedSolarPressureVector = this.FlightControl.SolarPressureVector;
+%% shift and average control force
+maxControlVectorTransformed         = max(controlVectorTransformed(1,:));
+for i=1:this.FlightControl.NumSatellites %% transform error for each satellite
+  controlVectorTransformed(1,i)     = controlVectorTransformed(1,i) - maxControlVectorTransformed;
+end
+averageControlVectorTransformed     = zeros(3,1);
+for i=1:this.FlightControl.NumSatellites %% compute average error
+  averageControlVectorTransformed(2:3)= averageControlVectorTransformed(2:3)+controlVectorTransformed(2:3,i)/this.FlightControl.NumSatellites;
+end
+for i=1:this.FlightControl.NumSatellites %% assign average error
+  controlVectorTransformed(2:3,i) = controlVectorTransformed(2:3,i)-averageControlVectorTransformed(2:3);
+end
 
-%>>>>>>> 4b3286e564a4b2f28913983a5704cac2cfee0990
-% To do:
-% Rotate solar pressure vector.
-% Rotate controlvector shifting/avarageing
-
+%% retransform control force
+for i=1:this.FlightControl.NumSatellites %% transform error for each satellite
+  this.controlVector(:,i)              = this.FlightControl.rodriguesRotation(controlVectorTransformed(:,i),axisErrorRotation',-angleErrorRotation/180*pi);
+end 
+   
+    
 masterSatellite = 0;
 if masterSatellite == 0
 % If no master satellite.
@@ -164,23 +159,7 @@ this.Orbit.updateOrbitDuration();
 
 end % Function Satellite.fly
 
-%{
- function [dSSTdt intermediateTime]=myODE(intermediateTime,intermediateSST,IR,B,P,A,StateOld)
-
-   this.FlightControl.updateStateDesired(intermediateTime, this.Orbit.MeanMotionRad);
-
-   intermediateControlVector = -IR*B'*P * (StateOld-intermediateDesiredStateVector)';
-   dSSTdt=(A * StateOld(1:6)' + B * intermediateControlVector);
-
-   varToPassOut=intermediateControlVector;
-   assignin('base','varInBase',varToPassOut);
-   evalin('base','varPassedOut(:,end+1)=varInBase');
-
-
-end % Function Satellite.fly
-%}
-
- function [dSSTdt intermediateControlVector2 intermediateTime3]=myODE(intermediateTime,intermediateSST,IR,B,P,A,StateOld,this)
+function [dSSTdt intermediateControlVector2 intermediateTime3]=myODE(intermediateTime,intermediateSST,IR,B,P,A,StateOld,this)
 
   persistent intermediateControlVector;
   persistent intermediateTime2;
@@ -203,9 +182,4 @@ end % Function Satellite.fly
     intermediateTime2=[intermediateTime2 intermediateTime];
   end
   
-  %varToPassOut=intermediateControlVector;
-  %assignin('base','varInBase',varToPassOut);
-  %evalin('base','varPassedOut(:,end+1)=varInBase');
-
-
  end

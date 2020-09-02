@@ -19,7 +19,6 @@ classdef FlightControl < handle
 		Panels % Satellite panels.
 		SatelliteMass % Mass of the satellite [kg].
 		SatID % Unique identification number of the satellite.
-		SolarFactor % Multiplication factor for solar pressure.
 		SolarPressure % Pressure from sunlight.
 		SolarPressureVector % Solar pressure for all satellite attitudes.
 		SSCoeff % Schweighart-Sedgwick coefficient.
@@ -30,7 +29,6 @@ classdef FlightControl < handle
 		StateOld % Old satellite state.
 		SurfacePanel % Surface area of each of the satellite panels [m^2].
 		SurfaceRef % Reference surface area.
-		WindFactor % Multiplication factor for wind pressure.
 		WindPressure % Pressure from wind.
 		WindPressureVector % Wind pressure for all satellite attitudes.
 		
@@ -85,10 +83,7 @@ classdef FlightControl < handle
 			this.Panels = [0 0 4];
 			this.SurfacePanel = 0.01; % Squared meters.
 			this.SurfaceRef = this.SurfacePanel * this.Panels(3);
-			
-			this.WindFactor = 1; 
-			this.SolarFactor = 1;
-			
+						
 		end
 		
 	end % Constructor.
@@ -98,11 +93,7 @@ classdef FlightControl < handle
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	
 	methods (Access = public)
-		
-		updWindPressures(this, rho, v, tempAtmos)
-
-    updSolarPressures(this)
-		
+				
 		updateStateErrorsAvg(this, receivedAverageStateErrors)
 		avg = getStateErrorAverage(this)
 		
