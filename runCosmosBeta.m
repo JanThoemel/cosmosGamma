@@ -30,6 +30,7 @@ end
 % initial conditions are in Satellite.initialize
 % parameters for riccati equation can be found in riccatiequation
 
+
 %% Instantiate a simulation object
 % Do not use 'sim' as variable name. It is a reserved name in Simulink.
 csim = CosmosSimulation();

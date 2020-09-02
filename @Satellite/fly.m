@@ -7,8 +7,6 @@ function fly(this, currentOrbitSection, sizeOrbitSection)
 % ______________________________________________________________________________
 
 
-
-
 %this.Orbit.whereIsTheSun(someAngle)
 %this.FlightControl.rotateSun
 
@@ -85,6 +83,18 @@ if 0%labindex==2 || labindex==3%!solve ODE with many small steps until end of ti
   %   mean(intermediateControlVector2(3,:))
   %   fprintf('\n------------');
 end
+
+
+%!solve ODE with many small steps until end of timestep
+% 
+%varPassedOut=zeros(3,1);
+%[intermediateSST intermediateTime]=ode45(@(t,y) myODE(intermediateTime,intermediateSST,IR,B,P,A,this.FlightControl.StateOld),[0 deltaTime],this.FlightControl.StateOld,this);
+%varPassedOut=varPassedOut(:,2:end);
+
+%!average controlvector
+% controlVector=sum(intermediateControlVector.*intermediateTime)/deltaTime;
+% for testing: compare averageControlVector to previous controlVector
+% for testing, down: compare new stateVector with the one from the ODE solver
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -103,6 +113,12 @@ end
     end
 
 
+%<<<<<<< HEAD
+%=======
+% Sunlight rotation will be important for non dusk-dawn orbits.
+%rotatedSolarPressureVector = this.FlightControl.SolarPressureVector;
+
+%>>>>>>> 4b3286e564a4b2f28913983a5704cac2cfee0990
 % To do:
 % Rotate solar pressure vector.
 % Rotate controlvector shifting/avarageing
@@ -139,7 +155,6 @@ this.FlightControl.State(1:6) = (A * this.FlightControl.StateOld(1:6) + B * ...
                                 this.forceVector / this.FlightControl.SatelliteMass) *...
                                 deltaTime + this.FlightControl.StateOld(1:6);
 
-
 this.FlightControl.State(7:9) = [alphaOpt betaOpt gammaOpt]'; %% roll, pitch, yaw
 
 
@@ -149,6 +164,21 @@ this.Orbit.updateOrbitDuration();
 
 end % Function Satellite.fly
 
+%{
+ function [dSSTdt intermediateTime]=myODE(intermediateTime,intermediateSST,IR,B,P,A,StateOld)
+
+   this.FlightControl.updateStateDesired(intermediateTime, this.Orbit.MeanMotionRad);
+
+   intermediateControlVector = -IR*B'*P * (StateOld-intermediateDesiredStateVector)';
+   dSSTdt=(A * StateOld(1:6)' + B * intermediateControlVector);
+
+   varToPassOut=intermediateControlVector;
+   assignin('base','varInBase',varToPassOut);
+   evalin('base','varPassedOut(:,end+1)=varInBase');
+
+
+end % Function Satellite.fly
+%}
 
  function [dSSTdt intermediateControlVector2 intermediateTime3]=myODE(intermediateTime,intermediateSST,IR,B,P,A,StateOld,this)
 
@@ -176,5 +206,6 @@ end % Function Satellite.fly
   %varToPassOut=intermediateControlVector;
   %assignin('base','varInBase',varToPassOut);
   %evalin('base','varPassedOut(:,end+1)=varInBase');
+
 
  end
