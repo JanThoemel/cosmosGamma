@@ -19,7 +19,8 @@ classdef FlightControl < handle
 		Panels % Satellite panels.
 		SatelliteMass % Mass of the satellite [kg].
 		SatID % Unique identification number of the satellite.
-		SolarPressure % Pressure from sunlight.
+		SolarPressure % Pressure from sunlight. Will be rotated over the orbit
+		initialSolarPressure % initial Pressure from sunlight.
 		SolarPressureVector % Solar pressure for all satellite attitudes.
 		SSCoeff % Schweighart-Sedgwick coefficient.
 		State % Satellite state.

@@ -64,13 +64,12 @@ sat.FlightControl.WindPressureVector = FlightControl.getWindPressureVector(...
 
 
 % define nominal solar radiation pressure magnitude and direction
-sat.FlightControl.SolarPressure = this.SolarFactor * 2 * 4.5e-6 * [0 -1 0]';
-% compute for each roll, pitch and yaw angle the solar radiation force
-sat.FlightControl.SolarPressureVector = sat.FlightControl.getSolarPressureVector( ...
-                                             sat.FlightControl.SolarPressure, sat.FlightControl.SurfacePanel, ...
- 				                                     sat.FlightControl.Panels(1), sat.FlightControl.Panels(2), sat.FlightControl.Panels(3), ...
- 				                                     sat.FlightControl.Alphas, sat.FlightControl.Betas, sat.FlightControl.Gammas);
+sat.FlightControl.initialSolarPressure = this.SolarFactor * 2 * 4.5e-6 * [0 -1 0]';
 
+sat.comm( num2str(reshape(sat.FlightControl.SolarPressure', 1, [])))
+
+%% incline by ecliptic
+sat.FlightControl.initialSolarPressure = sat.FlightControl.rodriguesRotation(sat.FlightControl.initialSolarPressure,[0 0 1]',-23.4/180*pi);
   
   %% for sim
   % for simulation output, set initial conditions

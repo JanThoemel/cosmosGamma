@@ -11,6 +11,17 @@ function fly(this, currentOrbitSection, sizeOrbitSection)
 %[rotate1,rotate2]this.Orbit.whereIsTheSun(currentOrbitSection,LTAN)
 %this.FlightControl.rotateSun(rotate1,rotate2)
 
+%% rotate sunlight
+this.FlightControl.SolarPressure = this.FlightControl.rodriguesRotation(this.FlightControl.initialSolarPressure,[0 1 0]',currentOrbitSection/180*pi);
+
+% compute for each roll, pitch and yaw angle the solar radiation force
+this.FlightControl.SolarPressureVector = this.FlightControl.getSolarPressureVector( ...
+                                             this.FlightControl.SolarPressure, this.FlightControl.SurfacePanel, ...
+ 				                                     this.FlightControl.Panels(1), this.FlightControl.Panels(2), this.FlightControl.Panels(3), ...
+ 				                                     this.FlightControl.Alphas, this.FlightControl.Betas, this.FlightControl.Gammas);
+
+
+
 %% to-be-double-checked theory: if R is large then the control error is secondary to the minimization of the control action
 R=diag([1e13 1e13 1e13]);
 
