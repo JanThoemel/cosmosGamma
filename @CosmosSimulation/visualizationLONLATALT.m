@@ -7,9 +7,11 @@ function visualizationLONLATALT(ns,VIZaltitude)
 % none
 % however, files are written that are used by cosmosVIZ
 
+
+
 %% read data from telemery files
 % JT: this works only if the telemetry data of all satellites is equal in size 
-% and sync'ed. Sooner or later, this needs to become more versatile
+% and sync'ed. Sooner or later, this needs to become more versatile allowing individual times for each satellite
 for i=1:ns
   tempTime=readmatrix(strcat('TMTimeVector',num2str(i),'.csv'));  
   tempSatStates=readmatrix(strcat('TMSatStates',num2str(i),'.csv')); 
@@ -210,9 +212,9 @@ end
   end %% time step
   
        
-  %% write file   
+  %% write files for LLR & RPY of each satellite and the reference (satellite). Latter is numbered as sat0.
   for i=1:ns+1
-    writematrix([vizgridtime' lat(i,:)' lon(i,:)' rad(i,:)' rollVizGrid(i,:)' pitchVizGrid(i,:)' yawVizGrid(i,:)'  ],strcat('sat',num2str(i),'_LLR_PYR.csv'));
+    writematrix([vizgridtime' lat(i,:)' lon(i,:)' rad(i,:)' rollVizGrid(i,:)' pitchVizGrid(i,:)' yawVizGrid(i,:)'  ],strcat('sat',num2str(i-1),'_LLR_RPY.csv'));
   end
   
   
