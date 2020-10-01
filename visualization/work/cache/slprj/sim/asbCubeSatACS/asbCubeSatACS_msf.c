@@ -388,5 +388,5 @@ mxGetFieldByNumber ( ss , 0 , 4 ) ) ) ; }
 #include "simulink.c"
 #include "fixedpoint.c"
 #else
-#error Assertion failed: file must be compiled as a MEX-file
+#error Assertion failed: file must be compiled as a MEX-file
 #endif

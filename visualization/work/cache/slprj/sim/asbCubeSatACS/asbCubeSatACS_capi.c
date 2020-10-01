@@ -6,15 +6,15 @@
 #undef rt_offsetof
 #define rt_offsetof(s,el) ((uint16_T)(0xFFFF))
 #define TARGET_CONST
-#define TARGET_STRING(s) (s)    
+#define TARGET_STRING(s) (s)    
 #else
 #include "builtin_typeid_types.h"
 #include "asbCubeSatACS.h"
 #include "asbCubeSatACS_capi.h"
 #include "asbCubeSatACS_private.h"
 #ifdef LIGHT_WEIGHT_CAPI
-#define TARGET_CONST                  
-#define TARGET_STRING(s)               (NULL)                    
+#define TARGET_CONST                  
+#define TARGET_STRING(s)               (NULL)                    
 #else
 #define TARGET_CONST                   const
 #define TARGET_STRING(s)               (s)
