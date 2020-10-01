@@ -177,7 +177,7 @@ end
 
       lon(j,i)     = wrapTo360(lon(1,i)+offPlaneOffsetAngle(j-1,i));         % Longitude            [deg]
       lat(j,i)     = lat(1,i)+inPlaneOffsetAngle(j-1,i);      % Latitude             [deg]
-      rad(j,i)     = rad(i)'+sstZvizgrid(j-1,i)/1000;                               % radius                [km]
+      rad(j,i)     = rad(1,i)'+sstZvizgrid(j-1,i)/1000;                               % radius                [km]
 
       %{
       if i==1 %% 1-point, northward
