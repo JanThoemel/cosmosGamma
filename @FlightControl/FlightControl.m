@@ -79,9 +79,9 @@ classdef FlightControl < handle
 			this.Gammas = 0:deltaAngle:360; % Yaw.
 			
 			%this.SatelliteMass = 1; % Kilogram(s).
-			this.SatelliteMass = 1.5; % Kilogram(s).
+			this.SatelliteMass = 2; % Kilogram(s).
 			%this.Panels = [0 0 2];
-			this.Panels = [0 0 4];
+			this.Panels = [0 0 6];
 			this.SurfacePanel = 0.01; % Squared meters.
 			this.SurfaceRef = this.SurfacePanel * this.Panels(3);
 						

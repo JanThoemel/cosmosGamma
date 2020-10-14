@@ -1,4 +1,4 @@
-function visualizationLONLATALT(ns,VIZaltitude)
+function visualizationLONLATALT(vizScale,ns,VIZaltitude)
 %% input:
 % ns: number of satellites
 % VIZaltitude: altitude used for visualization. The actual altitude may change for long periods of
@@ -26,9 +26,9 @@ for i=1:ns
       yaw  =zeros(ns,timeSteps);
   end
   cosmosTime(:,i)=tempTime(:);
-  sstX(i,:)=tempSatStates(:,1)';
-  sstY(i,:,:)=tempSatStates(:,2)';
-  sstZ(i,:,:)=tempSatStates(:,3)';
+  sstX(i,:)=tempSatStates(:,1)'*vizScale;
+  sstY(i,:,:)=tempSatStates(:,2)'*vizScale;
+  sstZ(i,:,:)=tempSatStates(:,3)'*vizScale;
   roll(i,:)  =tempSatStates(:,7)';
   pitch(i,:) =tempSatStates(:,8)';
   yaw(i,:)   =tempSatStates(:,9)';
@@ -51,13 +51,14 @@ end
 
   
   %% ORBIT INPUT
+  inclination=52;%i       = input(' Inclination                          [-90, 90]    i      [deg] = ');
   %inclination=89.999999;%i       = input(' Inclination                          [-90, 90]    i      [deg] = ');
-  inclination=0;%i       = input(' Inclination                          [-90, 90]    i      [deg] = ');
+  %inclination=0;%i       = input(' Inclination                          [-90, 90]    i      [deg] = ');
   RAAN=0; %%RAAN    = input(' Right Ascension of Ascendent Node    [  0,360[    RAAN   [deg] = ');    
   w=0;    %%w       = input(' Argument of perigee                  [  0,360[    w      [deg] = ');
   v0=0;   %%v0      = input(' True anomaly at the departure        [  0,360[    v0     [deg] = ');
-  a=RE+VIZaltitude/1000;%a       = input(' Major semi-axis                       (>6378)     a      [km]  = ');
-  ecc_max = sprintf('%6.4f',1-RE/a);     % maximum value of eccentricity allowed
+  sstTemp=RE+VIZaltitude/1000;%a       = input(' Major semi-axis                       (>6378)     a      [km]  = ');
+  ecc_max = sprintf('%6.4f',1-RE/sstTemp);     % maximum value of eccentricity allowed
   e=0;%e       = input([' Eccentricity                         (<',ecc_max,')    e            = ']);
   RAAN  = RAAN*pi/180;        % RAAN                          [rad]
   w     = w*pi/180;           % Argument of perigee           [rad]
@@ -66,12 +67,12 @@ end
   
   
   %% ORBIT COMPUTATION
-  rp = a*(1-e);               % radius of perigee             [km]
-  ra = a*(1+e);               % radius of apogee              [km]
-  Vp = sqrt(muE*(2/rp-1/a));  % velocity at the perigee       [km/s]
-  Va = sqrt(muE*(2/ra-1/a));  % velocity at the  apogee       [km/s]
-  n  = sqrt(muE./a^3);        % mean motion                   [rad/s]
-  p  = a*(1-e^2);             % semi-latus rectus             [km]
+  rp = sstTemp*(1-e);               % radius of perigee             [km]
+  ra = sstTemp*(1+e);               % radius of apogee              [km]
+  Vp = sqrt(muE*(2/rp-1/sstTemp));  % velocity at the perigee       [km/s]
+  Va = sqrt(muE*(2/ra-1/sstTemp));  % velocity at the  apogee       [km/s]
+  n  = sqrt(muE./sstTemp^3);        % mean motion                   [rad/s]
+  p  = sstTemp*(1-e^2);             % semi-latus rectus             [km]
   T  = 2*pi/n;                % period                        [s]
   h  = sqrt(p*muE);           % moment of the momentum        [km^2/s]
   h1 = sin(inclination)*sin(RAAN);      % x-component of unit vector h
@@ -109,7 +110,7 @@ end
   cos_v = (cos(E)-e)./(1-e.*cos(E));               % cosine of true anomaly
   v     = atan2(sin_v,cos_v);                      % true anomaly              [rad]
   theta = v + w;                                   % argument of latitude      [rad]
-  r     = (a.*(1-e.^2))./(1+e.*cos(v));            % radius                    [km]
+  r     = (sstTemp.*(1-e.^2))./(1+e.*cos(v));            % radius                    [km]
   %% Satellite coordinates
   % "Inertial" reference system ECI (Earth Centered Inertial)
   xp = r.*cos(theta);                          % In-plane x position (node direction)             [km]
@@ -142,16 +143,25 @@ end
     end
   end
   
+  %% rotate relative coordinate system to align x+ with flight direction (inclination)
+  for i=1:ns
+    for j=1:size(sstX,2)
+      sstTemp=rotz(inclination-90)*[sstX(i,j) sstY(i,j) 0]';
+    end
+    sstX(i,j)=sstTemp(1);
+    sstY(i,j)=sstTemp(2);
+   end
+  
   %% interpolate relative position on visualization time steps
 
-  for j=1:ns
-    sstXvizgrid(j,:)=interp1(cosmosTime(:,j),sstX(j,:),vizgridtime);
-    sstYvizgrid(j,:)=interp1(cosmosTime(:,j),sstY(j,:),vizgridtime);
-    sstZvizgrid(j,:)=interp1(cosmosTime(:,j),sstZ(j,:),vizgridtime);
+  for i=1:ns
+    sstXvizgrid(i,:)=interp1(cosmosTime(:,i),sstX(i,:),vizgridtime);
+    sstYvizgrid(i,:)=interp1(cosmosTime(:,i),sstY(i,:),vizgridtime);
+    sstZvizgrid(i,:)=interp1(cosmosTime(:,i),sstZ(i,:),vizgridtime);
     
-    rollVizGrid(j,:)  =interp1(cosmosTime(:,j),squeeze(roll(j,:)),vizgridtime);
-    pitchVizGrid(j,:) =interp1(cosmosTime(:,j),squeeze(pitch(j,:)),vizgridtime);
-    yawVizGrid(j,:)   =interp1(cosmosTime(:,j),squeeze(yaw(j,:)),vizgridtime);
+    rollVizGrid(i,:)  =interp1(cosmosTime(:,i),squeeze(roll(i,:)),vizgridtime);
+    pitchVizGrid(i,:) =interp1(cosmosTime(:,i),squeeze(pitch(i,:)),vizgridtime);
+    yawVizGrid(i,:)   =interp1(cosmosTime(:,i),squeeze(yaw(i,:)),vizgridtime);
   end
   %% centerpoint
   lat(1,:)      = asin(sin(inclination).*sin(theta))/pi*180;           % Latitude             [deg]

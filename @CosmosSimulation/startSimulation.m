@@ -51,8 +51,14 @@ spmd(this.NumSatellites)
   % Set up some parameters, such as battery status, sat status, initial conditions.
 
 sat.initialize(id,dq, this.InitConditions(id,:));
-  
- 
+%% delete old telemetry files
+delete(strcat('TMTimeVector',num2str(id),'.csv'));
+delete(strcat('TMControlVector',num2str(id),'.csv'));
+delete(strcat('TMForceVector',num2str(id),'.csv'));
+delete(strcat('TMSatPosition',num2str(id),'.csv'));
+delete(strcat('TMSatStates',num2str(id),'.csv'));
+
+
 % define nominal wind magnitude and direction
 sat.FlightControl.WindPressure = this.WindFactor * sat.Orbit.Rho/2 * sat.Orbit.V^2 * [-1 0 0]';
 % compute for each roll, pitch and yaw angle the aerodynamic force
@@ -73,7 +79,7 @@ sat.FlightControl.initialSolarPressure = sat.FlightControl.rodriguesRotation(sat
   
   %% for sim
   % for simulation output, set initial conditions
-  this.updSatStatesIni(id, fc.State);
+  sat.updSatStatesIni(id, fc.State);
   
   % Loop for each orbit.
 	while sat.Alive % Satellites turned on, but still doing nothing.
@@ -166,18 +172,17 @@ sat.FlightControl.initialSolarPressure = sat.FlightControl.rodriguesRotation(sat
 			% Should the old state be shifted as well?
 			shift = -refPosChange(1:3);
       fc.shiftState(shift);
-      
       % Update vector with satellite positions
-      this.updSatPositions(id, refPosChange);
+      sat.updSatPositions(id, refPosChange);
       % Update vector with satellite states
-      this.updSatStates(id, fc.State);
+      sat.updSatStates(id, fc.State);
       % Update time vector
-      this.updTimeVector(id, timeStep);
+      sat.updTimeVector(id, timeStep);
       % add instantaneous controlVector to controlVectorTM
       sat.updControlVectorTM(id);
       % add instantaneous forceVector to forceVectorTM
-      sat.updForceVectorTM();
-      
+      sat.updForceVectorTM(id);
+
 %% Move to flight control
 			% Increment section counter.
 			this.incrementIDX();
@@ -213,26 +218,27 @@ sat.FlightControl.initialSolarPressure = sat.FlightControl.rodriguesRotation(sat
   
   % write telemetry to files, should be a function of satellite
   % also the data containers need to be properties of the Satellite, not Simulation
-  writematrix(this.TimeVector(id,:)',strcat('TMTimeVector',num2str(id),'.csv'));
-  writematrix(squeeze(this.SatPositions(id,:,:))',strcat('TMSatPosition',num2str(id),'.csv'));
-  writematrix(squeeze(this.SatStates(id,:,:))',strcat('TMSatStates',num2str(id),'.csv'));
-  writematrix(sat.controlVectorTM,strcat('TMControlVector',num2str(id),'.csv'));
-  writematrix(sat.forceVectorTM,strcat('TMForceVector',num2str(id),'.csv'));
+  %writematrix(this.TimeVector(id,:)',strcat('TMTimeVector',num2str(id),'.csv'));
+  %writematrix(squeeze(this.SatPositions(id,:,:))',strcat('TMSatPosition',num2str(id),'.csv'));
+  %writematrix(squeeze(this.SatStates(id,:,:))',strcat('TMSatStates',num2str(id),'.csv'));
+  %writematrix(sat.controlVectorTM,strcat('TMControlVector',num2str(id),'.csv'));
+  %writematrix(sat.forceVectorTM,strcat('TMForceVector',num2str(id),'.csv'));
 	
   % Needed for autonomous documentation generation tool.
 	% Globally concatenate all output variables on lab index 1.
 	% Must be the last lines of code of the parallel pool.
-  	satellites = gcat(sat,1,1);
-  	orbits = gcat(orbit,1,1);
-  	flightControlModules = gcat(fc,1,1);
-  	gpsModules = gcat(gps,1,1);
-  	timeVectorLengths = gcat(this.TimeVectorLengths(id),1,1);
-  	timeVector = gcat(this.TimeVector(id,:),1,1);
-  	satPositionsLengths = gcat(this.SatPositionsLengths(id),1,1);
-  	satPositions = gcat(this.SatPositions(id,:,:),1,1);
- 	satStatesLengths = gcat(this.SatStatesLengths(id),1,1);
- 	satStates = gcat(this.SatStates(id,:,:),1,1);
-	
+  satellites = gcat(sat,1,1);
+  orbits = gcat(orbit,1,1);
+  flightControlModules = gcat(fc,1,1);
+  gpsModules = gcat(gps,1,1);
+  %% Rod, do we need this?
+% %   timeVectorLengths = gcat(sat.TimeVectorLengths(id),1,1);
+% %   timeVector = gcat(sat.TimeVector(id,:),1,1);
+% %   satPositionsLengths = gcat(sat.SatPositionsLengths(id),1,1);
+% %   satPositions = gcat(sat.SatPositions(id,:,:),1,1);
+% %  	satStatesLengths = gcat(sat.SatStatesLengths(id),1,1);
+% %  	satStates = gcat(sat.SatStates(id,:,:),1,1);
+% % 	
 end % Parallel code.
 
 % Needed for autonomous documentation generation tool.
@@ -242,12 +248,12 @@ this.Satellites = satellites{1};
 this.Orbits = orbits{1};
 this.FlightControlModules = flightControlModules{1};
 this.GPSModules = gpsModules{1};
-this.TimeVectorLengths = timeVectorLengths{1};
-this.TimeVector = timeVector{1};
-this.SatPositionsLengths = satPositionsLengths{1};
-this.SatPositions = satPositions{1};
-this.SatStatesLengths = satStatesLengths{1};
-this.SatStates = satStates{1};
+%sat.TimeVectorLengths = timeVectorLengths{1};
+%sat.TimeVector = timeVector{1};
+%sat.SatPositionsLengths = satPositionsLengths{1};
+%sat.SatPositions = satPositions{1};
+%this.SatStatesLengths = satStatesLengths{1};
+%this.SatStates = satStates{1};
 
 % Terminate the existing parallel pool session.
 delete(gcp('nocreate'));

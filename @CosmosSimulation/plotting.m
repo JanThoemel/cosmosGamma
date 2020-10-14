@@ -18,14 +18,50 @@ for i=1:ns
     controlVector=zeros(ns,3,timeSteps);
     forceVector=zeros(ns,3,timeSteps);
   end
-  cosmosTime(:,i)=tempTime(:);
+  cosmosTime(:,i)=tempTime(:)';
   sst(i,:,:)=tempSatStates(:,1:6)';
   angles(i,:,:)=tempSatStates(:,7:9)';
   controlVector(i,:,:)=tempControlVector';
   forceVector(i,:,:)=tempForceVector';
 end
 
-%%
+  if 1%% condition for experiment time valid?
+    antennaConeHalfAngle=60; %%[deg]
+    TAngle=zeros(size(cosmosTime,1),1);
+    SAngle=zeros(size(cosmosTime,1),1);
+    experimentTime=zeros(size(cosmosTime,1),1);
+    directionAngle=zeros(size(cosmosTime,1),1);
+    for i=1:size(cosmosTime,1)
+      %% compute angle
+      directionAngle(i)= atan2d( (sst(2,3,i)-sst(1,3,i)) , sqrt((sst(2,1,i)-sst(1,1,i))^2+(sst(2,2,i)-sst(1,2,i))^2) );
+      %% compute angle with the local x axis (Hill coordinate system)
+      %if angles(1,2,i)<90 && angles(1,3,i)<90 && angles(2,2,i)<90 && angles(2,3,i)<90
+        TPitchYawAngle=atan2d(  1,sqrt(1/tand(angles(1,2,i))^2+1/tand(angles(1,3,i))^2)  );
+        SPitchYawAngle=atan2d(  1,sqrt(1/tand(angles(2,2,i))^2+1/tand(angles(2,3,i))^2)  );
+      %else
+      %  TpolarAngle=90;SpolarAngle=90;
+      %end
+      %% for each satellite, compute angle towards the other satellite
+      TAngle(i)        =TPitchYawAngle-directionAngle(i);
+      SAngle(i)        =SPitchYawAngle+directionAngle(i);
+      %% if for each satellite, the other satellite is in view, then an experiment can be carried out
+      if abs(TAngle(i))<antennaConeHalfAngle && abs(SAngle(i))<antennaConeHalfAngle
+        experimentTime(i)=1;
+      end      
+    end
+    figure
+     plot(cosmosTime(:,1)/2/pi*meanMotionRad,TAngle,cosmosTime(:,1)/2/pi*meanMotionRad,SAngle,cosmosTime(:,1)/2/pi*meanMotionRad,directionAngle);hold on;
+      axis([-inf inf -10 190])
+      yticks([0 45 90 135 180])
+     yyaxis right;
+     plot(cosmosTime(:,1)/2/pi*meanMotionRad,experimentTime);
+     axis([0 inf -.1 1.1])
+     title('BETA: experiment time');
+     legend;
+     hold off;
+  end
+
+  %%
   if 0
     figure
       for i=1:3
@@ -38,7 +74,8 @@ end
       end
     hold off;
   end
- 
+
+  
   if 0 %% reference position change
 	  refPosChange = squeeze(refPosChange);
     figure

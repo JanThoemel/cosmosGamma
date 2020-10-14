@@ -1,6 +1,6 @@
 {
-  "SelectedFormationFlightMode": 1,
-  "SimMaxNumOrbits": 5,
+  "SelectedFormationFlightMode": 5,
+  "SimMaxNumOrbits":2,
   "SimAccelerationFactor": 100e3,
   "VizScale": 5000,
   "Modes": [
@@ -11,7 +11,7 @@
       "ModeName": "Cluster",
       "NumSatellites": 3,
       "AttitudeResolutionDeg": 45,
-      "InitOrbitAltitude": 453e3,
+      "InitOrbitAltitude": 350e3,
       "SizeOrbitSectionDeg": 0.2,
       "InitOrbitSectionID": 1,
       "AutoResponse": true,
@@ -19,8 +19,8 @@
       "AvailableTLE": false,
       "InitialConditions": [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        [-1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-2, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
       "FFPSFolder": "ffpsCluster",
       "FFPSValues": [
@@ -182,7 +182,7 @@
 
     {
       "ModeID": 4,
-      "ModeName": "ISMission",
+      "ModeName": "SnTMission",
       "NumSatellites": 2,
       "AttitudeResolutionDeg": 45,
       "InitOrbitAltitude": 453e3,
@@ -195,7 +195,7 @@
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
-      "FFPSFolder": "ffpsISMission",
+      "FFPSFolder": "ffpsSnTMission",
       "FFPSValues": [
         {
           "ffp1": 0,
@@ -226,21 +226,20 @@
 
     {
       "ModeID": 5,
-      "ModeName": "ISMission4Test",
-      "NumSatellites": 3,
-      "AttitudeResolutionDeg": 15,
-      "InitOrbitAltitude": 353e3,
-      "SizeOrbitSectionDeg": 0.2,
+      "ModeName": "SnTMission4Test",
+      "NumSatellites": 2,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude":400e3,
+      "SizeOrbitSectionDeg": 1,
       "InitOrbitSectionID": 1,
       "AutoResponse": true,
       "AvailableGPS": true,
       "AvailableTLE": false,
       "InitialConditions": [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [-1005, 0, 0, 0, 0, 0, 0, 0, 0],
-        [-2005, 0, 0, 0, 0, 0, 0, 0, 0]
+        [-15, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
-      "FFPSFolder": "ffpsISMission",
+      "FFPSFolder": "ffpsSnTMission",
       "FFPSValues": [
         {
           "ffp1": 0,
@@ -254,7 +253,39 @@
         },
         {
           "ffp1": 0,
-          "ffp2": -1000,
+          "ffp2": -10,
+          "ffp3": 0,
+          "ffp4": 0,
+          "ffp5": 0,
+          "ffp6": 0,
+          "ffp7": 0,
+          "ffp8": 0
+        }
+      ]
+    }
+,
+
+
+    {
+      "ModeID": 6,
+      "ModeName": "SnTMission4Test2",
+      "NumSatellites": 2,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude": 350e3,
+      "SizeOrbitSectionDeg": 1,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-10, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "ffpsSnTMission",
+      "FFPSValues": [
+        {
+          "ffp1": 0,
+          "ffp2": 0,
           "ffp3": 0,
           "ffp4": 0,
           "ffp5": 0,
@@ -264,7 +295,7 @@
         },
         {
           "ffp1": 0,
-          "ffp2": -2000,
+          "ffp2": -10,
           "ffp3": 0,
           "ffp4": 0,
           "ffp5": 0,

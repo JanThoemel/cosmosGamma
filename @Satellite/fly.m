@@ -157,6 +157,7 @@ if 2*norm(this.controlVector(:,this.FlightControl.SatID))<norm(this.forceVector)
     this.forceVector=[0 0 0]'; alphaOpt=0; betaOpt=0; gammaOpt=0;
 end
 
+%% vehicle dynamics, this part will not be used in flight software
 this.FlightControl.State(1:6) = (A * this.FlightControl.StateOld(1:6) + B * ...
                                 this.forceVector / this.FlightControl.SatelliteMass) *...
                                 deltaTime + this.FlightControl.StateOld(1:6);

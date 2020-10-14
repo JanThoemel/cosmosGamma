@@ -30,12 +30,8 @@ properties (GetAccess = public, SetAccess = public)
   Satellites % Array of Satellite objects.
   SatPositions % Satellite positions in relation to the reference.
   SatPositionsLengths % Length of the satellite positions vectors.
-  SatStates % Satellites states for plotting.
-  SatStatesLengths % Length of the satellite states vectors.
 %!RW: leave parameter status for later implementation.
 % Status % Simulation status.
-  TimeVector % Time vector for plotting.
-  TimeVectorLengths % Length of the time vector for each satellite.
   VizScale % Scale for satellite distances in visualization.
   WindFactor %% switch on whether aerodynamics shall be simulated
 	SolarFactor  %% switch on whether solar radiation pressure shall be simulated
@@ -94,18 +90,7 @@ end
       this.OrbitSectionNow = initOrbitSection;
       this.OrbitSectionSize = sizeOrbitSection;
       this.NumOrbitSections = length(this.OrbitSections);
-      
-      % Set satellites positions and states to zero.
-%!RW: delete this, allow user to set initial positions and states in JSON file.
-      this.SatPositions = zeros(numSatellites,3,1);
-      this.SatPositionsLengths = ones(numSatellites,1);
-      this.SatStates = zeros(numSatellites,9,1);
-      this.SatStatesLengths = ones(numSatellites,1);
-      
-      % Set time vectors for simulation.
-      this.TimeVector = zeros(numSatellites,1);
-      this.TimeVectorLengths = ones(numSatellites,1);
-      
+            
       % Create array for objects of class Satellite.
       this.Satellites = Satellite.empty(numSatellites,0);
       
@@ -159,34 +144,8 @@ end
 
   methods (Access = public)
     
-    function updTimeVector(this, satID, timestep)
-      % Increment length of the time vector for the current satellite.
-      % At the end of the simulation, the values in TimeLength
-      % should be equal for all satellites. Later, use this value to
-      % prealocate memory for the TimePlot vector in order to reduce
-      % computational time.
-      lastPos = this.TimeVectorLengths(satID);
-      nextPos = this.TimeVectorLengths(satID) + 1;
-      this.TimeVector(satID, nextPos) = this.TimeVector(satID, lastPos) + timestep;
-      this.TimeVectorLengths(satID) = this.TimeVectorLengths(satID) + 1;
-    end
+        
     
-    function updSatStates(this, satID, satState)
-      nextPos = this.SatStatesLengths(satID) + 1;
-      this.SatStates(satID, 1:9, nextPos) = satState;
-      this.SatStatesLengths(satID) = this.SatStatesLengths(satID) + 1;
-    end
-    
-    function updSatStatesIni(this, satID, satState)
-      this.SatStates(satID, 1:9, 1) = satState;
-    end
-    
-    %! give better name this is the reference position change
-    function updSatPositions(this, satID, newValue)
-      nextPos = this.SatPositionsLengths(satID) + 1;
-      this.SatPositions(satID, 1:3, nextPos) = newValue;
-      this.SatPositionsLengths(satID) = this.SatPositionsLengths(satID) + 1;
-    end
     
     updateIDX(this, meanAnomalyFromAN)
     startSimulation(this)
@@ -208,7 +167,7 @@ methods (Static)
   
   %!RW: for reference, old function:
   % visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,pitch,yaw,roll,altitude)
-  visualizationLONLATALT(ns,VIZaltitude)
+  visualizationLONLATALT(this,ns,VIZaltitude)
   
   %!RW: for reference, old function:
   % plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
