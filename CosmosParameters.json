@@ -1,6 +1,6 @@
 {
   "SelectedFormationFlightMode": 5,
-  "SimMaxNumOrbits":2,
+  "SimMaxNumOrbits":3,
   "SimAccelerationFactor": 100e3,
   "VizScale": 5000,
   "Modes": [
@@ -230,7 +230,7 @@
       "NumSatellites": 2,
       "AttitudeResolutionDeg": 45,
       "InitOrbitAltitude":400e3,
-      "SizeOrbitSectionDeg": 1,
+      "SizeOrbitSectionDeg": 0.1,
       "InitOrbitSectionID": 1,
       "AutoResponse": true,
       "AvailableGPS": true,

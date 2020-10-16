@@ -19,7 +19,7 @@ timeStartPool = posixtime(datetime('now')); % Posixtime [seconds].
 
 % Execute parallel code on workers of parallel pool.
 % For better debugging, comment spmd command and its end line.
-% Set id = 1 (instead of labindex).
+
 spmd(this.NumSatellites)
   
   %! JT: most of what is done here in the parallel loop needs to go to Satellite.fly
@@ -29,15 +29,13 @@ spmd(this.NumSatellites)
   % but confusing sometimes
   
 	% Get unique IDs for each of the satellites, from 1 to N.
-  %! JT: do we need id? isnt labindex enough?
 	% for the fsw, the sat needs to find its own id in a different way, for instance from the file that read later
-  id = labindex;
 	
 	% Create local aliases for the class objects.
-	sat   = this.Satellites(id);
-	orbit = this.Orbits(id);
-	fc    = this.FlightControlModules(id);
-  gps   = this.GPSModules(id);
+	sat   = this.Satellites(labindex);
+	orbit = this.Orbits(labindex);
+	fc    = this.FlightControlModules(labindex);
+  gps   = this.GPSModules(labindex);
   
   %!JT: we should have
   % - a class COM where we hide all details of the communication between the
@@ -50,14 +48,14 @@ spmd(this.NumSatellites)
 %satellite initialization only with real-case-like instructions.
   % Set up some parameters, such as battery status, sat status, initial conditions.
 
-sat.initialize(id,dq, this.InitConditions(id,:));
-%% delete old telemetry files
-delete(strcat('TMTimeVector',num2str(id),'.csv'));
-delete(strcat('TMControlVector',num2str(id),'.csv'));
-delete(strcat('TMForceVector',num2str(id),'.csv'));
-delete(strcat('TMSatPosition',num2str(id),'.csv'));
-delete(strcat('TMSatStates',num2str(id),'.csv'));
-
+sat.initialize(labindex,dq, this.InitConditions(labindex,:));
+%% delete old telemetry files, this needs to move to Satellite, TM file writing need to move to Satellite
+delete(strcat('TMTimeVector',num2str(labindex),'.csv'));
+delete(strcat('TMControlVector',num2str(labindex),'.csv'));
+delete(strcat('TMForceVector',num2str(labindex),'.csv'));
+delete(strcat('TMSatPosition',num2str(labindex),'.csv'));
+delete(strcat('TMSatStates',num2str(labindex),'.csv'));
+lastTime=0;
 
 % define nominal wind magnitude and direction
 sat.FlightControl.WindPressure = this.WindFactor * sat.Orbit.Rho/2 * sat.Orbit.V^2 * [-1 0 0]';
@@ -79,7 +77,7 @@ sat.FlightControl.initialSolarPressure = sat.FlightControl.rodriguesRotation(sat
   
   %% for sim
   % for simulation output, set initial conditions
-  sat.updSatStatesIni(id, fc.State);
+  sat.updSatStatesIni(labindex, fc.State);
   
   % Loop for each orbit.
 	while sat.Alive % Satellites turned on, but still doing nothing.
@@ -143,7 +141,7 @@ sat.FlightControl.initialSolarPressure = sat.FlightControl.rodriguesRotation(sat
 %satellite 1 is sending the position changes to other satellites. This should be
 %implemented inside of a new communication module/object.
       refPosChange = zeros(3,1);
-      if id == 1
+      if labindex == 1
         refPosChange(1:3) = fc.State(1:3) - fc.StateOld(1:3);
         for satID = 2 : this.NumSatellites
           tag = 1000000 * satID + ...
@@ -159,7 +157,7 @@ sat.FlightControl.initialSolarPressure = sat.FlightControl.rodriguesRotation(sat
 %satellites, with exception of satellite 1, are receiving the tag sent by the
 %master (satellite 1). Also implement this part inside of a new communication
 %module/object.
-      satID = id;
+      satID = labindex;
       if satID ~= 1
         tag = 1000000 * satID + ...
                 10000 * this.OrbitSectionNow + ...
@@ -167,21 +165,22 @@ sat.FlightControl.initialSolarPressure = sat.FlightControl.rodriguesRotation(sat
                     1;
         refPosChange = labReceive(1, tag);
       end
-      
 			% Move coordinate system.
 			% Should the old state be shifted as well?
 			shift = -refPosChange(1:3);
       fc.shiftState(shift);
       % Update vector with satellite positions
-      sat.updSatPositions(id, refPosChange);
+      sat.updSatPositions(labindex, refPosChange);
       % Update vector with satellite states
-      sat.updSatStates(id, fc.State);
-      % Update time vector
-      sat.updTimeVector(id, timeStep);
+      sat.updSatStates(labindex, fc.State);
+      % Update time vector      
+      sat.updTimeVector(labindex, timeStep,lastTime);
+      lastTime=sat.TimeVector(labindex, end);
+
       % add instantaneous controlVector to controlVectorTM
-      sat.updControlVectorTM(id);
+      sat.updControlVectorTM(labindex);
       % add instantaneous forceVector to forceVectorTM
-      sat.updForceVectorTM(id);
+      sat.updForceVectorTM(labindex);
 
 %% Move to flight control
 			% Increment section counter.
@@ -199,7 +198,9 @@ sat.FlightControl.initialSolarPressure = sat.FlightControl.rodriguesRotation(sat
 			msg = ['Orbit identifiers in orbit.OrbitCounter and ',...
 				'orbit.TimeOrbitDuration do not match.'];
 			error('Simulation:start:orbitIdentifierNotEqual',msg);
-		else
+    else
+      sat.writeAndResetTM(this.NumSatellites,labindex)
+      
 			msg = ['Orbit ',num2str(orbit.OrbitCounter),' finished ',...
 				'(',num2str(orbit.TimeOrbitDuration(2)),' s)'];
 			sat.comm(msg);
@@ -215,15 +216,6 @@ sat.FlightControl.initialSolarPressure = sat.FlightControl.rodriguesRotation(sat
 		
 	end % While alive (main orbital loop).
   
-  
-  % write telemetry to files, should be a function of satellite
-  % also the data containers need to be properties of the Satellite, not Simulation
-  %writematrix(this.TimeVector(id,:)',strcat('TMTimeVector',num2str(id),'.csv'));
-  %writematrix(squeeze(this.SatPositions(id,:,:))',strcat('TMSatPosition',num2str(id),'.csv'));
-  %writematrix(squeeze(this.SatStates(id,:,:))',strcat('TMSatStates',num2str(id),'.csv'));
-  %writematrix(sat.controlVectorTM,strcat('TMControlVector',num2str(id),'.csv'));
-  %writematrix(sat.forceVectorTM,strcat('TMForceVector',num2str(id),'.csv'));
-	
   % Needed for autonomous documentation generation tool.
 	% Globally concatenate all output variables on lab index 1.
 	% Must be the last lines of code of the parallel pool.
@@ -232,12 +224,12 @@ sat.FlightControl.initialSolarPressure = sat.FlightControl.rodriguesRotation(sat
   flightControlModules = gcat(fc,1,1);
   gpsModules = gcat(gps,1,1);
   %% Rod, do we need this?
-% %   timeVectorLengths = gcat(sat.TimeVectorLengths(id),1,1);
-% %   timeVector = gcat(sat.TimeVector(id,:),1,1);
-% %   satPositionsLengths = gcat(sat.SatPositionsLengths(id),1,1);
-% %   satPositions = gcat(sat.SatPositions(id,:,:),1,1);
-% %  	satStatesLengths = gcat(sat.SatStatesLengths(id),1,1);
-% %  	satStates = gcat(sat.SatStates(id,:,:),1,1);
+% %   timeVectorLengths = gcat(sat.TimeVectorLengths(labindex),1,1);
+% %   timeVector = gcat(sat.TimeVector(labindex,:),1,1);
+% %   satPositionsLengths = gcat(sat.SatPositionsLengths(labindex),1,1);
+% %   satPositions = gcat(sat.SatPositions(labindex,:,:),1,1);
+% %  	satStatesLengths = gcat(sat.SatStatesLengths(labindex),1,1);
+% %  	satStates = gcat(sat.SatStates(labindex,:,:),1,1);
 % % 	
 end % Parallel code.
 
