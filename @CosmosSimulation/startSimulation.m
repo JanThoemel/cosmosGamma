@@ -48,32 +48,32 @@ spmd(this.NumSatellites)
 %satellite initialization only with real-case-like instructions.
   % Set up some parameters, such as battery status, sat status, initial conditions.
 
-sat.initialize(labindex,dq, this.InitConditions(labindex,:));
-%% delete old telemetry files, this needs to move to Satellite, TM file writing need to move to Satellite
-delete(strcat('TMTimeVector',num2str(labindex),'.csv'));
-delete(strcat('TMControlVector',num2str(labindex),'.csv'));
-delete(strcat('TMForceVector',num2str(labindex),'.csv'));
-delete(strcat('TMSatPosition',num2str(labindex),'.csv'));
-delete(strcat('TMSatStates',num2str(labindex),'.csv'));
-lastTime=0;
+  sat.initialize(labindex,dq, this.InitConditions(labindex,:));
+  %% delete old telemetry files, this needs to move to Satellite
+  delete(strcat('TimeVectorTM',num2str(labindex),'.csv'));
+  delete(strcat('ControlVectorTM',num2str(labindex),'.csv'));
+  delete(strcat('ForceVectorTM',num2str(labindex),'.csv'));
+  delete(strcat('SatPositionTM',num2str(labindex),'.csv'));
+  delete(strcat('SatStatesTM',num2str(labindex),'.csv'));
+  lastTime=0;
 
-% define nominal wind magnitude and direction
-sat.FlightControl.WindPressure = this.WindFactor * sat.Orbit.Rho/2 * sat.Orbit.V^2 * [-1 0 0]';
-% compute for each roll, pitch and yaw angle the aerodynamic force
-sat.FlightControl.WindPressureVector = FlightControl.getWindPressureVector(...
+  % define nominal wind magnitude and direction
+  sat.FlightControl.WindPressure = this.WindFactor * sat.Orbit.Rho/2 * sat.Orbit.V^2 * [-1 0 0]';
+  % compute for each roll, pitch and yaw angle the aerodynamic force
+  sat.FlightControl.WindPressureVector = FlightControl.getWindPressureVector(...
                                               sat.FlightControl.WindPressure, sat.FlightControl.SurfacePanel, ...
 	                                            sat.FlightControl.Panels(1), sat.FlightControl.Panels(2), ...
                                               sat.FlightControl.Panels(3), sat.FlightControl.Alphas, sat.FlightControl.Betas,...
                                               sat.FlightControl.Gammas, sat.Orbit.Rho, sat.Orbit.V, sat.Orbit.TempAtmos);
 
 
-% define nominal solar radiation pressure magnitude and direction
-sat.FlightControl.initialSolarPressure = this.SolarFactor * 2 * 4.5e-6 * [0 -1 0]';
+  % define nominal solar radiation pressure magnitude and direction
+  sat.FlightControl.initialSolarPressure = this.SolarFactor * 2 * 4.5e-6 * [0 -1 0]';
 
-sat.comm( num2str(reshape(sat.FlightControl.SolarPressure', 1, [])))
+  sat.comm( num2str(reshape(sat.FlightControl.SolarPressure', 1, [])))
 
-%% incline by ecliptic
-sat.FlightControl.initialSolarPressure = sat.FlightControl.rodriguesRotation(sat.FlightControl.initialSolarPressure,[0 0 1]',-23.4/180*pi);
+  %% incline by ecliptic
+  sat.FlightControl.initialSolarPressure = sat.FlightControl.rodriguesRotation(sat.FlightControl.initialSolarPressure,[0 0 1]',-23.4/180*pi);
   
   %% for sim
   % for simulation output, set initial conditions
@@ -170,12 +170,12 @@ sat.FlightControl.initialSolarPressure = sat.FlightControl.rodriguesRotation(sat
 			shift = -refPosChange(1:3);
       fc.shiftState(shift);
       % Update vector with satellite positions
-      sat.updSatPositions(labindex, refPosChange);
+      sat.updSatPositionsTM(labindex, refPosChange);
       % Update vector with satellite states
-      sat.updSatStates(labindex, fc.State);
+      sat.updSatStatesTM(labindex, fc.State);
       % Update time vector      
-      sat.updTimeVector(labindex, timeStep,lastTime);
-      lastTime=sat.TimeVector(labindex, end);
+      sat.updTimeVectorTM(labindex, timeStep,lastTime);
+      lastTime=sat.TimeVectorTM(labindex, end);
 
       % add instantaneous controlVector to controlVectorTM
       sat.updControlVectorTM(labindex);
@@ -223,14 +223,6 @@ sat.FlightControl.initialSolarPressure = sat.FlightControl.rodriguesRotation(sat
   orbits = gcat(orbit,1,1);
   flightControlModules = gcat(fc,1,1);
   gpsModules = gcat(gps,1,1);
-  %% Rod, do we need this?
-% %   timeVectorLengths = gcat(sat.TimeVectorLengths(labindex),1,1);
-% %   timeVector = gcat(sat.TimeVector(labindex,:),1,1);
-% %   satPositionsLengths = gcat(sat.SatPositionsLengths(labindex),1,1);
-% %   satPositions = gcat(sat.SatPositions(labindex,:,:),1,1);
-% %  	satStatesLengths = gcat(sat.SatStatesLengths(labindex),1,1);
-% %  	satStates = gcat(sat.SatStates(labindex,:,:),1,1);
-% % 	
 end % Parallel code.
 
 % Needed for autonomous documentation generation tool.
@@ -240,12 +232,6 @@ this.Satellites = satellites{1};
 this.Orbits = orbits{1};
 this.FlightControlModules = flightControlModules{1};
 this.GPSModules = gpsModules{1};
-%sat.TimeVectorLengths = timeVectorLengths{1};
-%sat.TimeVector = timeVector{1};
-%sat.SatPositionsLengths = satPositionsLengths{1};
-%sat.SatPositions = satPositions{1};
-%this.SatStatesLengths = satStatesLengths{1};
-%this.SatStates = satStates{1};
 
 % Terminate the existing parallel pool session.
 delete(gcp('nocreate'));

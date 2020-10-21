@@ -1,8 +1,8 @@
 {
-  "SelectedFormationFlightMode": 5,
-  "SimMaxNumOrbits":3,
+  "SelectedFormationFlightMode": 1,
+  "SimMaxNumOrbits":1,
   "SimAccelerationFactor": 100e3,
-  "VizScale": 5000,
+  "VizScale": 1000,
   "Modes": [
 
 

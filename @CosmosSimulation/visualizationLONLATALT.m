@@ -13,8 +13,8 @@ function visualizationLONLATALT(vizScale,ns,VIZaltitude)
 % JT: this works only if the telemetry data of all satellites is equal in size 
 % and sync'ed. Sooner or later, this needs to become more versatile allowing individual times for each satellite
 for i=1:ns
-  tempTime=readmatrix(strcat('TMTimeVector',num2str(i),'.csv'));  
-  tempSatStates=readmatrix(strcat('TMSatStates',num2str(i),'.csv')); 
+  tempTime=readmatrix(strcat('TimeVectorTM',num2str(i),'.csv'));  
+  tempSatStates=readmatrix(strcat('SatStatesTM',num2str(i),'.csv')); 
   if i==1
       timeSteps=size(tempTime,1);
       cosmosTime=zeros(timeSteps,ns);

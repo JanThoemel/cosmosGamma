@@ -23,12 +23,12 @@ classdef Satellite < handle
     Name % Unique name for identification of the satellite.
     Orbit % Object of class Orbit.
  
-    TimeVector % Time vector for plotting.
-    TimeVectorLengths % Length of the time vector for each satellite.   
-    SatPositions % Satellite positions in relation to the reference.
-    SatPositionsLengths % Length of the satellite positions vectors.
-    SatStates % Satellites states for plotting.
-    SatStatesLengths % Length of the satellite states vectors.
+    TimeVectorTM % Time vector for plotting.
+    TimeVectorTMLengths % Length of the time vector for each satellite.   
+    SatPositionsTM % Satellite positions in relation to the reference.
+    SatPositionsTMLengths % Length of the satellite positions vectors.
+    SatStatesTM % Satellites states for plotting.
+    SatStatesTMLengths % Length of the satellite states vectors.
 
   end
   
@@ -67,13 +67,13 @@ classdef Satellite < handle
       this.forceVectorTM=zeros(1,3);
 
       % Set time vectors for simulation.
-      this.TimeVector = zeros(numSats,1);
-      this.TimeVectorLengths = ones(numSats,1);      
+      this.TimeVectorTM = zeros(numSats,1);
+      this.TimeVectorTMLengths = ones(numSats,1);      
       
-      this.SatPositions = zeros(numSats,3,1);
-      this.SatPositionsLengths = ones(numSats,1);
-      this.SatStates = zeros(numSats,9,1);
-      this.SatStatesLengths = ones(numSats,1);
+      this.SatPositionsTM = zeros(numSats,3,1);
+      this.SatPositionsTMLengths = ones(numSats,1);
+      this.SatStatesTM = zeros(numSats,9,1);
+      this.SatStatesTMLengths = ones(numSats,1);
 
 		end
 		
@@ -94,12 +94,12 @@ classdef Satellite < handle
     function updForceVectorTM(this,id)
       this.forceVectorTM = [this.forceVectorTM; this.forceVector'];
     end		
-    function updSatPositions(this, satID, newValue) %! give better name this is the reference position change
-      nextPos = this.SatPositionsLengths(satID) + 1;
-      this.SatPositions(satID, 1:3, nextPos) = newValue;
-      this.SatPositionsLengths(satID) = this.SatPositionsLengths(satID) + 1;
+    function updSatPositionsTM(this, satID, newValue) %! give better name this is the reference position change
+      nextPos = this.SatPositionsTMLengths(satID) + 1;
+      this.SatPositionsTM(satID, 1:3, nextPos) = newValue;
+      this.SatPositionsTMLengths(satID) = this.SatPositionsTMLengths(satID) + 1;
     end
-    function updTimeVector(this, satID, timestep, lastTime)
+    function updTimeVectorTM(this, satID, timestep, lastTime)
       % Increment length of the time vector for the current satellite.
       % At the end of the simulation, the values in TimeLength
       % should be equal for all satellites. Later, use this value to
@@ -111,47 +111,32 @@ classdef Satellite < handle
 %      this.TimeVector(satID, nextPos) = this.TimeVector(satID, lastPos) + timestep;
 %      this.TimeVectorLengths(satID) = this.TimeVectorLengths(satID) + 1;
 
-      nextPos = this.TimeVectorLengths(satID) + 1;
-      this.TimeVector(satID, nextPos) = lastTime + timestep;
-      this.TimeVectorLengths(satID) = this.TimeVectorLengths(satID) + 1;
+      nextPos = this.TimeVectorTMLengths(satID) + 1;
+      this.TimeVectorTM(satID, nextPos) = lastTime + timestep;
+      this.TimeVectorTMLengths(satID) = this.TimeVectorTMLengths(satID) + 1;
     end
-    function updSatStates(this, satID, satState)
-      nextPos = this.SatStatesLengths(satID) + 1;
-      this.SatStates(satID, 1:9, nextPos) = satState;
-      this.SatStatesLengths(satID) = this.SatStatesLengths(satID) + 1;
+    function updSatStatesTM(this, satID, satState)
+      nextPos = this.SatStatesTMLengths(satID) + 1;
+      this.SatStatesTM(satID, 1:9, nextPos) = satState;
+      this.SatStatesTMLengths(satID) = this.SatStatesTMLengths(satID) + 1;
     end    
     function updSatStatesIni(this, satID, satState)
-      this.SatStates(satID, 1:9, 1) = satState;  
+      this.SatStatesTM(satID, 1:9, 1) = satState;  
     end
     function writeAndResetTM(this, numSats,satID)
-      %fprintf('\n%d',size(this.controlVectorTM));
-      %fprintf('\n%d',size(this.forceVectorTM));
-      %fprintf('\n%d',size(this.SatPositions));
-      %fprintf('\n%d %d',size(this.TimeVector));
-      %fprintf('\n%d %d %d',size(this.SatStates));
-      writematrix(this.controlVectorTM,strcat('TMControlVector',num2str(satID),'.csv'),'WriteMode','append');
-      writematrix(this.forceVectorTM,strcat('TMForceVector',num2str(satID),'.csv'),'WriteMode','append');
-      writematrix(squeeze(this.SatPositions(satID,1:3,:))',strcat('TMSatPosition',num2str(satID),'.csv'),'WriteMode','append');
-      writematrix(squeeze(this.TimeVector(satID,:))',strcat('TMTimeVector',num2str(satID),'.csv'),'WriteMode','append');      
-      writematrix(squeeze(this.SatStates(satID,1:9,:))',strcat('TMSatStates',num2str(satID),'.csv'),'WriteMode','append'); 
-%       this.controlVectorTM=zeros(1,3);
-%       this.forceVectorTM=zeros(1,3);
-%       this.SatPositions = zeros(numSats,3,1);
-%       this.SatPositionsLengths(satID) = 1;    
-%       this.TimeVector = zeros(numSats,1);
-%       this.TimeVectorLengths(satID) = 1;
-%       this.SatStates=zeros(numSats,9,1);
-%       this.SatStatesLengths(satID) = 1;
-%       this.controlVectorTM=zeros(1,3);
-%       this.forceVectorTM=zeros(1,3);
+      writematrix(this.controlVectorTM,strcat('ControlVectorTM',num2str(satID),'.csv'),'WriteMode','append');
+      writematrix(this.forceVectorTM,strcat('ForceVectorTM',num2str(satID),'.csv'),'WriteMode','append');
+      writematrix(squeeze(this.SatPositionsTM(satID,1:3,:))',strcat('SatPositionTM',num2str(satID),'.csv'),'WriteMode','append');
+      writematrix(squeeze(this.TimeVectorTM(satID,:))',strcat('TimeVectorTM',num2str(satID),'.csv'),'WriteMode','append');      
+      writematrix(squeeze(this.SatStatesTM(satID,1:9,:))',strcat('SatStatesTM',num2str(satID),'.csv'),'WriteMode','append'); 
       this.controlVectorTM=[];
       this.forceVectorTM=[];
-      this.SatPositions = [];
-      this.SatPositionsLengths(satID) = 0;    
-      this.TimeVector = [];
-      this.TimeVectorLengths(satID) = 0;
-      this.SatStates=[];
-      this.SatStatesLengths(satID) = 0;
+      this.SatPositionsTM = [];
+      this.SatPositionsTMLengths(satID) = 0;    
+      this.TimeVectorTM = [];
+      this.TimeVectorTMLengths(satID) = 0;
+      this.SatStatesTM=[];
+      this.SatStatesTMLengths(satID) = 0;
     end
     
     

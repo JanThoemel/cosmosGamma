@@ -3,11 +3,11 @@ function plotting(ns,meanMotionRad)
 
 %% read data from telemetry files
 for i=1:ns
-  tempTime=readmatrix(strcat('TMTimeVector',num2str(i),'.csv'));
-  tempRefPosChange=readmatrix(strcat('TMSatPosition',num2str(i),'.csv'));
-  tempSatStates=readmatrix(strcat('TMSatStates',num2str(i),'.csv'));
-  tempControlVector=readmatrix(strcat('TMControlVector',num2str(i),'.csv'));
-  tempForceVector  =readmatrix(strcat('TMforceVector',num2str(i),'.csv'));
+  tempTime=readmatrix(strcat('TimeVectorTM',num2str(i),'.csv'));
+  tempRefPosChange=readmatrix(strcat('SatPositionTM',num2str(i),'.csv'));
+  tempSatStates=readmatrix(strcat('SatStatesTM',num2str(i),'.csv'));
+  tempControlVector=readmatrix(strcat('ControlVectorTM',num2str(i),'.csv'));
+  tempForceVector  =readmatrix(strcat('ForceVectorTM',num2str(i),'.csv'));
   if i==1
     timeSteps=size(tempTime,1);
     cosmosTime=zeros(timeSteps,ns);
