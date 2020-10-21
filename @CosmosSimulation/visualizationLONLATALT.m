@@ -51,7 +51,7 @@ end
 
   
   %% ORBIT INPUT
-  inclination=52;%i       = input(' Inclination                          [-90, 90]    i      [deg] = ');
+  inclination=90;%i       = input(' Inclination                          [-90, 90]    i      [deg] = ');
   %inclination=89.999999;%i       = input(' Inclination                          [-90, 90]    i      [deg] = ');
   %inclination=0;%i       = input(' Inclination                          [-90, 90]    i      [deg] = ');
   RAAN=0; %%RAAN    = input(' Right Ascension of Ascendent Node    [  0,360[    RAAN   [deg] = ');    

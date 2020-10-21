@@ -68,7 +68,7 @@ usedTotalForceVector = zeros(3,...
 
 % Compute control vector.
 for i=1:this.FlightControl.NumSatellites
-  this.controlVector(:,i) = -IR * B' * P * this.FlightControl.StateErrors(:, i);
+  this.controlVector(i,:) = (-IR * B' * P * this.FlightControl.StateErrors(:, i))';
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -79,25 +79,15 @@ if 0%labindex==2 || labindex==3%!solve ODE with many small steps until end of ti
   [dSSTdt, intermediateControlVector2,intermediateTime]=ode15s(@(intermediateTime,intermediateSST) myODE(intermediateTime,intermediateSST,IR,B,P,A,this.FlightControl.StateOld(1:6),this),[0 deltaTime],this.FlightControl.StateOld(1:6));
   [~, intermediateControlVector2,intermediateTime]=myODE([],[],[],[],[],[],[],[]);
   
-  %   size(intermediateControlVector2)
-  %   size(intermediateTime)
-  %   this.controlVector(:,2)
-  
   % compute mean of control vector
-  this.controlVector(:,2)=[0 0 0]';
+  this.controlVector(2,:)=[0 0 0];
   for i=1:3
-    for j=2:size(intermediateTime,2)
-      this.controlVector(i,2)=this.controlVector(i,2)+intermediateControlVector2(i,j)*(intermediateTime(j)-intermediateTime(j-1))/deltaTime;
+    for j=2:size(intermediateTime,2)%% check indices in intermediateControlVector2
+      this.controlVector(2,i)=this.controlVector(2,i)+intermediateControlVector2(j,i)'*(intermediateTime(j)-intermediateTime(j-1))/deltaTime;
     end
   end
-  %   this.controlVector(:,2)
-  %   mean(intermediateControlVector2(1,:))
-  %   mean(intermediateControlVector2(2,:))
-  %   mean(intermediateControlVector2(3,:))
-  %   fprintf('\n------------');
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 totalPressureDirection=this.FlightControl.WindPressure+this.FlightControl.SolarPressure;
 
@@ -107,25 +97,25 @@ axisErrorRotation  = errorRotation(1:3);
 
 %% compute transformed control force
 for i=1:this.FlightControl.NumSatellites %% transform error for each satellite
-  controlVectorTransformed(:,i)  = this.FlightControl.rodriguesRotation(this.controlVector(:,i),axisErrorRotation',angleErrorRotation/180*pi);
+  controlVectorTransformed(i,:)  = this.FlightControl.rodriguesRotation(this.controlVector(i,:)',axisErrorRotation',angleErrorRotation/180*pi);
 end %%
 
 %% shift and average control force
-maxControlVectorTransformed         = max(controlVectorTransformed(1,:));
+maxControlVectorTransformed         = max(controlVectorTransformed(:,1));
 for i=1:this.FlightControl.NumSatellites %% transform error for each satellite
-  controlVectorTransformed(1,i)     = controlVectorTransformed(1,i) - maxControlVectorTransformed;
+  controlVectorTransformed(i,1)     = controlVectorTransformed(i,1) - maxControlVectorTransformed;
 end
 averageControlVectorTransformed     = zeros(3,1);
 for i=1:this.FlightControl.NumSatellites %% compute average error
-  averageControlVectorTransformed(2:3)= averageControlVectorTransformed(2:3)+controlVectorTransformed(2:3,i)/this.FlightControl.NumSatellites;
+  averageControlVectorTransformed(2:3)= averageControlVectorTransformed(2:3)+controlVectorTransformed(i,2:3)'/this.FlightControl.NumSatellites;
 end
 for i=1:this.FlightControl.NumSatellites %% assign average error
-  controlVectorTransformed(2:3,i) = controlVectorTransformed(2:3,i)-averageControlVectorTransformed(2:3);
+  controlVectorTransformed(i,2:3) = controlVectorTransformed(i,2:3)-averageControlVectorTransformed(2:3)';
 end
 
 %% retransform control force
 for i=1:this.FlightControl.NumSatellites %% transform error for each satellite
-  this.controlVector(:,i)              = this.FlightControl.rodriguesRotation(controlVectorTransformed(:,i),axisErrorRotation',-angleErrorRotation/180*pi);
+  this.controlVector(i,:)              = this.FlightControl.rodriguesRotation(controlVectorTransformed(i,:)',axisErrorRotation',-angleErrorRotation/180*pi);
 end 
    
     
@@ -144,30 +134,31 @@ else
 	% Implement cases with master satellite.
 end
 
-if norm(this.controlVector(:,this.FlightControl.SatID))==0
-  this.forceVector = [0 0 0]'; alphaOpt=0; betaOpt=0; gammaOpt=0;
+if norm(this.controlVector(this.FlightControl.SatID,:))==0
+  this.forceVector(this.FlightControl.SatID,:) = [0 0 0]'; alphaOpt=0; betaOpt=0; gammaOpt=0;
 else
-  [this.forceVector, alphaOpt, betaOpt, gammaOpt] = this.FlightControl.findBestAttitude(...
-        usedTotalForceVector, this.controlVector(:,this.FlightControl.SatID),...
+  [this.forceVector(this.FlightControl.SatID,:), alphaOpt, betaOpt, gammaOpt] = this.FlightControl.findBestAttitude(...
+        usedTotalForceVector, this.controlVector(this.FlightControl.SatID,:),...
         this.FlightControl.Alphas, this.FlightControl.Betas, this.FlightControl.Gammas, ...
         oldAlphas, oldBetas, oldGammas);
   %% alpha is roll, beta is pitch, gamma is yaw
 end
-if 2*norm(this.controlVector(:,this.FlightControl.SatID))<norm(this.forceVector)
-    this.forceVector=[0 0 0]'; alphaOpt=0; betaOpt=0; gammaOpt=0;
+if 2*norm(this.controlVector(:,this.FlightControl.SatID))<norm(this.forceVector(this.FlightControl.SatID,:))
+    this.forceVector(this.FlightControl.SatID,:)=[0 0 0]'; alphaOpt=0; betaOpt=0; gammaOpt=0;
 end
 
-%% vehicle dynamics, this part will not be used in flight software
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% vehicle translational dynamics, this part will not be used in flight software
 this.FlightControl.State(1:6) = (A * this.FlightControl.StateOld(1:6) + B * ...
-                                this.forceVector / this.FlightControl.SatelliteMass) *...
+                                this.forceVector(this.FlightControl.SatID,:)' / this.FlightControl.SatelliteMass) *...
                                 deltaTime + this.FlightControl.StateOld(1:6);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 this.FlightControl.State(7:9) = [alphaOpt betaOpt gammaOpt]'; %% roll, pitch, yaw
 
 
 % Update duration of the current orbit.
 this.Orbit.updateOrbitDuration();
-
 
 end % Function Satellite.fly
 

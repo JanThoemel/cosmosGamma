@@ -61,12 +61,11 @@ classdef Satellite < handle
 			this.Orbit = Orbit(altitude, gpsAvailability, tleAvailability);
 			this.GPSModule = GPS();
       
-      this.controlVector=zeros(3,numSats);
-      this.controlVectorTM=zeros(1,3);
-      this.forceVector=zeros(1,3);
-      this.forceVectorTM=zeros(1,3);
-
-      % Set time vectors for simulation.
+      this.controlVector=zeros(numSats,3);
+      this.controlVectorTM=zeros(numSats,3);
+      this.forceVector=zeros(numSats,3);
+      this.forceVectorTM=zeros(numSats,3);
+ 
       this.TimeVectorTM = zeros(numSats,1);
       this.TimeVectorTMLengths = ones(numSats,1);      
       
@@ -88,11 +87,11 @@ classdef Satellite < handle
 		msg = broadcastReceive(this)
 		turnOff(this)
     
-    function updControlVectorTM(this, id)
-      this.controlVectorTM = [this.controlVectorTM; this.controlVector(:,id)'];
+    function updControlVectorTM(this)
+      this.controlVectorTM = cat(3,this.controlVectorTM,this.controlVector);
     end   
-    function updForceVectorTM(this,id)
-      this.forceVectorTM = [this.forceVectorTM; this.forceVector'];
+    function updForceVectorTM(this)
+      this.forceVectorTM = cat(3,this.forceVectorTM,this.forceVector');
     end		
     function updSatPositionsTM(this, satID, newValue) %! give better name this is the reference position change
       nextPos = this.SatPositionsTMLengths(satID) + 1;
@@ -123,9 +122,9 @@ classdef Satellite < handle
     function updSatStatesIni(this, satID, satState)
       this.SatStatesTM(satID, 1:9, 1) = satState;  
     end
-    function writeAndResetTM(this, numSats,satID)
-      writematrix(this.controlVectorTM,strcat('ControlVectorTM',num2str(satID),'.csv'),'WriteMode','append');
-      writematrix(this.forceVectorTM,strcat('ForceVectorTM',num2str(satID),'.csv'),'WriteMode','append');
+    function writeAndResetMissionTM(this,satID)
+      writematrix(squeeze(this.controlVectorTM(satID,1:3,:))',strcat('ControlVectorTM',num2str(satID),'.csv'),'WriteMode','append');
+      writematrix(squeeze(this.forceVectorTM(satID,1:3,:))',strcat('ForceVectorTM',num2str(satID),'.csv'),'WriteMode','append');
       writematrix(squeeze(this.SatPositionsTM(satID,1:3,:))',strcat('SatPositionTM',num2str(satID),'.csv'),'WriteMode','append');
       writematrix(squeeze(this.TimeVectorTM(satID,:))',strcat('TimeVectorTM',num2str(satID),'.csv'),'WriteMode','append');      
       writematrix(squeeze(this.SatStatesTM(satID,1:9,:))',strcat('SatStatesTM',num2str(satID),'.csv'),'WriteMode','append'); 

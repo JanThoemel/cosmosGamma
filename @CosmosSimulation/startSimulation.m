@@ -49,13 +49,8 @@ spmd(this.NumSatellites)
   % Set up some parameters, such as battery status, sat status, initial conditions.
 
   sat.initialize(labindex,dq, this.InitConditions(labindex,:));
-  %% delete old telemetry files, this needs to move to Satellite
-  delete(strcat('TimeVectorTM',num2str(labindex),'.csv'));
-  delete(strcat('ControlVectorTM',num2str(labindex),'.csv'));
-  delete(strcat('ForceVectorTM',num2str(labindex),'.csv'));
-  delete(strcat('SatPositionTM',num2str(labindex),'.csv'));
-  delete(strcat('SatStatesTM',num2str(labindex),'.csv'));
-  lastTime=0;
+  
+  lastTime=0; %% lastTime is used to wrap around the time time vector for each new orbit
 
   % define nominal wind magnitude and direction
   sat.FlightControl.WindPressure = this.WindFactor * sat.Orbit.Rho/2 * sat.Orbit.V^2 * [-1 0 0]';
@@ -70,8 +65,6 @@ spmd(this.NumSatellites)
   % define nominal solar radiation pressure magnitude and direction
   sat.FlightControl.initialSolarPressure = this.SolarFactor * 2 * 4.5e-6 * [0 -1 0]';
 
-  sat.comm( num2str(reshape(sat.FlightControl.SolarPressure', 1, [])))
-
   %% incline by ecliptic
   sat.FlightControl.initialSolarPressure = sat.FlightControl.rodriguesRotation(sat.FlightControl.initialSolarPressure,[0 0 1]',-23.4/180*pi);
   
@@ -82,8 +75,6 @@ spmd(this.NumSatellites)
   % Loop for each orbit.
 	while sat.Alive % Satellites turned on, but still doing nothing.
         
-    %% Before:
-    %---------------------------------------------------------------------------
     % Update orbit counter.
     % Orbit counter holds current orbit number, not total orbits completed.
     gps.incrementOrbitCounter();
@@ -94,7 +85,9 @@ spmd(this.NumSatellites)
     
     % Update orbital parameters.
     sat.Orbit.updateOrbitalParams(orbitFromGPS, meanAnomalyFromAN);
-        
+            
+    %% ISL COM: ECEF coordinates          
+    
     %% The orbit is divided into sections of few degrees size.
     % IDX tells in which section we are in
     
@@ -123,63 +116,47 @@ spmd(this.NumSatellites)
 %be more clear and avoid bugs/errors later.
 
       currentOrbitSection = this.OrbitSections(this.OrbitSectionNow);
-      %send(DQ,'bef');
       
-      % run the formation flight algorithm
-%!RW: same from above notes applies here
-%!RW: later, the handling of the OrbitSectionSize needs to be implemented in
-%flight control module
+      % run the formation flight algorithm % THIS SHOULD GO TO SATELLITE OR SATELLITE.FLIGHTCONTROL
       sat.fly(currentOrbitSection, this.OrbitSectionSize);
-      %send(DQ,'after');
-			
-      %Before:::
-			%timestep = this.OrbitSectionSize / orbit.MeanMotionDeg;
       
-      % Send reference position to all non 1-satellites.
-      %! this should go into a new COM module
-%!RW: this implementation is a type of master-slave communication. Only 
-%satellite 1 is sending the position changes to other satellites. This should be
-%implemented inside of a new communication module/object.
+      %%%%%%%%THIS SHOULD GO TO AN ISL COM MODULE
+      %% currently, the reference position change is communicated to the other sats
+      %% this needs to be rethought towards exchange of exchange of Hill coordinates/distances
+      %% sending:
       refPosChange = zeros(3,1);
       if labindex == 1
         refPosChange(1:3) = fc.State(1:3) - fc.StateOld(1:3);
-        for satID = 2 : this.NumSatellites
-          tag = 1000000 * satID + ...
+        for i = 2 : this.NumSatellites
+          tag = 1000000 * i + ...
                   10000 * this.OrbitSectionNow + ...
                     100 * orbit.OrbitCounter + ...
                       1;
-          labSend(refPosChange, satID, tag);
+          labSend(refPosChange, i, tag);
         end
       end
-      
-      % Receive reference position in other satellites.
-%!RW: from notes above, this is a type of master-slave communication. All
-%satellites, with exception of satellite 1, are receiving the tag sent by the
-%master (satellite 1). Also implement this part inside of a new communication
-%module/object.
-      satID = labindex;
-      if satID ~= 1
-        tag = 1000000 * satID + ...
+      %% receiving:
+      if labindex ~= 1
+        tag = 1000000 * labindex + ...
                 10000 * this.OrbitSectionNow + ...
                   100 * orbit.OrbitCounter + ...
                     1;
         refPosChange = labReceive(1, tag);
       end
-			% Move coordinate system.
-			% Should the old state be shifted as well?
-			shift = -refPosChange(1:3);
-      fc.shiftState(shift);
-      % Update vector with satellite positions
+      
+			% Move coordinate system.	% Should the old state be shifted as well?
+      fc.shiftState(-refPosChange(1:3));            
+      
+      % Update (orbit) TM vector with satellite positions
       sat.updSatPositionsTM(labindex, refPosChange);
-      % Update vector with satellite states
+      % Update (orbit) TM vector with satellite states
       sat.updSatStatesTM(labindex, fc.State);
-      % Update time vector      
+      % Update (orbit) TM time vector with time vector, save last time for swrapping around
       sat.updTimeVectorTM(labindex, timeStep,lastTime);
       lastTime=sat.TimeVectorTM(labindex, end);
-
-      % add instantaneous controlVector to controlVectorTM
+      % Update (orbit) TM controlVector with controlVector
       sat.updControlVectorTM(labindex);
-      % add instantaneous forceVector to forceVectorTM
+      % Update (orbit) TM forceVector with forceVector
       sat.updForceVectorTM(labindex);
 
 %% Move to flight control
@@ -193,14 +170,13 @@ spmd(this.NumSatellites)
 		end % While orbit sections loop.
 		
 		% Check if orbit counter identifiers do not match.
-    %JT: what is this good for?
 		if (orbit.OrbitCounter ~= orbit.TimeOrbitDuration(1))
 			msg = ['Orbit identifiers in orbit.OrbitCounter and ',...
 				'orbit.TimeOrbitDuration do not match.'];
 			error('Simulation:start:orbitIdentifierNotEqual',msg);
     else
-      sat.writeAndResetTM(this.NumSatellites,labindex)
-      
+      %% write mission TM, i.e. append orbit TM to mission TM file, then reset orbit TM variables
+      sat.writeAndResetMissionTM(labindex)      
 			msg = ['Orbit ',num2str(orbit.OrbitCounter),' finished ',...
 				'(',num2str(orbit.TimeOrbitDuration(2)),' s)'];
 			sat.comm(msg);
