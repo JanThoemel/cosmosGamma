@@ -116,7 +116,6 @@ spmd(this.NumSatellites)
 %be more clear and avoid bugs/errors later.
 
       currentOrbitSection = this.OrbitSections(this.OrbitSectionNow);
-      
       % run the formation flight algorithm % THIS SHOULD GO TO SATELLITE OR SATELLITE.FLIGHTCONTROL
       sat.fly(currentOrbitSection, this.OrbitSectionSize);
       
@@ -143,10 +142,10 @@ spmd(this.NumSatellites)
                     1;
         refPosChange = labReceive(1, tag);
       end
-      
+
 			% Move coordinate system.	% Should the old state be shifted as well?
       fc.shiftState(-refPosChange(1:3));            
-      
+
       % Update (orbit) TM vector with satellite positions
       sat.updSatPositionsTM(labindex, refPosChange);
       % Update (orbit) TM vector with satellite states
@@ -182,7 +181,7 @@ spmd(this.NumSatellites)
 			sat.comm(msg);
       this.setIDX(1);
 		end
-		
+
     % If maximum number of orbits has been reached, turn off the satellite.
 		if orbit.OrbitCounter >= this.MaxNumOrbits
 % 			pause(2);

@@ -227,8 +227,21 @@ end
     writematrix([vizgridtime' lat(i,:)' lon(i,:)' rad(i,:)' rollVizGrid(i,:)' pitchVizGrid(i,:)' yawVizGrid(i,:)'  ],strcat('sat',num2str(i-1),'_LLR_RPY.csv'));
   end
   
+  if 1 %% GNSS reflectometry visualization
+    %% compute or define GNSS satellites position
+    noOfGNSSsats=1;
+    timeGNSS=0:1:10;
+    latGNSS=10:1:20;
+    lonGNSS=30:1:40;
+    altGNSS=20000*ones(1,11);
+    
+    %% compute SP location
+    for i=1:ns
+      for j=1:noOfGNSSsats
+        [latSP(i,j,:), lonSP(i,j,:)]=computeSPlocation(lat(i,:),lon(i,:),rad(i,:),latGNSS(j,:),lonGNSS(j,:),altGNSS(j,:)+radiusOfEarth/1000);
+      end
+    end
   
-  if 0 %% show on globe
     %% set-up GIS
     grs80 = referenceEllipsoid('grs80','km');
     load topo
@@ -243,15 +256,22 @@ end
       rivers = shaperead('worldrivers','UseGeoCoords',true);
       plotm([rivers.Lat],[rivers.Lon],'Color','blue')
 
-    %% display position satellites
+      %% display position satellites
       for i=1:ns+1
-        plotm(lat(1,:),lon(1,:),'Color',[1 0   0.2]);hold on;
+        plotm(lat(1,:),lon(1,:),rad(1,:)-radiusOfEarth/1000,'Color',[1 0  0]);hold on;
       end
-      title('ALPHA');
-      view(90,0)
-  end
-  
-  
+%       %% display position of GNSS satellites
+       for i=1:ns+1
+         plotm(latGNSS,lonGNSS,altGNSS,'Color',[0 1 0]);hold on;
+       end
+       %% display location of SP
+       for i=1:ns
+         for j=1:noOfGNSSsats
+           plotm(squeeze(latSP(i,j,:))',squeeze(lonSP(i,j,:))','Color',[1 0 1]);hold on;
+         end
+       end
+       view(90,0)
+  end 
 end
 
 
@@ -308,4 +328,43 @@ function [E] = anom_ecc(M,e)
   % trovato E con un errore inferiore a 0.1*10^(-4);
   %fprintf(' La soluzione E è stata trovata nell''intervallo [%2.5f,%2.5f]',sx,dx);
   %fprintf(' \n errore inferiore a %1.2e: [rad] E = %3.5f',err,E);
+end
+
+
+
+function [latSP, lonSP]=computeSPlocation(lat,lon,rad,latGNSS,lonGNSS,radGNSS)
+%% A New Approach to Determine the Specular Point of Forward Reflected GNSS Signals
+%% Benjamin John Southwell Dolby Laboratories, Inc. Andrew G Dempster UNSW Sydney
+
+  %% interpolate latGNSS/lonGNSS on lat/lon/rad grid
+  latGNSSnewGrid=latGNSS;
+  lonGNSSnewGrid=lonGNSS;  
+  radGNSSnewwGrid=radGNSS;
+    for j=1:size(lat,2)
+      %% compute beta
+
+      T=1;
+      R=1;
+      rC=1;
+      %% compute thetaR, thetaT
+      thetaRlat=lat(j);
+      thetaTlat=latGNSSnewGrid(1);
+      thetaRlon=lon(j);
+      thetaTlon=lonGNSSnewGrid(1);
+      THETAlat=thetaRlat+thetaTlat;
+      THETAlon=thetaRlon+thetaTlon;
+
+      
+      myfunLat = @(betaLat) asind(rC/T*sin(betaLat))+asind(rC/R*sin(betaLat))+THETAlat+2*betaLat-360; 
+      funLat = @(betaLat) myfunLat(betaLat);    
+      betaLat = fzero(funLat,1);
+
+      myfunLon = @(betaLon) asind(rC/T*sin(betaLon))+asind(rC/R*sin(betaLon))+THETAlon+2*betaLon-360; 
+      funLon = @(betaLon) myfunLon(betaLon);    
+      betaLon = fzero(funLon,1);
+
+      %% compute latSP and lonSP
+      latSP(j)=betaLat;
+      lonSP(j)=betaLon;
+    end
 end

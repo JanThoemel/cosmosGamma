@@ -87,11 +87,11 @@ classdef Satellite < handle
 		msg = broadcastReceive(this)
 		turnOff(this)
     
-    function updControlVectorTM(this)
+    function updControlVectorTM(this,~)
       this.controlVectorTM = cat(3,this.controlVectorTM,this.controlVector);
     end   
-    function updForceVectorTM(this)
-      this.forceVectorTM = cat(3,this.forceVectorTM,this.forceVector');
+    function updForceVectorTM(this,~)
+      this.forceVectorTM = cat(3,this.forceVectorTM,this.forceVector);
     end		
     function updSatPositionsTM(this, satID, newValue) %! give better name this is the reference position change
       nextPos = this.SatPositionsTMLengths(satID) + 1;
