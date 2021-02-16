@@ -16,25 +16,31 @@ this.FlightControl.SolarPressureVector = this.FlightControl.getSolarPressureVect
                                              this.FlightControl.SolarPressure, this.FlightControl.SurfacePanel, ...
  				                                     this.FlightControl.Panels(1), this.FlightControl.Panels(2), this.FlightControl.Panels(3), ...
  				                                     this.FlightControl.Alphas, this.FlightControl.Betas, this.FlightControl.Gammas);
+%
+% Get vector sizes of Flight Control's Alphas, Betas, and Gammas.
+sizeAlphas = size(this.FlightControl.Alphas, 2);
+sizeBetas  = size(this.FlightControl.Betas , 2);
+sizeGammas = size(this.FlightControl.Gammas, 2);
+
+% Robustness?
+% Check if vector sizes are equal? Or they dont need to be equal?
+% ...
 
 % Vector of size 3 x sizeAlphas x sizeBetas x sizeGammas.
-usedTotalForceVector = zeros(3,...
-  size(this.FlightControl.Alphas, 2),...
-  size(this.FlightControl.Betas , 2),...
-  size(this.FlightControl.Gammas, 2));
+usedTotalForceVector = zeros(3, sizeAlphas, sizeBetas, sizeGammas);
 
 masterSatellite = 0;
 if masterSatellite == 0
-% If no master satellite.
-	for k = 1 : size(this.FlightControl.Gammas,2)
-		for j = 1 : size(this.FlightControl.Betas,2)
-			for i = 1 : size(this.FlightControl.Alphas,2)
-				usedTotalForceVector(:,i,j,k) = this.FlightControl.WindPressureVector(:,i,j,k) + this.FlightControl.SolarPressureVector(:,i,j,k);
-			end
-		end
-	end
+  % If no master satellite.
+  for k = 1 : sizeGammas
+    for j = 1 : sizeBetas
+      for i = 1 : sizeAlphas
+        usedTotalForceVector(:,i,j,k) = this.FlightControl.WindPressureVector(:,i,j,k) + this.FlightControl.SolarPressureVector(:,i,j,k);
+      end
+    end
+  end
 else
-	% To do: Implement cases with master satellite.
+  % To do: Implement cases with master satellite.
 end
 
 
@@ -45,17 +51,16 @@ R=diag([1e13 1e13 1e13]);
 % determine time elapsed since last ascending equator crossing
 time = currentOrbitSection / this.Orbit.MeanMotionDeg;
 
-% Update desired state for all satellites.
-%for i=1:this.FlightControl.NumSatellites
-  this.FlightControl.updateStateDesired(time, this.Orbit.MeanMotionRad,i);
-%end
+% Compute desired state for this satellite.
+this.FlightControl.updateStateDesired(time, this.Orbit.MeanMotionRad);
 
-% Set and get state error for this satellite only within array of errors of all satellites
+% Get updated error between the current and desired states for this satellite.
 stateError = this.FlightControl.getStateError();
 
-%%JT: this should go through COM module% Communicate new state error of this satellite to other satellites
+%%JT: this should go through COM module
+% Communicate new state error of this satellite to other satellites.
 this.broadcastSend(stateError);
-% Receive the state errors from other satellites
+% Receive the state errors from other satellites.
 receivedStateErrors = this.broadcastReceive();
 
 % Update information on state errors as received from other satellites.
@@ -69,6 +74,12 @@ oldAlphas = this.FlightControl.State(7); %% roll
 oldBetas  = this.FlightControl.State(8); %% pitch
 oldGammas = this.FlightControl.State(9); %% yaw
 
+
+
+%-------------from here below:
+% Is each satellite computing the control vector for all satellites?
+% Should not each satellite compute only its own control vector?
+%
 % Compute control vector for all satellites.
 for i=1:this.FlightControl.NumSatellites
   this.controlVector(i,:) = (-IR * B' * P * this.FlightControl.StateErrors(:, i))';

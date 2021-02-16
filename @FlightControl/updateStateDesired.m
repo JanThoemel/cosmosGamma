@@ -1,11 +1,13 @@
-function updateStateDesired(this, time, meanMotionRad,satID)
+function updateStateDesired(this, time, meanMotionRad)
 %% Update desired satellite state
 % ______________________________________________________________________________
 %
 % Desired solution for Ivanov's case.
 %
 % Input:
-% - Mean motion [rad/s].
+%   this % FlightControl object of the current satellite.
+%   time % --Add description for paramater here--.
+%   meanMotionRad % Mean motion, in rad/s.
 % ______________________________________________________________________________
 
 % Does this make sense?
@@ -16,6 +18,10 @@ sstDesired = zeros(6,1);
 % SSC              =SSCoefficient
 % MAO              =meanAnomalyOffSet
 SSC=1;    MAO=0;
+
+%-------------------------------------
+% Use this.SatID to get id of each satellite
+% based on the ids, set different desired states for each satellite?
 
     A=2*SSC/(2-SSC^2); %% if SSC==1 then A=2
     B=(2-5*SSC^2)/2/SSC;
@@ -36,4 +42,5 @@ SSC=1;    MAO=0;
 % if time<50
 %   fprintf('\n %f %f %f %f %f %f',this.StateDesired);
 % end
-end % Function FlightControl.updateStateDesired.
+
+end % Function FlightControl.updateStateDesired

@@ -154,9 +154,9 @@ spmd(this.NumSatellites)
       sat.updTimeVectorTM(labindex, timeStep,lastTime);
       lastTime=sat.TimeVectorTM(labindex, end);
       % Update (orbit) TM controlVector with controlVector
-      sat.updControlVectorTM(labindex);
+      sat.updControlVectorTM();
       % Update (orbit) TM forceVector with forceVector
-      sat.updForceVectorTM(labindex);
+      sat.updForceVectorTM();
 
 %% Move to flight control
 			% Increment section counter.

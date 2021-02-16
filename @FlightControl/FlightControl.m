@@ -99,7 +99,7 @@ classdef FlightControl < handle
 		updateStateErrors(this, receivedStateErrors)
 		stateErr = getStateError(this)
 		
-		updateStateDesired(this, time, meanMotion,satID)
+		updateStateDesired(this, time, meanMotion)
 		
 		function shiftState(this, shift)
 			this.State(1:3) = this.State(1:3) + shift;
@@ -152,6 +152,7 @@ classdef FlightControl < handle
 		[CD, CL] = aeroDragLiftSentman(theta, Tatmos, v, rho)
 		sunforceVector=solarDragLift(solarPressure, sunlight,normal, theta,...
       panelSurface,noPanels,gammaSunSpecular,gammaSunDiffusive)
-	end % Static methods.
-	
-end % Class FlightControl.
+    
+  end % Static methods
+  
+end % Class FlightControl
