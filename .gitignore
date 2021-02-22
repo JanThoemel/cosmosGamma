@@ -8,7 +8,6 @@ workspace.mat
 tempUML*
 *.avi
 *.zip
-fc_*
-TM*
-*.csv
-*.fig
+LLR-RPY/*
+storage/*
+telemetry/*

@@ -1,13 +1,22 @@
-function plotting(ns,meanMotionRad)
+function plotting(this, ns, meanMotionRad)
 %function plotting(angles,sst,refPosChange,time,ns,meanMotion,u,e)
+
+% Get path to telemetry files from CosmosSimulation object.
+tmFolderPath = this.TelemetryPath;
 
 %% read data from telemetry files
 for i=1:ns
-  tempTime=readmatrix(strcat('TimeVectorTM',num2str(i),'.csv'));
-  tempRefPosChange=readmatrix(strcat('SatPositionTM',num2str(i),'.csv'));
-  tempSatStates=readmatrix(strcat('SatStatesTM',num2str(i),'.csv'));
-  tempControlVector=readmatrix(strcat('ControlVectorTM',num2str(i),'.csv'));
-  tempForceVector  =readmatrix(strcat('ForceVectorTM',num2str(i),'.csv'));
+  fileControlVectorTM = strcat(tmFolderPath,filesep,'ControlVectorTM',num2str(i),'.csv');
+  fileForceVectorTM = strcat(tmFolderPath,filesep,'ForceVectorTM',num2str(i),'.csv');
+  fileSatPositionTM = strcat(tmFolderPath,filesep,'SatPositionTM',num2str(i),'.csv');
+  fileTimeVectorTM = strcat(tmFolderPath,filesep,'TimeVectorTM',num2str(i),'.csv');
+  fileSatStatesTM = strcat(tmFolderPath,filesep,'SatStatesTM',num2str(i),'.csv');
+  
+  tempTime=readmatrix(fileTimeVectorTM);
+  tempRefPosChange=readmatrix(fileSatPositionTM);
+  tempSatStates=readmatrix(fileSatStatesTM);
+  tempControlVector=readmatrix(fileControlVectorTM);
+  tempForceVector  =readmatrix(fileForceVectorTM);
   if i==1
     timeSteps=size(tempTime,1);
     cosmosTime=zeros(timeSteps,ns);

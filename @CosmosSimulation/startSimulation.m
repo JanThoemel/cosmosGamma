@@ -47,11 +47,11 @@ spmd(this.NumSatellites)
 %!RW: transfer configuration of initial conditions to simulation, leave
 %satellite initialization only with real-case-like instructions.
   % Set up some parameters, such as battery status, sat status, initial conditions.
-
-  sat.initialize(labindex,dq, this.InitConditions(labindex,:));
   
-  lastTime=0; %% lastTime is used to wrap around the time time vector for each new orbit
-
+  sat.initialize(labindex, dq, this.InitConditions(labindex,:));
+  
+  lastTime=0; %% lastTime is used to wrap around the time vector for each new orbit
+  
   % define nominal wind magnitude and direction
   sat.FlightControl.WindPressure = this.WindFactor * sat.Orbit.Rho/2 * sat.Orbit.V^2 * [-1 0 0]';
   % compute for each roll, pitch and yaw angle the aerodynamic force
@@ -116,13 +116,17 @@ spmd(this.NumSatellites)
 %be more clear and avoid bugs/errors later.
 
       currentOrbitSection = this.OrbitSections(this.OrbitSectionNow);
-      % run the formation flight algorithm % THIS SHOULD GO TO SATELLITE OR SATELLITE.FLIGHTCONTROL
+      % run the formation flight algorithm
+      %%% THIS SHOULD GO TO SATELLITE OR SATELLITE.FLIGHTCONTROL
       sat.fly(currentOrbitSection, this.OrbitSectionSize);
       
       %%%%%%%%THIS SHOULD GO TO AN ISL COM MODULE
       %% currently, the reference position change is communicated to the other sats
-      %% this needs to be rethought towards exchange of exchange of Hill coordinates/distances
+      %% this needs to be rethought towards exchange of Hill coordinates/distances
       %% sending:
+%!RW: this implementation is a type of master-slave communication. Only 
+%satellite 1 is sending the position changes to other satellites. This should be
+%implemented inside of a new communication module/object.
       refPosChange = zeros(3,1);
       if labindex == 1
         refPosChange(1:3) = fc.State(1:3) - fc.StateOld(1:3);
@@ -135,6 +139,10 @@ spmd(this.NumSatellites)
         end
       end
       %% receiving:
+%!RW: from notes above, this is a type of master-slave communication. All
+%satellites, with exception of satellite 1, are receiving the tag sent by the
+%master (satellite 1). Also implement this part inside of a new communication
+%module/object.
       if labindex ~= 1
         tag = 1000000 * labindex + ...
                 10000 * this.OrbitSectionNow + ...
@@ -143,7 +151,8 @@ spmd(this.NumSatellites)
         refPosChange = labReceive(1, tag);
       end
 
-			% Move coordinate system.	% Should the old state be shifted as well?
+			% Move coordinate system.
+      %%% Should the old state be shifted as well?
       fc.shiftState(-refPosChange(1:3));            
 
       % Update (orbit) TM vector with satellite positions

@@ -7,45 +7,47 @@
 % ______________________________________________________________________________
 
 classdef FlightControl < handle
-	
-	properties (GetAccess = public, SetAccess = public)
-		
-        DeltaAngle % Angular granularity for force vector determination.
-        FFPS % Formation flight parameters.
-        FFPSFilePath % Location of the file with the FFPS.
-        
-		FormationMode % Mode for the satellites formation flight.
-		NumSatellites % Total number of satellites in the formation.
-		Panels % Satellite panels.
-		SatelliteMass % Mass of the satellite [kg].
-		SatID % Unique identification number of the satellite.
-		SolarPressure % Pressure from sunlight. Will be rotated over the orbit
-		initialSolarPressure % initial Pressure from sunlight.
-		SolarPressureVector % Solar pressure for all satellite attitudes.
-		SSCoeff % Schweighart-Sedgwick coefficient.
-		State % Satellite state.
-		StateDesired % Desired satellite state.
-		StateErrors % State errors of all satellites in the formation.
-		StateErrorsAvg % Average of the state errors of all satellites.
-		StateOld % Old satellite state.
-		SurfacePanel % Surface area of each of the satellite panels [m^2].
-		SurfaceRef % Reference surface area.
-		WindPressure % Pressure from wind.
-		WindPressureVector % Wind pressure for all satellite attitudes.
-		
-	end
-	
-	properties (GetAccess = public, SetAccess = private)
-		
-		Alphas % Roll.
-		Betas % Pitch.
-		Gammas % Yaw.
-		
-  end
+
+properties (GetAccess = public, SetAccess = public)
+  
+  DeltaAngle % Angular granularity for force vector determination.
+  FFPS % Formation flight parameters.
+  FFPSFilePath % Location of the file with the FFPS.
+  
+  TelemetryPath %
+  
+  FormationMode % Mode for the satellites formation flight.
+  NumSatellites % Total number of satellites in the formation.
+  Panels % Satellite panels.
+  SatelliteMass % Mass of the satellite [kg].
+  SatID % Unique identification number of the satellite.
+  SolarPressure % Pressure from sunlight. Will be rotated over the orbit
+  initialSolarPressure % initial Pressure from sunlight.
+  SolarPressureVector % Solar pressure for all satellite attitudes.
+  SSCoeff % Schweighart-Sedgwick coefficient.
+  State % Satellite state.
+  StateDesired % Desired satellite state.
+  StateErrors % State errors of all satellites in the formation.
+  StateErrorsAvg % Average of the state errors of all satellites.
+  StateOld % Old satellite state.
+  SurfacePanel % Surface area of each of the satellite panels [m^2].
+  SurfaceRef % Reference surface area.
+  WindPressure % Pressure from wind.
+  WindPressureVector % Wind pressure for all satellite attitudes.
+  
+end
+
+properties (GetAccess = public, SetAccess = private)
+  
+  Alphas % Roll.
+  Betas % Pitch.
+  Gammas % Yaw.
+  
+end
 	
 	methods % Constructor.
 		
-    function this = FlightControl(ns, mode, deltaAngle, ffpsFilePath)
+    function this = FlightControl(ns, mode, deltaAngle, ffpsFilePath, tmFolderPath)
       %% Constructor for class FlightControl
       %
       % Input:
@@ -56,11 +58,16 @@ classdef FlightControl < handle
       % - Object of class FlightControl.
       
       % Read formation flight parameters from JSON file.
-      fid = fopen(ffpsFilePath,'r');
-      this.FFPS = jsondecode(fscanf(fid,'%s'));
-      fclose(fid);
+      %%% Already done in Satellite.initialize
+      %fid = fopen(ffpsFilePath,'r');
+      %this.FFPS = jsondecode(fscanf(fid,'%s'));
+      %fclose(fid);
       
+      % Save path to formation flight parameters.
 			this.FFPSFilePath = ffpsFilePath;
+      
+      % Save path to telemetry files.
+      this.TelemetryPath = tmFolderPath;
       
       this.NumSatellites = ns;
 			this.FormationMode = mode;

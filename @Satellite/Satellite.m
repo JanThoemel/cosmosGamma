@@ -41,7 +41,7 @@ classdef Satellite < handle
 	methods % Constructor.
     
     function this = Satellite(altitude, deltaAngle, autoResponse, ...
-        gpsAvailability, tleAvailability, numSats, mode, ffpsPath)
+        gpsAvailability, tleAvailability, numSats, mode, ffpsPath, tmFolderPath)
       %% Constructor for class Satellite
       %
       % Input:
@@ -57,7 +57,7 @@ classdef Satellite < handle
       % - Object of class Satellite.
       
 			this.AutoResponse = autoResponse;
-			this.FlightControl = FlightControl(numSats, mode, deltaAngle, ffpsPath);
+			this.FlightControl = FlightControl(numSats, mode, deltaAngle, ffpsPath, tmFolderPath);
 			this.Orbit = Orbit(altitude, gpsAvailability, tleAvailability);
 			this.GPSModule = GPS();
       
@@ -122,16 +122,33 @@ classdef Satellite < handle
     function updSatStatesIni(this, satID, satState)
       this.SatStatesTM(satID, 1:9, 1) = satState;  
     end
+    function deleteTelemetryFiles(~, satID)
+      fileControlVectorTM = strcat('telemetry',filesep,'ControlVectorTM',num2str(satID),'.csv');
+      fileForceVectorTM = strcat('telemetry',filesep,'ForceVectorTM',num2str(satID),'.csv');
+      fileSatPositionTM = strcat('telemetry',filesep,'SatPositionTM',num2str(satID),'.csv');
+      fileTimeVectorTM = strcat('telemetry',filesep,'TimeVectorTM',num2str(satID),'.csv');
+      fileSatStatesTM = strcat('telemetry',filesep,'SatStatesTM',num2str(satID),'.csv');
+      delete(fileControlVectorTM);
+      delete(fileForceVectorTM);
+      delete(fileSatPositionTM);
+      delete(fileTimeVectorTM);
+      delete(fileSatStatesTM);
+    end
     function writeAndResetMissionTM(this,satID)
-      writematrix(squeeze(this.controlVectorTM(satID,1:3,:))',strcat('ControlVectorTM',num2str(satID),'.csv'),'WriteMode','append');
-      writematrix(squeeze(this.forceVectorTM(satID,1:3,:))',strcat('ForceVectorTM',num2str(satID),'.csv'),'WriteMode','append');
-      writematrix(squeeze(this.SatPositionsTM(satID,1:3,:))',strcat('SatPositionTM',num2str(satID),'.csv'),'WriteMode','append');
-      writematrix(squeeze(this.TimeVectorTM(satID,:))',strcat('TimeVectorTM',num2str(satID),'.csv'),'WriteMode','append');      
-      writematrix(squeeze(this.SatStatesTM(satID,1:9,:))',strcat('SatStatesTM',num2str(satID),'.csv'),'WriteMode','append'); 
+      fileControlVectorTM = strcat('telemetry',filesep,'ControlVectorTM',num2str(satID),'.csv');
+      fileForceVectorTM = strcat('telemetry',filesep,'ForceVectorTM',num2str(satID),'.csv');
+      fileSatPositionTM = strcat('telemetry',filesep,'SatPositionTM',num2str(satID),'.csv');
+      fileTimeVectorTM = strcat('telemetry',filesep,'TimeVectorTM',num2str(satID),'.csv');
+      fileSatStatesTM = strcat('telemetry',filesep,'SatStatesTM',num2str(satID),'.csv');
+      writematrix(squeeze(this.controlVectorTM(satID,1:3,:))',fileControlVectorTM,'WriteMode','append');
+      writematrix(squeeze(this.forceVectorTM(satID,1:3,:))',fileForceVectorTM,'WriteMode','append');
+      writematrix(squeeze(this.SatPositionsTM(satID,1:3,:))',fileSatPositionTM,'WriteMode','append');
+      writematrix(squeeze(this.TimeVectorTM(satID,:))',fileTimeVectorTM,'WriteMode','append');
+      writematrix(squeeze(this.SatStatesTM(satID,1:9,:))',fileSatStatesTM,'WriteMode','append');
       this.controlVectorTM=[];
       this.forceVectorTM=[];
       this.SatPositionsTM = [];
-      this.SatPositionsTMLengths(satID) = 0;    
+      this.SatPositionsTMLengths(satID) = 0;
       this.TimeVectorTM = [];
       this.TimeVectorTMLengths(satID) = 0;
       this.SatStatesTM=[];

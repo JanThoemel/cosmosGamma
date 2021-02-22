@@ -1,4 +1,4 @@
-function visualizationLONLATALT(vizScale,ns,VIZaltitude)
+function visualizationLONLATALT(this, vizScale, ns, VIZaltitude)
 %% input:
 % ns: number of satellites
 % VIZaltitude: altitude used for visualization. The actual altitude may change for long periods of
@@ -7,14 +7,27 @@ function visualizationLONLATALT(vizScale,ns,VIZaltitude)
 % none
 % however, files are written that are used by cosmosVIZ
 
+% Get path to telemetry files from CosmosSimulation object.
+tmFolderPath = this.TelemetryPath;
 
+% Set path for LLR-RPY files.
+rpyFolderPath = 'LLR-RPY';
+[~, ~, ~] = mkdir(rpyFolderPath); % [status, msg, msgID]
+% Delete old files in LLR-RPY folder.
+delete(strcat(rpyFolderPath,filesep,'*'));
 
 %% read data from telemery files
 % JT: this works only if the telemetry data of all satellites is equal in size 
 % and sync'ed. Sooner or later, this needs to become more versatile allowing individual times for each satellite
 for i=1:ns
-  tempTime=readmatrix(strcat('TimeVectorTM',num2str(i),'.csv'));  
-  tempSatStates=readmatrix(strcat('SatStatesTM',num2str(i),'.csv')); 
+  fileControlVectorTM = strcat(tmFolderPath,filesep,'ControlVectorTM',num2str(i),'.csv');
+  fileForceVectorTM = strcat(tmFolderPath,filesep,'ForceVectorTM',num2str(i),'.csv');
+  fileSatPositionTM = strcat(tmFolderPath,filesep,'SatPositionTM',num2str(i),'.csv');
+  fileTimeVectorTM = strcat(tmFolderPath,filesep,'TimeVectorTM',num2str(i),'.csv');
+  fileSatStatesTM = strcat(tmFolderPath,filesep,'SatStatesTM',num2str(i),'.csv');
+  
+  tempTime=readmatrix(fileTimeVectorTM);  
+  tempSatStates=readmatrix(fileSatStatesTM); 
   if i==1
       timeSteps=size(tempTime,1);
       cosmosTime=zeros(timeSteps,ns);
@@ -224,7 +237,8 @@ end
        
   %% write files for LLR & RPY of each satellite and the reference (satellite). Latter is numbered as sat0.
   for i=1:ns+1
-    writematrix([vizgridtime' lat(i,:)' lon(i,:)' rad(i,:)' rollVizGrid(i,:)' pitchVizGrid(i,:)' yawVizGrid(i,:)'  ],strcat('sat',num2str(i-1),'_LLR_RPY.csv'));
+    rpyFile = strcat(rpyFolderPath,filesep,'sat',num2str(i-1),'_LLR_RPY.csv');
+    writematrix([vizgridtime' lat(i,:)' lon(i,:)' rad(i,:)' rollVizGrid(i,:)' pitchVizGrid(i,:)' yawVizGrid(i,:)'  ], rpyFile);
   end
   
   if 1 %% GNSS reflectometry visualization

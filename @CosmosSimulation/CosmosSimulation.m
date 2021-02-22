@@ -32,6 +32,7 @@ properties (GetAccess = public, SetAccess = public)
   SatPositionsLengths % Length of the satellite positions vectors.
 %!RW: leave parameter status for later implementation.
 % Status % Simulation status.
+  TelemetryPath %
   VizScale % Scale for satellite distances in visualization.
   WindFactor %% switch on whether aerodynamics shall be simulated
 	SolarFactor  %% switch on whether solar radiation pressure shall be simulated
@@ -55,7 +56,7 @@ end
       fid = fopen(filename,'r');
       params = jsondecode(fscanf(fid,'%s'));
       fclose(fid);
-            
+      
       % Get all parameters that are contained in the JSON file.
       modeID = params.SelectedFormationFlightMode;
       maxNumOrbits = params.SimMaxNumOrbits;
@@ -101,10 +102,15 @@ end
       this.GPSModules = GPS.empty(numSatellites,0);
       
       % Set location in which to save files with FFPS for the satellites.
-      ffpsFolderPath = strcat('satstorage',filesep,ffpsFolderName);
+      ffpsFolderPath = strcat('storage',filesep,ffpsFolderName);
       [~, ~, ~] = mkdir(ffpsFolderPath); % [status, msg, msgID]
       ffpsFilePrefix = 'fc_FFP_sat';
       ffpsPathPrefix = strcat(ffpsFolderPath,filesep,ffpsFilePrefix);
+      
+      % Set location for telemetry files.
+      tmFolderPath = 'telemetry';
+      [~, ~, ~] = mkdir(tmFolderPath); % [status, msg, msgID]
+      this.TelemetryPath = tmFolderPath;
       
       for i = 1 : numSatellites
         % Create a JSON file for each satellite's formation flight parameters.
@@ -123,7 +129,8 @@ end
           availableTLE, ...
           numSatellites, ...
           modeID, ...
-          ffpsFullPath);
+          ffpsFullPath, ...
+          tmFolderPath);
         
         % Create simulation aliases for satellite children objects.
         this.Orbits(i) = this.Satellites(i).Orbit;
@@ -157,6 +164,14 @@ end
       this.OrbitSectionNow = value;
     end
     
+    %!RW: for reference, old function:
+    % visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,pitch,yaw,roll,altitude)
+    visualizationLONLATALT(this, vizScale, ns, VIZaltitude)
+    
+    %!RW: for reference, old function:
+    % plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
+    plotting(this, ns, meanMotionRad)
+    
   end % Public methods.
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -165,13 +180,6 @@ end
 
 methods (Static)
   
-  %!RW: for reference, old function:
-  % visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,pitch,yaw,roll,altitude)
-  visualizationLONLATALT(this,ns,VIZaltitude)
-  
-  %!RW: for reference, old function:
-  % plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
-  plotting(ns, meanMotionRad)
   createListCustomClasses(filepath, workspaceFileName)
   
 end % Static methods.

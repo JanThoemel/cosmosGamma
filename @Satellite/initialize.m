@@ -42,10 +42,6 @@ end
 this.FlightControl.State          = iniConditions';
 
 %% delete old telemetry files, this needs to move to Satellite
-delete(strcat('TimeVectorTM',num2str(labindex),'.csv'));
-delete(strcat('ControlVectorTM',num2str(labindex),'.csv'));
-delete(strcat('ForceVectorTM',num2str(labindex),'.csv'));
-delete(strcat('SatPositionTM',num2str(labindex),'.csv'));
-delete(strcat('SatStatesTM',num2str(labindex),'.csv'));
+this.deleteTelemetryFiles(id);
 
 end % Function Satellite.initialize.
