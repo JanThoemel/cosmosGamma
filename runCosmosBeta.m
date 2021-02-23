@@ -35,6 +35,16 @@ end
 % Do not use 'sim' as variable name. It is a reserved name in Simulink.
 csim = CosmosSimulation();
 
+%!RW:TODO
+% add function here from simulation object to read initial parameters in files
+% configFF, configSats, configSim.
+% Read and set initial condition parameters from configuration files.
+% To change the parameters, please open and modify one of the following files:
+% - configFormationFlight.json
+% - configSatellites.json
+% - configSimulation.json
+%csim.setupSimulation();
+
 %% Start simulation
 csim.startSimulation();
 

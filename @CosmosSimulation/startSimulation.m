@@ -18,37 +18,52 @@ parpool(this.NumSatellites);
 timeStartPool = posixtime(datetime('now')); % Posixtime [seconds].
 
 % Execute parallel code on workers of parallel pool.
-% For better debugging, comment spmd command and its end line.
-
 spmd(this.NumSatellites)
+  % For DEBUGGING mode:
+  % 1. Comment the spmd command above and its end line.
+  % 2. Set variable uid = 1, instead of default uid = labindex.
+  
+  % Set a Unique Identifier (UID) for each of the satellites, from 1 to N.
+  % Create UIDs as aliases to labindex for future compatibility with C++ and to
+  % increase code readability and maintainability with shorter code lines.
+  uid = labindex;
+  
+%%TODO: for the fsw, the sat needs to find its own id in a different way, for
+%%instance from the file that read later.
   
   %! JT: most of what is done here in the parallel loop needs to go to Satellite.fly
   %! JT: process in runCosmosBeta could go to the constructor of CosmoSimulation or
   % CosmosSimulation.start. Then, maybe runCosmosBeta could be become a function of
-  % CosmosSimulation. Maybe we could get rid of the aliases(they are neat from programming pov,
-  % but confusing sometimes
+  % CosmosSimulation.
   
-	% Get unique IDs for each of the satellites, from 1 to N.
-	% for the fsw, the sat needs to find its own id in a different way, for instance from the file that read later
-	
-	% Create local aliases for the class objects.
-	sat   = this.Satellites(labindex);
-	orbit = this.Orbits(labindex);
-	fc    = this.FlightControlModules(labindex);
-  gps   = this.GPSModules(labindex);
+  % Create local aliases for the class objects.
+  % Aliases are used to eliminate calls of deep functions, preventing bugs.
+  sat   = this.Satellites(uid);
+  orbit = this.Orbits(uid);
+  fc    = this.FlightControlModules(uid);
+  gps   = this.GPSModules(uid);
   
   %!JT: we should have
   % - a class COM where we hide all details of the communication between the
   %   satellites. Communication with the screen could be kept as is.
   % - a class for communication with the screen
   % - a class for the communication with VIZ
-  % Set satellite communication channel as the parpool data queue.
-	
+  
+%!RW:TODO:
+% 
+  
+  % Initialize satellite.
+  % Set between-satellite communication channel as the parpool data queue.
+  % Satellite automatically reads initial conditions from file in storage.
+  sat.initialize(uid, dq, this.InitConditions(uid,:));
+  %^^^^^^
 %!RW: transfer configuration of initial conditions to simulation, leave
 %satellite initialization only with real-case-like instructions.
-  % Set up some parameters, such as battery status, sat status, initial conditions.
-  
-  sat.initialize(labindex, dq, this.InitConditions(labindex,:));
+%!RW: TODO:
+% Simulation must read configuration files with initial conditions for satellite
+% config, formation flight config, and simulation config. Satellite and
+% formation flight configurations are saved in satellite storage. Simulation
+% config is loaded into parameters of Simulation object.
   
   lastTime=0; %% lastTime is used to wrap around the time vector for each new orbit
   
@@ -70,7 +85,7 @@ spmd(this.NumSatellites)
   
   %% for sim
   % for simulation output, set initial conditions
-  sat.updSatStatesIni(labindex, fc.State);
+  sat.updSatStatesIni(uid, fc.State);
   
   % Loop for each orbit.
 	while sat.Alive % Satellites turned on, but still doing nothing.
@@ -128,7 +143,7 @@ spmd(this.NumSatellites)
 %satellite 1 is sending the position changes to other satellites. This should be
 %implemented inside of a new communication module/object.
       refPosChange = zeros(3,1);
-      if labindex == 1
+      if uid == 1
         refPosChange(1:3) = fc.State(1:3) - fc.StateOld(1:3);
         for i = 2 : this.NumSatellites
           tag = 1000000 * i + ...
@@ -143,8 +158,8 @@ spmd(this.NumSatellites)
 %satellites, with exception of satellite 1, are receiving the tag sent by the
 %master (satellite 1). Also implement this part inside of a new communication
 %module/object.
-      if labindex ~= 1
-        tag = 1000000 * labindex + ...
+      if uid ~= 1
+        tag = 1000000 * uid + ...
                 10000 * this.OrbitSectionNow + ...
                   100 * orbit.OrbitCounter + ...
                     1;
@@ -156,12 +171,12 @@ spmd(this.NumSatellites)
       fc.shiftState(-refPosChange(1:3));            
 
       % Update (orbit) TM vector with satellite positions
-      sat.updSatPositionsTM(labindex, refPosChange);
+      sat.updSatPositionsTM(uid, refPosChange);
       % Update (orbit) TM vector with satellite states
-      sat.updSatStatesTM(labindex, fc.State);
+      sat.updSatStatesTM(uid, fc.State);
       % Update (orbit) TM time vector with time vector, save last time for swrapping around
-      sat.updTimeVectorTM(labindex, timeStep,lastTime);
-      lastTime=sat.TimeVectorTM(labindex, end);
+      sat.updTimeVectorTM(uid, timeStep,lastTime);
+      lastTime=sat.TimeVectorTM(uid, end);
       % Update (orbit) TM controlVector with controlVector
       sat.updControlVectorTM();
       % Update (orbit) TM forceVector with forceVector
@@ -184,7 +199,7 @@ spmd(this.NumSatellites)
 			error('Simulation:start:orbitIdentifierNotEqual',msg);
     else
       %% write mission TM, i.e. append orbit TM to mission TM file, then reset orbit TM variables
-      sat.writeAndResetMissionTM(labindex)      
+      sat.writeAndResetMissionTM(uid)      
 			msg = ['Orbit ',num2str(orbit.OrbitCounter),' finished ',...
 				'(',num2str(orbit.TimeOrbitDuration(2)),' s)'];
 			sat.comm(msg);

@@ -1,0 +1,6 @@
+%%TODO:
+%%Add capability for formation flight to change during the mission
+%%Example of parameters:
+  NameFormationConfig = Test3_5_10_20
+  NumFormationChanges = 3
+  OrbitsToApplyChange = [5 10 20]
