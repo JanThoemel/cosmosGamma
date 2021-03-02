@@ -122,17 +122,18 @@ classdef Satellite < handle
     function updSatStatesIni(this, satID, satState)
       this.SatStatesTM(satID, 1:9, 1) = satState;  
     end
-    function deleteTelemetryFiles(~, satID)
+    function deleteTelemetryFiles(this, satID)
       fileControlVectorTM = strcat('telemetry',filesep,'ControlVectorTM',num2str(satID),'.csv');
       fileForceVectorTM = strcat('telemetry',filesep,'ForceVectorTM',num2str(satID),'.csv');
       fileSatPositionTM = strcat('telemetry',filesep,'SatPositionTM',num2str(satID),'.csv');
       fileTimeVectorTM = strcat('telemetry',filesep,'TimeVectorTM',num2str(satID),'.csv');
       fileSatStatesTM = strcat('telemetry',filesep,'SatStatesTM',num2str(satID),'.csv');
-      delete(fileControlVectorTM);
-      delete(fileForceVectorTM);
-      delete(fileSatPositionTM);
-      delete(fileTimeVectorTM);
-      delete(fileSatStatesTM);
+      if isfile(fileControlVectorTM), delete(fileControlVectorTM); end
+      if isfile(fileForceVectorTM), delete(fileForceVectorTM); end
+      if isfile(fileSatPositionTM), delete(fileSatPositionTM); end
+      if isfile(fileTimeVectorTM), delete(fileTimeVectorTM); end
+      if isfile(fileSatStatesTM), delete(fileSatStatesTM); end
+      this.comm("Telemetry data has been cleared.");
     end
     function writeAndResetMissionTM(this,satID)
       fileControlVectorTM = strcat('telemetry',filesep,'ControlVectorTM',num2str(satID),'.csv');

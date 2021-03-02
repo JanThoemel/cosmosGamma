@@ -7,7 +7,7 @@
 coordinates/**
 LLR-RPY/**
 recordings/*.avi
-storage/*.json
+storage/**/*.json
 telemetry/*.csv
 visualization/work/cache/**
 workspace.mat
