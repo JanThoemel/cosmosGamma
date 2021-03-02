@@ -9,7 +9,6 @@ LLR-RPY/**
 recordings/*.avi
 storage/*.json
 telemetry/*.csv
-visualization/ProjectTasks/*.mat
 visualization/work/cache/**
 workspace.mat
 tempUML*
