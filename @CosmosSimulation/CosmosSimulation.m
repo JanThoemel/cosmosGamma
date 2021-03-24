@@ -165,6 +165,10 @@ end
     % plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
     plotting(this, ns, meanMotionRad)
     
+    ECEFprocessing(this, vizScale, ns, altitude, radiusOfEarth)
+    
+    GNSSRprocessing(this, ns, radiusOfEarth)
+    
   end % Public methods.
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -175,13 +179,6 @@ methods (Static)
   
   [time,lat,lon,rad]=  keplerPropagation(cosmosTime,keplerStepSize,inclination,RAAN,v0,altitude,radiusOfEarth)
   
-  %!RW: for reference, old function:
-  % visualizationLONLATALT(ns,ttime,sstx,ssty,sstz,pitch,yaw,roll,altitude)
-  % visualizationLONLATALT(this, vizScale, ns, altitude)
-  ECEFprocessing(this,VIZscale,ns,altitude,radiusOfEarth)
-
-  GNSSRprocessing(this,ns,radiusOfEarth)
-
   createListCustomClasses(filepath, workspaceFileName)
   
 end % Static methods.

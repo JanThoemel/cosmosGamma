@@ -46,7 +46,7 @@ R=diag([1e12 1e12 1e12]);
 timeSinceEqCrossing = currentOrbitSection / this.Orbit.MeanMotionDeg;
 
 % Compute and update desired state for this satellite.
-this.FlightControl.updateStateDesired(timeSinceEqCrossing, this.Orbit.MeanMotionRad, i);
+this.FlightControl.updateStateDesired(timeSinceEqCrossing, this.Orbit.MeanMotionRad);
 
 % Get updated error between the current and desired states for this satellite.
 stateError = this.FlightControl.getStateError();

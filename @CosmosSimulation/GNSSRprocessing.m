@@ -1,4 +1,4 @@
-function   GNSSRprocessing(this,ns,radiusOfEarth)
+function GNSSRprocessing(this, ns, radiusOfEarth)
 %% this function:
 % -reads location data of a GNSS-R signal receiving CubeSat, or several
 % -either computes the locattion of a GNSS-R sending satellite using a Kepler
@@ -11,6 +11,13 @@ function   GNSSRprocessing(this,ns,radiusOfEarth)
 % radiusOf Earth [m]
 %% output variables
 % none
+
+
+% Set path for LLR-RPY files.
+%%%WARNING: the setting below must be the same in ECEF and GNSSR processing
+%   later, the rpy folder path must be placed in configSimulation.json
+rpyFolderPath = 'LLR-RPY';
+
 
 %% begin input section----------------------------------------------------------
 %% what visualization and statiscal analysis shall be done? 1=yes, 0=no
@@ -43,8 +50,9 @@ fprintf('\nGNSS processing...');
 GNSScpuStartTime = posixtime(datetime('now')); % Posixtime [seconds].
 
 %% read CubeSat position data from file. for data format, see example files
-for i=1:ns+1 
-  satLLR=readmatrix(strcat('sat',num2str(i-1),'_LLR.csv'));
+for i=1:ns+1
+  llrFile = strcat(rpyFolderPath,filesep,'sat',num2str(i-1),'_LLR.csv');
+  satLLR=readmatrix(llrFile);
   timeCubeSat(i,:) = satLLR(:,1);
   latCubeSat(i,:)  = satLLR(:,2);
   lonCubeSat(i,:)  = satLLR(:,3);
@@ -111,8 +119,8 @@ for i=2:ns+1
   end
 end
 
-save('latSP.mat','latSP');
-save('lonSP.mat','lonSP');
+save(strcat('NO-TRACK',filesep,'latSP.mat'),'latSP');
+save(strcat('NO-TRACK',filesep,'lonSP.mat'),'lonSP');
 fprintf('\ncomputing specular point location time: %s seconds.',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
 
 %% 3D plot: position of the CubeSat, the GNSS satellites and the specular point
