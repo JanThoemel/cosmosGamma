@@ -6,6 +6,7 @@
 *.asv
 coordinates/**
 LLR-RPY/**
+NO-TRACK/**
 recordings/*.avi
 storage/**/*.json
 telemetry/*.csv
@@ -13,7 +14,3 @@ visualization/work/cache/**
 workspace.mat
 tempUML*
 *.zip
-
-5gcase/CosmosParameters.json
-latSP.mat
-lonSP.mat
