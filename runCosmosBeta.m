@@ -59,17 +59,10 @@ gps   = csim.GPSModules; % Aliases: gps(1) to gps(n).
 %! empty place holders for now
 csim.plotting(csim.NumSatellites, orbit(1).MeanMotionRad);
 %% use a Kepler propagator to compute ECEF coordinates
-csim.ECEFprocessing(csim,csim.VizScale,csim.NumSatellites,orbit(1).Altitude,orbit(1).MeanEarthRadius)
+csim.ECEFprocessing(csim,csim.VizScale,csim.NumSatellites,...
+  orbit(1).Altitude,orbit(1).MeanEarthRadius)
 %% compute the location of the specular point for the GNSS-reflectometry method
 csim.GNSSRprocessing(csim,csim.NumSatellites,orbit(1).MeanEarthRadius);
-
-%Before:
-%u = zeros(csim.NumSatellites, 3, size(csim.SatStates,3));
-%e = zeros(csim.NumSatellites, 6, size(csim.SatStates,3));
-%csim.plotting(csim.SatStates(:,7:9,:), csim.SatStates(:,1:6,:), csim.SatPositions(1,:,:), csim.TimeVector', csim.NumSatellites, orbit(1).MeanMotionRad, u, e);
-%csim.visualizationLONLATALT(csim.NumSatellites,csim.TimeVector',squeeze(csim.SatStates(:,1,:)),squeeze(csim.SatStates(:,2,:)),csim.SatStates(:,3,:),squeeze(csim.SatStates(:,7,:)),squeeze(csim.SatStates(:,8,:)),squeeze(csim.SatStates(:,9,:)),orbit(1).Altitude)
-%n visualizationLONLATALT(ns                ,  cosmostime   ,sstx                         ,ssty                         ,sstz                ,pitch                        ,yaw                          ,roll                         ,altitude)
-
 
 %% Save data for autonomous documentation generation
 % Save current MATLAB workspace variables.
