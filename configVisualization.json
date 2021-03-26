@@ -1,0 +1,14 @@
+{
+
+  "AutoRun": false,
+
+  "ParentCoordFolder": "coordtracked",
+  "CoordFolder": "20201117ClusterReferenceIncl00",
+  "OrbitInclinationDegrees": 0,
+
+  "SmoothSatOrientationChanges": true,
+  "SmoothingDataSpan": 51,
+  "SmoothingMethodChosen": 1,
+  "SmoothingMethodList": [ "moving" ]
+
+}

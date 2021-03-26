@@ -1,44 +1,37 @@
 %% File to open visualization for Cosmos Beta in MATLAB Simulink
-% Warning supressers
-%#ok<*NASGU> line 27
-%#ok<*UNRCH> line 69
 
 %% Set parameters
 warning on verbose;
 delete(gcp('nocreate'));
 close all; clc; % Do not clear variables, it makes the project unstable.
 
+% Read parameters from JSON file.
+filename = 'configVisualization.json';
+fid = fopen(filename,'r');
+param = jsondecode(fscanf(fid,'%s'));
+fclose(fid);
+
 % Set parameter to automatically run Simulink visualization.
-AUTORUN = 0; % [true: 1 | false: 0]
+AUTORUN = param.AutoRun; % [true: 1 | false: 0]
+
+% Set path for coordinates folder.
+% IMPORTANT: The FIRST file in the coordinates folder MUST BE the reference for
+% the other satellites.
+COORD_FOLDER = strcat(param.ParentCoordFolder,filesep,param.CoordFolder);
+
+% Set inclination of the satellite orbits, in degrees.
+ORBIT_INC_DEG = param.OrbitInclinationDegrees;
 
 % Set parameter to automatically smooth changes in satellite orientations.
-AUTOSMOOTH = 1; % [true: 1 | false: 0]
+SMOOTH_ENABLE = param.SmoothSatOrientationChanges; % [true: 1 | false: 0]
 
-% If AUTOSMOOTH is enabled, set num of data points for computing smoothed value.
-SMOOTH_SPAN = 51;
-SMOOTH_METHOD = 'moving';
+% If smoothing is enabled, set num of data points for computing smoothed value.
+SMOOTH_SPAN = param.SmoothingDataSpan;
+SMOOTH_METHOD_LIST = param.SmoothingMethodList;
+SMOOTH_METHOD = SMOOTH_METHOD_LIST{param.SmoothingMethodChosen};
 
-% Set inclination of the satellite orbits.
-INCLINATION = 0; % Inclination of the satellite orbits, in degrees.
-
-% IMPORTANT:
-% The FIRST coordinates file in the list below or in the folder MUST BE the
-% reference for the other satellites.
-
-% Set flag to look for coordinate files in a specific folder.
-COORD_FOLDER_FLAG = 1; % [true: 1 | false: 0]
-coordfolder = strcat('coordtracked',filesep,'20210405TestTwoSats');
-
-% In case COORD_FOLDER_FLAG is set to FALSE, define names of coordinate files:
-% Files with coordinates data for satellites.
-coordfiles = {
-  'sat0-LLR_PYR';
-  'sat1-LLR_PYR';
-  'sat2-LLR_PYR';
-  'sat3-LLR_PYR'
-  };
-
-% The parameters below normally shouldn't change.
+%% Set paths
+% The parameters below normally should never change.
 % Inform the name of this file without the extension "m".
 THIS_FILE_NAME = 'openvis';
 
@@ -46,7 +39,6 @@ THIS_FILE_NAME = 'openvis';
 PROJECT_FILE_NAME = 'cosmosVisualization'; % Without extension 'prj'.
 PROJECT_FOLDER = 'visualization';
 
-%% Set paths
 if(~isdeployed)
   % Get directory path of the active file in MATLAB's Editor.
   [filepath,~,~] = fileparts(matlab.desktop.editor.getActiveFilename);
@@ -63,25 +55,18 @@ if(~isdeployed)
   cd(filepath);
 end
 
-rmpath(genpath(strcat('coordinates',filesep)));
-addpath(coordfolder);
-
 %% Prepare data
 disp('Satellite coordinate files:');
-if COORD_FOLDER_FLAG
-  disp(coordfolder);
-  % Read names of coordinate files.
-  coordfiles = {dir(strcat(coordfolder,filesep,'*.csv')).name};
-  % Rearrange files so that the local coordinate is the last one in the list.
-  % This step is necessary for correct visualization in the 3D world simulink.
-  coordfiles = circshift(coordfiles,-1);
-  disp(coordfiles');
-else
-  disp(coordfiles);
-end
+disp(COORD_FOLDER);
+% Read names of coordinate files.
+coordfiles = {dir(strcat(COORD_FOLDER,filesep,'*.csv')).name};
+% Rearrange files so that the local coordinate is the last one in the list.
+% This step is necessary for correct visualization in the 3D simulink world.
+coordfiles = circshift(coordfiles,-1);
+disp(coordfiles');
 
 % Conversion of the orbital inclination, from degrees to radians.
-INCLINATION = INCLINATION * (pi/180);
+ORBIT_INC_RAD = ORBIT_INC_DEG * (pi/180);
 
 %% Run Simulink file
 
@@ -133,7 +118,7 @@ for n = 1:numsats
     yaw = coord(:,7); % [degrees]
     roll = coord(:,5); % [degrees]
     
-    if(AUTOSMOOTH)
+    if(SMOOTH_ENABLE)
       pitch = smooth(pitch,SMOOTH_SPAN,SMOOTH_METHOD);
       yaw   = smooth(yaw  ,SMOOTH_SPAN,SMOOTH_METHOD);
       roll  = smooth(roll ,SMOOTH_SPAN,SMOOTH_METHOD);
@@ -388,9 +373,9 @@ for i = 1:dataLength
         % latitude decreasing -> use negative orbit inclination for YAW
         
         if diff < 0
-            inclinationToUse = -INCLINATION;
+            inclinationToUse = -ORBIT_INC_RAD;
         else
-            inclinationToUse = INCLINATION;
+            inclinationToUse = ORBIT_INC_RAD;
         end
         
         %% YAW
