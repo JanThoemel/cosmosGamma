@@ -1,6 +1,53 @@
-%%TODO:
-%%Add capability for formation flight to change during the mission
-%%Example of parameters:
-  NameFormationConfig = Test3_5_10_20
-  NumFormationChanges = 3
-  OrbitsToApplyChange = [5 10 20]
+{
+  "SelectedFormationFlightModes": [2, 1],
+  "NumberOfOrbitsForEachMode":    [1, 1],
+  "Modes": [
+
+    {
+      "ModeID": 1,
+      "ModeName": "ClusterReference",
+      "NumSatellites": 3,
+      "AttitudeResolutionDeg": 45,
+      "SizeOrbitSectionDeg": 0.2,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "Cluster",
+      "FFPSValues": [
+        {"ffp1": 0 ,"ffp2": 0    ,"ffp3": 0 ,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 50,"ffp2": -115,"ffp3": 50,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0 ,"ffp2": -230,"ffp3": 0 ,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+      ]
+    }
+  ,
+    {
+      "ModeID": 2,
+      "ModeName": "Cluster2",
+      "NumSatellites": 3,
+      "AttitudeResolutionDeg": 45,
+      "SizeOrbitSectionDeg": 1,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "Cluster2",
+      "FFPSValues": [
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 30,"ffp2": -115,"ffp3": 30,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": -230,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+      ]
+    }
+
+  ]
+}

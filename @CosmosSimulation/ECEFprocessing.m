@@ -1,11 +1,24 @@
-function ECEFprocessing(this, ns, altitude, radiusOfEarth)
+function ECEFprocessing(this, altitude, inclination, RAAN, vizScale, ...
+    keplerStepSize, v0, plotLatLonIn2D, writeLLRRPYData)
 %% input:
-% ns: number of satellites
 % altitude: altitude used for visualization. The actual altitude may change for long periods of
-% operations. However, this will be so small that it is irrelevant for visualization
+%   operations. However, this will be so small that it is irrelevant for visualization
+% inclination, [-90, 90] [deg] %% equatorial, 35 CYGNSS, 52 ISS, 90 polar, 97 (approximately) SSO
+% keplerStepSize, [s] %% timestep used in the following, also for the GNSSR processing
+% RAAN, [0,360[ [deg] %% Right Ascension of Ascendent Node
+% v0,[  0,360[,[deg] %% True anomaly at the departure
+% plotLatLonIn2D %% switch
+% writeLLRRPYData %% switch
 %% output:
 % nonef
 % however, files are written that are used by cosmosVIZ
+
+%% Start
+fprintf('\nECEF processing...');
+
+% Set some parameters.
+ns = this.NumSatellites;
+radiusOfEarth = this.Orbits(1).MeanEarthRadius;
 
 % Get path to telemetry files from CosmosSimulation object.
 tmFolderPath = this.TelemetryPath;
@@ -14,24 +27,13 @@ tmFolderPath = this.TelemetryPath;
 %%%WARNING: the setting below must be the same in ECEF and GNSSR processing
 %   later, the rpy folder settings must be placed in configSimulation.json
 rpyFolderPath = 'LLR-RPY';
-[~, ~, ~] = mkdir(rpyFolderPath); % [status, msg, msgID]
-delete(strcat(rpyFolderPath,filesep,'*')); % delete old files in folder.
+rpyScaledFolderPath = strcat(rpyFolderPath,filesep,'scaled');
 
-
-
-%% read global parameters for ECEF processing from ECEFParameters.json file 
-%% inclination, [-90, 90] [deg] %% equatorial, 35 CYGNSS, 52 ISS, 90 polar, 97 (approximately) SSO
-%% RAAN, [0,360[ [deg] %% Right Ascension of Ascendent Node
-%% v0,[  0,360[,[deg] %% True anomaly at the departure
-%% keplerStepSize, [s] %% timestep used in the following, also for the GNSSR processing
-%% plotLatLonIn2D %% switch
-%% writeLLRRPYData %% switch
-fid = fopen('ECEFParameters.json','r');
-ECEFparams = jsondecode(fscanf(fid,'%s'));
-fclose(fid);
-
-fprintf('\nECEF processing...');
-
+% Create required folders and delete old files.
+[~,~,~] = mkdir(rpyFolderPath); % [status, msg, msgID]
+[~,~,~] = mkdir(rpyScaledFolderPath); % [status, msg, msgID]
+delete(strcat(rpyFolderPath,filesep,'*.csv'));
+delete(strcat(rpyScaledFolderPath,filesep,'*.csv'));
 
 %% read data from telemery files
 % JT: this works only if the telemetry data of all satellites is equal in size 
@@ -68,14 +70,14 @@ end
 %% rotate relative coordinate system to align x+ with flight direction (inclination)
 for i=1:ns
   for j=1:size(sstXViz,2)
-    sstTemp=rotz(ECEFparams.inclination-90)*[sstX(i,j) sstY(i,j) 0]';
+    sstTemp=rotz(inclination-90)*[sstX(i,j) sstY(i,j) 0]';
   end
   sstX(i,j)=sstTemp(1);
   sstY(i,j)=sstTemp(2);
 end
   
 %% compute orbit
-[vizTime,latitude,longitude,radius] = this.keplerPropagation(cosmosTime,ECEFparams.keplerStepSize,ECEFparams.inclination,ECEFparams.RAAN,ECEFparams.v0,altitude,radiusOfEarth);
+[vizTime,latitude,longitude,radius] = this.keplerPropagation(cosmosTime,keplerStepSize,inclination,RAAN,v0,altitude,radiusOfEarth);
 
 %% interpolate relative position on visualization time steps
 for i=1:ns
@@ -85,9 +87,9 @@ for i=1:ns
   sstZvizTime(i,:)      =interp1(cosmosTime(:,i),sstZ(i,:),vizTime);
   
   %% interpolate on viz-time-grid and apply visualization scaling
-  sstXvizTimeScaled(i,:)=interp1(cosmosTime(:,i),sstX(i,:)*ECEFparams.vizScale,vizTime);
-  sstYvizTimescaled(i,:)=interp1(cosmosTime(:,i),sstY(i,:)*ECEFparams.vizScale,vizTime);
-  sstZvizTimeScaled(i,:)=interp1(cosmosTime(:,i),sstZ(i,:)*ECEFparams.vizScale,vizTime);
+  sstXvizTimeScaled(i,:)=interp1(cosmosTime(:,i),sstX(i,:)*vizScale,vizTime);
+  sstYvizTimescaled(i,:)=interp1(cosmosTime(:,i),sstY(i,:)*vizScale,vizTime);
+  sstZvizTimeScaled(i,:)=interp1(cosmosTime(:,i),sstZ(i,:)*vizScale,vizTime);
   
   %% interpolate Euler angles
   rollVizTime(i,:)      =interp1(cosmosTime(:,i),squeeze(roll(i,:)),vizTime);
@@ -113,11 +115,11 @@ yawVizTime          = [zeros(1,size(pitchVizTime,2)); yawVizTime];
 for i=1:size(vizTime,2)
   for j=1:ns
     %% scaled for video visualization
-    localTransformedCoSystemScaled = rotz(ECEFparams.inclination) * [sstXvizTimeScaled(j,i) ; sstYvizTimescaled(j,i); sstZvizTimeScaled(j,i)];
+    localTransformedCoSystemScaled = rotz(inclination) * [sstXvizTimeScaled(j,i) ; sstYvizTimescaled(j,i); sstZvizTimeScaled(j,i)];
     LonOffsetAngleScaled(j,i)      = asind( localTransformedCoSystemScaled(1)/1000 / (radScaled(1,i) + localTransformedCoSystemScaled(3)/1000) );
     LatOffsetAngleScaled(j,i)      = asind( localTransformedCoSystemScaled(2)/1000 / (radScaled(1,i) + localTransformedCoSystemScaled(3)/1000) );
     %% not scaled for 2D and 3 visualization
-    localTransformedCoSystem       = rotz(ECEFparams.inclination) * [sstXvizTime(j,i) ; sstYvizTime(j,i); sstZvizTime(j,i)];
+    localTransformedCoSystem       = rotz(inclination) * [sstXvizTime(j,i) ; sstYvizTime(j,i); sstZvizTime(j,i)];
     LonOffsetAngle(j,i)            = asind( localTransformedCoSystem(1)/1000 / (rad(1,i) + localTransformedCoSystem(3)/1000) );
     LatOffsetAngle(j,i)            = asind( localTransformedCoSystem(2)/1000 / (rad(1,i) + localTransformedCoSystem(3)/1000) );
   end
@@ -168,7 +170,7 @@ for i=1:size(vizTime,2)
 end %% time step
 
 %% plot latitude and longitude in X-Y plot
-if ECEFparams.plotLatLonIn2D
+if plotLatLonIn2D
     figure
     for i=1:ns+1
       plot(lon(i,2:end-1),lat(i,2:end-1),'.');hold on;
@@ -184,10 +186,10 @@ if ECEFparams.plotLatLonIn2D
 end
 
 %% write files for LLR & RPY of each satellite and the reference (satellite). Latter is numbered as sat0.
-if ECEFparams.writeLLRRPYData 
+if writeLLRRPYData 
   for i=1:ns+1
     llrFile = strcat(rpyFolderPath,filesep,'sat',num2str(i-1),'_LLR.csv');
-    rpyScaledFile = strcat(rpyFolderPath,filesep,'sat',num2str(i-1),'_LLR_RPY_Scaled.csv');
+    rpyScaledFile = strcat(rpyScaledFolderPath,filesep,'sat',num2str(i-1),'_LLR_RPY_Scaled.csv');
     writematrix([vizTime' latScaled(i,:)' lonScaled(i,:)' radScaled(i,:)' rollVizTime(i,:)' pitchVizTime(i,:)' yawVizTime(i,:)'], rpyScaledFile);
     writematrix([vizTime' lat(i,:)' lon(i,:)' rad(i,:)'], llrFile);
   end

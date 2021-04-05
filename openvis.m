@@ -1,37 +1,11 @@
 %% File to open visualization for Cosmos Beta in MATLAB Simulink
 
-%% Set parameters
+%% Set paths
+% The parameters below normally should never change.
 warning on verbose;
 delete(gcp('nocreate'));
 close all; clc; % Do not clear variables, it makes the project unstable.
 
-% Read parameters from JSON file.
-filename = 'configVisualization.json';
-fid = fopen(filename,'r');
-param = jsondecode(fscanf(fid,'%s'));
-fclose(fid);
-
-% Set parameter to automatically run Simulink visualization.
-AUTORUN = param.AutoRun; % [true: 1 | false: 0]
-
-% Set path for coordinates folder.
-% IMPORTANT: The FIRST file in the coordinates folder MUST BE the reference for
-% the other satellites.
-COORD_FOLDER = strcat(param.ParentCoordFolder,filesep,param.CoordFolder);
-
-% Set inclination of the satellite orbits, in degrees.
-ORBIT_INC_DEG = param.OrbitInclinationDegrees;
-
-% Set parameter to automatically smooth changes in satellite orientations.
-SMOOTH_ENABLE = param.SmoothSatOrientationChanges; % [true: 1 | false: 0]
-
-% If smoothing is enabled, set num of data points for computing smoothed value.
-SMOOTH_SPAN = param.SmoothingDataSpan;
-SMOOTH_METHOD_LIST = param.SmoothingMethodList;
-SMOOTH_METHOD = SMOOTH_METHOD_LIST{param.SmoothingMethodChosen};
-
-%% Set paths
-% The parameters below normally should never change.
 % Inform the name of this file without the extension "m".
 THIS_FILE_NAME = 'openvis';
 
@@ -47,6 +21,7 @@ if(~isdeployed)
   % Get path for directory of the file name set in THIS_FILE_NAME.
   [filepath,~,~] = fileparts(which(THIS_FILE_NAME));
   addpath(genpath(filepath)); % Add file path to the current MATLAB path.
+  addpath(strcat(filepath,filesep,'utils'));
   
   % Get path for directory of the simulation project.
   [projectPath,~,~] = fileparts(which([PROJECT_FILE_NAME,'.prj']));
@@ -54,6 +29,29 @@ if(~isdeployed)
   % Change working directory to the directory of this m-file.
   cd(filepath);
 end
+
+%% Read parameters from JSON files.
+vis   = readjson('configVisualization.json');
+orbit = readjson('configOrbit.json');
+
+% Set parameter to automatically run Simulink visualization.
+AUTORUN = vis.AutoRun; % [true: 1 | false: 0]
+
+% Set path for coordinates folder.
+% IMPORTANT: The FIRST file in the coordinates folder MUST BE the reference for
+% the other satellites.
+COORD_FOLDER = strcat(vis.ParentCoordFolder,filesep,vis.CoordFolder);
+
+% Set inclination of the satellite orbits, in degrees.
+ORBIT_INC_DEG = orbit.OrbitInclinationDegrees;
+
+% Set parameter to automatically smooth changes in satellite orientations.
+SMOOTH_ENABLE = vis.SmoothSatOrientationChanges; % [true: 1 | false: 0]
+
+% If smoothing is enabled, set num of data points for computing smoothed value.
+SMOOTH_SPAN = vis.SmoothingDataSpan;
+SMOOTH_METHOD_LIST = vis.SmoothingMethodList;
+SMOOTH_METHOD = SMOOTH_METHOD_LIST{vis.SmoothingMethodChosen};
 
 %% Prepare data
 disp('Satellite coordinate files:');

@@ -158,11 +158,10 @@ end
       this.OrbitSectionNow = value;
     end
     
-    %!RW: for reference, old function:
-    % plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
     plotting(this, ns, meanMotionRad)
     
-    ECEFprocessing(this, ns, altitude, radiusOfEarth)
+    ECEFprocessing(this, altitude, inclination, RAAN, vizScale, ...
+      keplerStepSize, v0, plotLatLonIn2D, writeLLRRPYData)
     
     GNSSRprocessing(this, ns, radiusOfEarth)
     

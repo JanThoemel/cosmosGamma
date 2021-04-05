@@ -2,9 +2,15 @@
 
   "AutoRun": false,
 
-  "ParentCoordFolder": "coordtracked",
-  "CoordFolder": "20201117ClusterReferenceIncl00",
-  "OrbitInclinationDegrees": 0,
+  "ParentCoordFolder": "LLR-RPY",
+  "CoordFolder": "scaled",
+
+  "VizScale": 10000,
+
+  "V0": 0,
+  "KeplerStepSize": 1,
+  "PlotLatLonIn2D": true,
+  "WriteLLRRPYData": true,
 
   "SmoothSatOrientationChanges": true,
   "SmoothingDataSpan": 51,

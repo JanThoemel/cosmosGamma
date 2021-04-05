@@ -1,0 +1,5 @@
+{
+  "EnablePlotting": false,
+  "EnableGNSSRProcessing": false,
+  "SimAccelerationFactor": 100e3
+}
