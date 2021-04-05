@@ -62,7 +62,7 @@ csim.plotting(csim.NumSatellites, orbit(1).MeanMotionRad);
 csim.ECEFprocessing(csim.VizScale, csim.NumSatellites, ...
   orbit(1).Altitude, orbit(1).MeanEarthRadius)
 %% compute the location of the specular point for the GNSS-reflectometry method
-csim.GNSSRprocessing(csim.NumSatellites, orbit(1).MeanEarthRadius);
+%csim.GNSSRprocessing(csim.NumSatellites, orbit(1).MeanEarthRadius);
 
 %% Save data for autonomous documentation generation
 % Save current MATLAB workspace variables.

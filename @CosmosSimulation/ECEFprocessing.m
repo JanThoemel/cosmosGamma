@@ -26,7 +26,7 @@ writeLLRRPYData=1;
 %inclination=35; %% [-90, 90] [deg] %% CYGNSS
 %inclination=52; %% [-90, 90] [deg] %% ISS
 %inclination=90; %% [-90, 90] [deg] %% polar
-inclination=97; %% [-90, 90] [deg] %% (approximately) SSO
+inclination=0; %% [-90, 90] [deg] %% (approximately) SSO
 
 RAAN=0; %%RAAN    = input(' Right Ascension of Ascendent Node    [  0,360[    RAAN   [deg] = ');
 %v0=225;   %%v0      = input(' True anomaly at the departure        [  0,360[    v0     [deg] = ');
