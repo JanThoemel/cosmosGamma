@@ -33,7 +33,6 @@ properties (GetAccess = public, SetAccess = public)
 %!RW: leave parameter status for later implementation.
 % Status % Simulation status.
   TelemetryPath %
-  VizScale % Scale for satellite distances in visualization.
   WindFactor %% switch on whether aerodynamics shall be simulated
 	SolarFactor  %% switch on whether solar radiation pressure shall be simulated
 
@@ -61,7 +60,6 @@ end
       modeID = params.SelectedFormationFlightMode;
       maxNumOrbits = params.SimMaxNumOrbits;
       accelFactor = params.SimAccelerationFactor;
-      vizScale = params.VizScale;
       modeName = params.Modes(modeID).ModeName;
       numSatellites = params.Modes(modeID).NumSatellites;
 %!RW: attitudeResolutionDeg -> former deltaAngle
@@ -82,7 +80,6 @@ end
       this.MaxNumOrbits = maxNumOrbits;
       this.ModeName = modeName;
       this.NumSatellites = numSatellites;
-      this.VizScale = vizScale;
       
 %!RW: Parameters still in simulation, later transfer to FlightControl.
       this.InitConditions = initConditions;
@@ -165,7 +162,7 @@ end
     % plotting(angles, sst, refPosChange, time, ns, meanMotion, u, e)
     plotting(this, ns, meanMotionRad)
     
-    ECEFprocessing(this, vizScale, ns, altitude, radiusOfEarth)
+    ECEFprocessing(this, ns, altitude, radiusOfEarth)
     
     GNSSRprocessing(this, ns, radiusOfEarth)
     
