@@ -1,5 +1,5 @@
 {
-  "EnablePlotting": false,
-  "EnableGNSSRProcessing": false,
+  "EnablePlotting": 1,
+  "EnableGNSSRProcessing": 1,
   "SimAccelerationFactor": 100e3
 }
