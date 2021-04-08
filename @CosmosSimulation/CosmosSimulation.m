@@ -161,9 +161,11 @@ end
     plotting(this, ns, meanMotionRad)
     
     ECEFprocessing(this, altitude, inclination, RAAN, vizScale, ...
-      keplerStepSize, v0, plotLatLonIn2D, writeLLRRPYData)
+      keplerStepSize, v0, plotLatLonIn2D, writeLLRRPYData, rpyParentFolderName,...
+      rpyNotScaledFolderName, rpyScaledFolderName)
     
-    GNSSRprocessing(this, ns, radiusOfEarth)
+    GNSSRprocessing(this, ns, radiusOfEarth, rpyParentFolderName,...
+      rpyNotScaledFolderName)
     
   end % Public methods.
   

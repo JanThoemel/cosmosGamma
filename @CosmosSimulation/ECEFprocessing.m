@@ -1,5 +1,6 @@
 function ECEFprocessing(this, altitude, inclination, RAAN, vizScale, ...
-    keplerStepSize, v0, plotLatLonIn2D, writeLLRRPYData)
+    keplerStepSize, v0, plotLatLonIn2D, writeLLRRPYData, rpyParentFolderName,...
+    rpyNotScaledFolderName, rpyScaledFolderName)
 %% input:
 % altitude: altitude used for visualization. The actual altitude may change for long periods of
 %   operations. However, this will be so small that it is irrelevant for visualization
@@ -24,15 +25,15 @@ radiusOfEarth = this.Orbits(1).MeanEarthRadius;
 tmFolderPath = this.TelemetryPath;
 
 % Set path for LLR-RPY files.
-%%%WARNING: the setting below must be the same in ECEF and GNSSR processing
-%   later, the rpy folder settings must be placed in configSimulation.json
-rpyFolderPath = 'LLR-RPY';
-rpyScaledFolderPath = strcat(rpyFolderPath,filesep,'scaled');
+rpyNotScaledFolderPath = strcat(rpyParentFolderName,filesep,rpyNotScaledFolderName);
+rpyScaledFolderPath = strcat(rpyParentFolderName,filesep,rpyScaledFolderName);
 
 % Create required folders and delete old files.
-[~,~,~] = mkdir(rpyFolderPath); % [status, msg, msgID]
+[~,~,~] = mkdir(rpyParentFolderName); % [status, msg, msgID]
+[~,~,~] = mkdir(rpyNotScaledFolderPath); % [status, msg, msgID]
 [~,~,~] = mkdir(rpyScaledFolderPath); % [status, msg, msgID]
-delete(strcat(rpyFolderPath,filesep,'*.csv'));
+delete(strcat(rpyParentFolderName,filesep,'*.csv'));
+delete(strcat(rpyNotScaledFolderPath,filesep,'*.csv'));
 delete(strcat(rpyScaledFolderPath,filesep,'*.csv'));
 
 %% read data from telemery files
@@ -187,11 +188,13 @@ end
 
 %% write files for LLR & RPY of each satellite and the reference (satellite). Latter is numbered as sat0.
 if writeLLRRPYData 
+  % Create inclination vector to write to output file.
+  inclinationVector = inclination * ones(size(vizTime));
   for i=1:ns+1
-    llrFile = strcat(rpyFolderPath,filesep,'sat',num2str(i-1),'_LLR.csv');
-    rpyScaledFile = strcat(rpyScaledFolderPath,filesep,'sat',num2str(i-1),'_LLR_RPY_Scaled.csv');
-    writematrix([vizTime' latScaled(i,:)' lonScaled(i,:)' radScaled(i,:)' rollVizTime(i,:)' pitchVizTime(i,:)' yawVizTime(i,:)'], rpyScaledFile);
-    writematrix([vizTime' lat(i,:)' lon(i,:)' rad(i,:)'], llrFile);
+    llrFileName = strcat(rpyNotScaledFolderPath,filesep,'sat',num2str(i-1),'_LLR.csv');
+    llrrpyScaledFileName = strcat(rpyScaledFolderPath,filesep,'sat',num2str(i-1),'_LLR_RPY_Scaled.csv');
+    writematrix([vizTime' latScaled(i,:)' lonScaled(i,:)' radScaled(i,:)' rollVizTime(i,:)' pitchVizTime(i,:)' yawVizTime(i,:)' inclinationVector'], llrrpyScaledFileName);
+    writematrix([vizTime' lat(i,:)' lon(i,:)' rad(i,:)'], llrFileName);
   end
   fprintf('\nECEF files...written');
 end

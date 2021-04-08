@@ -2,7 +2,7 @@
 
   "AutoRun": false,
 
-  "ParentCoordFolder": "LLR-RPY",
+  "ParentCoordFolder": "LLR-RPY-runtime",
   "CoordFolder": "scaled",
 
   "VizScale": 10000,

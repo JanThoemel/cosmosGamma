@@ -1,5 +1,10 @@
 {
   "EnablePlotting": 1,
-  "EnableGNSSRProcessing": 1,
+  "EnableGNSSRProcessing": 0,
+
+  "ParentFolderForFilesLLRRPY": "LLR-RPY-runtime",
+  "FolderForNonScaledLLRRPY": "not-scaled",
+  "FolderForScaledLLRRPY": "scaled",
+
   "SimAccelerationFactor": 100e3
 }

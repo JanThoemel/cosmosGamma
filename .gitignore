@@ -4,8 +4,7 @@
 **/._*
 *~
 *.asv
-coordinates/**
-LLR-RPY/**
+LLR-RPY-runtime/**
 NO-TRACK/**
 recordings/*.avi
 storage/**/*.json

@@ -1,4 +1,5 @@
-function GNSSRprocessing(this, ns, radiusOfEarth)
+function GNSSRprocessing(this, ns, radiusOfEarth, rpyParentFolderName,...
+  rpyNotScaledFolderName)
 %% this function:
 % -reads location data of a GNSS-R signal receiving CubeSat, or several
 % -either computes the locattion of a GNSS-R sending satellite using a Kepler
@@ -12,12 +13,9 @@ function GNSSRprocessing(this, ns, radiusOfEarth)
 %% output variables
 % none
 
-
-% Set path for LLR-RPY files.
-%%%WARNING: the setting below must be the same in ECEF and GNSSR processing
-%   later, the rpy folder path must be placed in configSimulation.json
-rpyFolderPath = 'LLR-RPY';
-
+%% Init
+% Set path for non-scaled LLR-RPY files.
+rpyNotScaledFolderPath = strcat(rpyParentFolderName,filesep,rpyNotScaledFolderName);
 
 %% begin input section----------------------------------------------------------
 %% what visualization and statiscal analysis shall be done? 1=yes, 0=no
@@ -51,7 +49,7 @@ GNSScpuStartTime = posixtime(datetime('now')); % Posixtime [seconds].
 
 %% read CubeSat position data from file. for data format, see example files
 for i=1:ns+1
-  llrFile = strcat(rpyFolderPath,filesep,'sat',num2str(i-1),'_LLR.csv');
+  llrFile = strcat(rpyNotScaledFolderPath,filesep,'sat',num2str(i-1),'_LLR.csv');
   satLLR=readmatrix(llrFile);
   timeCubeSat(i,:) = satLLR(:,1);
   latCubeSat(i,:)  = satLLR(:,2);
