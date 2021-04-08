@@ -21,6 +21,9 @@ if(~isdeployed)
   % Get path for directory of the file name set in THIS_FILE_NAME.
   [filepath,~,~] = fileparts(which(THIS_FILE_NAME));
   addpath(genpath(filepath)); % Add file path to the current MATLAB path.
+  
+  % Add path to ancillary folders.
+  addpath(strcat(filepath,filesep,'config'));
   addpath(strcat(filepath,filesep,'utils'));
   
   % Get path for directory of the simulation project.

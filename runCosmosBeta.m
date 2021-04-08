@@ -24,8 +24,8 @@ if(~isdeployed)
 	[filepath,~,~] = fileparts(which(THIS_FILE_NAME));
 	addpath(filepath); % Add file path to the current MATLAB path.
   
-  % Add path to supplementary folders.
-  %addpath(strcat(filepath,filesep,'config'));
+  % Add path to ancillary folders.
+  addpath(strcat(filepath,filesep,'config'));
   addpath(strcat(filepath,filesep,'utils'));
 	
 	% Change working directory to the directory of this m-file.
