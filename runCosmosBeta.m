@@ -86,7 +86,7 @@ end
 %% Save data for autonomous documentation generation
 % Save current MATLAB workspace variables.
 warning off parallel:lang:spmd:CompositeSave;
-workspaceFileName = 'workspace.mat';
+workspaceFileName = '.workspace.mat';
 save(fullfile(filepath, workspaceFileName));
 % Print custom objects and classes used.
 csim.createListCustomClasses(filepath, workspaceFileName);

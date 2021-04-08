@@ -4,12 +4,12 @@
 **/._*
 *~
 *.asv
+.workspace.mat
 LLR-RPY-runtime/**
 NO-TRACK/**
 recordings/*.avi
 storage/**/*.json
 telemetry/*.csv
 visualization/work/cache/**
-workspace.mat
 tempUML*
 *.zip

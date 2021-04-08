@@ -35,7 +35,6 @@ end
 
 %% Read parameters from JSON files.
 vis   = readjson('configVisualization.json');
-orbit = readjson('configOrbit.json');
 
 % Set parameter to automatically run Simulink visualization.
 AUTORUN = vis.AutoRun; % [true: 1 | false: 0]
@@ -44,9 +43,6 @@ AUTORUN = vis.AutoRun; % [true: 1 | false: 0]
 % IMPORTANT: The FIRST file in the coordinates folder MUST BE the reference for
 % the other satellites.
 COORD_FOLDER = strcat(vis.ParentCoordFolder,filesep,vis.CoordFolder);
-
-% Set inclination of the satellite orbits, in degrees.
-ORBIT_INC_DEG = orbit.OrbitInclinationDegrees;
 
 % Set parameter to automatically smooth changes in satellite orientations.
 SMOOTH_ENABLE = vis.SmoothSatOrientationChanges; % [true: 1 | false: 0]
@@ -65,9 +61,6 @@ coordfiles = {dir(strcat(COORD_FOLDER,filesep,'*.csv')).name};
 % This step is necessary for correct visualization in the 3D simulink world.
 coordfiles = circshift(coordfiles,-1);
 disp(coordfiles');
-
-% Conversion of the orbital inclination, from degrees to radians.
-ORBIT_INC_RAD = ORBIT_INC_DEG * (pi/180);
 
 %% Run Simulink file
 
@@ -99,11 +92,11 @@ simsat(1).sma   = struct('time',0,'signals',struct('dimensions',0,'values',0));
 simsat(1).pos   = struct('time',0,'signals',struct('dimensions',0,'values',0));
 simsat(1).posU1 = struct('time',0,'signals',struct('dimensions',0,'values',0));
 simsat(1).posU2 = struct('time',0,'signals',struct('dimensions',0,'values',0));
-simsat(1).inc   = struct('time',0,'signals',struct('dimensions',0,'values',0));
-simsat(1).rot   = struct('time',0,'signals',struct('dimensions',0,'values',0));
 simsat(1).pitch = struct('time',0,'signals',struct('dimensions',0,'values',0));
 simsat(1).yaw   = struct('time',0,'signals',struct('dimensions',0,'values',0));
 simsat(1).roll  = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).rot   = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).inc   = -1;
 
 % Allocate memory for array of satellites.
 numsats = length(coordfiles);
@@ -118,6 +111,7 @@ for n = 1:numsats
   pitch = coord(:,6); % [degrees]
   yaw = coord(:,7); % [degrees]
   roll = coord(:,5); % [degrees]
+  inclinationDeg = coord(1,8); % [degrees]
   
   if(SMOOTH_ENABLE)
     pitch = smooth(pitch,SMOOTH_SPAN,SMOOTH_METHOD);
@@ -132,6 +126,7 @@ for n = 1:numsats
   pitch = pitch * (pi/180); % [rad]
   yaw = yaw * (pi/180); % [rad]
   roll = roll * (pi/180); % [rad]
+  inclinationRad = inclinationDeg * (pi/180); % [rad]
   
   % Place data into satellite struct.
   simsat(n).lat.time = timestamps;
@@ -168,10 +163,6 @@ for n = 1:numsats
   z = zeros(dataLength,1);
   simsat(n).posU2.signals.values = [x y z];
   
-  simsat(n).inc.time = timestamps;
-  simsat(n).inc.signals.dimensions = 1;
-  simsat(n).inc.signals.values = zeros(dataLength,1);
-  
   simsat(n).rot.time = timestamps;
   simsat(n).rot.signals.dimensions = 4;
   simsat(n).rot.signals.values = zeros(dataLength,4);
@@ -187,6 +178,8 @@ for n = 1:numsats
   simsat(n).roll.time = timestamps;
   simsat(n).roll.signals.dimensions = 1;
   simsat(n).roll.signals.values = roll;
+  
+  simsat(n).inc = inclinationRad;
 end
 %%
 % Get last timestamp of the time vector, set it as simulation time.
@@ -374,9 +367,9 @@ for i = 1:dataLength
     % latitude decreasing -> use negative orbit inclination for YAW
     
     if diff < 0
-      inclinationToUse = -ORBIT_INC_RAD;
+      inclinationToUse = -simsat(n).inc;
     else
-      inclinationToUse = ORBIT_INC_RAD;
+      inclinationToUse = simsat(n).inc;
     end
     
     %% YAW
