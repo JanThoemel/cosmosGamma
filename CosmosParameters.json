@@ -1,9 +1,8 @@
 {
-  "SelectedFormationFlightMode": 2,
-  "SimMaxNumOrbits": 3,
+  "SelectedFormationFlightMode": 6,
+  "SimMaxNumOrbits": 10,
   "SimAccelerationFactor": 100e3,
   "Modes": [
-
     {
       "ModeID": 1,
       "ModeName": "ClusterReference",
@@ -124,6 +123,29 @@
 ,
     {
       "ModeID": 6,
+      "ModeName": "SnTMission4TestCircular",
+      "NumSatellites": 2,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude": 500e3,
+      "SizeOrbitSectionDeg": 0.1,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1009.1, 1000.0, 500.4, -1.1, 0, 0.6, 0, 0, 0]
+
+      ],
+      "FFPSFolder": "SnTMission4TestCircular",
+      "FFPSValues": [
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 1000,"ffp2": 10,"ffp3": 1000,"ffp4": 0,"ffp5": 500,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+      ]
+    }
+,
+    {
+      "ModeID": 7,
       "ModeName": "JapanMission",
       "NumSatellites": 6,
       "AttitudeResolutionDeg": 45,

@@ -5,7 +5,7 @@
   "ParentCoordFolder": "LLR-RPY-runtime",
   "CoordFolder": "scaled",
 
-  "VizScale": 10000,
+  "VizScale": 100,
 
   "V0": 0,
   "KeplerStepSize": 1,
