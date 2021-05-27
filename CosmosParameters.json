@@ -1,6 +1,6 @@
 {
   "SelectedFormationFlightMode": 2,
-  "SimMaxNumOrbits": 5,
+  "SimMaxNumOrbits": 2,
   "SimAccelerationFactor": 100e3,
   "Modes": [
     {
@@ -39,15 +39,15 @@
       "AvailableGPS": true,
       "AvailableTLE": false,
       "InitialConditions": [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-700, -700, 0, 0, 0, 0, 0, 0, 0],
+        [500, 500, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
       "FFPSFolder": "Cluster2",
       "FFPSValues": [
-        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
-        {"ffp1": 30,"ffp2": -115,"ffp3": 30,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
-        {"ffp1": 0,"ffp2": -230,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+        {"ffp1": -700,"ffp2": -700,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1":  500,"ffp2":  500,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1":    0,"ffp2":    0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
       ]
     }
 ,

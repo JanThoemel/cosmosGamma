@@ -64,6 +64,7 @@ AUTORUN = vis.AutoRun; % [true: 1 | false: 0]
 % IMPORTANT: The FIRST file in the coordinates folder MUST BE the reference for
 % the other satellites.
 COORD_FOLDER = strcat(vis.ParentCoordFolder,filesep,vis.CoordFolder);
+COORD_FOLDER = fullfile(filepath,COORD_FOLDER);
 
 % Set parameter to automatically smooth changes in satellite orientations.
 SMOOTH_ENABLE = vis.SmoothSatOrientationChanges; % [true: 1 | false: 0]
@@ -72,6 +73,9 @@ SMOOTH_ENABLE = vis.SmoothSatOrientationChanges; % [true: 1 | false: 0]
 SMOOTH_SPAN = vis.SmoothingDataSpan;
 SMOOTH_METHOD_LIST = vis.SmoothingMethodList;
 SMOOTH_METHOD = SMOOTH_METHOD_LIST{vis.SmoothingMethodChosen};
+
+% Option to override roll-pitch-yaw values for testing purposes.
+OVERRIDE_RPY = vis.OverrideRPY;
 
 %% Prepare data
 disp('Satellite coordinate files:');
@@ -111,6 +115,27 @@ for n = 1:numsats
   yaw = coord(:,7); % [degrees]
   roll = coord(:,5); % [degrees]
   inclinationDeg = coord(1,8); % [degrees]
+  
+  if(OVERRIDE_RPY)
+    % Get size of RPY array.
+    rpySize = size(pitch);
+    % Values to override for each of the satellites.
+    if n == 1
+      pitch = ones(rpySize) * 0;
+      yaw   = ones(rpySize) * 0;
+      roll  = ones(rpySize) * 90;
+    elseif n == 2
+      pitch = ones(rpySize) * 90;
+      yaw   = ones(rpySize) * 0;
+      roll  = ones(rpySize) * 0;
+    elseif n == 3
+      pitch = ones(rpySize) * 0;
+      yaw   = ones(rpySize) * 90;
+      roll  = ones(rpySize) * 0;
+    else
+      % Do nothing for reference (n == 4).
+    end
+  end
   
   if(SMOOTH_ENABLE)
     pitch = smooth(pitch,SMOOTH_SPAN,SMOOTH_METHOD);

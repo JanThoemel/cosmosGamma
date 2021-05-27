@@ -15,6 +15,7 @@
   "SmoothSatOrientationChanges": true,
   "SmoothingDataSpan": 51,
   "SmoothingMethodChosen": 1,
-  "SmoothingMethodList": [ "moving" ]
+  "SmoothingMethodList": [ "moving" ],
+  "OverrideRPY": true
 
 }
