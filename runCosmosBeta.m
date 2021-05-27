@@ -10,7 +10,7 @@
 %% Set paths and MATLAB parameters
 warning on verbose;
 delete(gcp('nocreate'));
-close all; clear all; clc; %#ok<CLALL>
+close all; clc;
 
 % Inform the name of this file without the extension "m".
 THIS_FILE_NAME = 'runCosmosBeta';
@@ -93,3 +93,8 @@ save(fullfile(filepath, workspaceFileName));
 csim.createListCustomClasses(filepath, workspaceFileName);
 
 fprintf('\nDone.\n\n');
+
+%% Autorun 3D visualization, if enabled.
+if(configSim.AutoOpen3DVisualization)
+  run('openvis.m');
+end

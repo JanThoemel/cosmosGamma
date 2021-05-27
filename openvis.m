@@ -4,7 +4,7 @@
 % The parameters below normally should never change.
 warning on verbose;
 delete(gcp('nocreate'));
-close all; clc; % Do not clear variables, it makes the project unstable.
+close all; % clc; % Do not clear variables, it makes the project unstable.
 
 % Inform the name of this file without the extension "m".
 THIS_FILE_NAME = 'openvis';
@@ -31,6 +31,27 @@ if(~isdeployed)
   
   % Change working directory to the directory of this m-file.
   cd(filepath);
+end
+
+% Check if there is any Matlab project already open.
+if(isempty(matlab.project.rootProject))
+  % If there is no project open, launch project from path.
+  proj = openProject(projectPath);
+else
+  % If there is a project already open, get the Project object.
+  proj = currentProject();
+  % Check if the name of the project is correct.
+  if(~strcmp(proj.Name,PROJECT_FILE_NAME))
+    % If name is different, show error.
+    error(['Project ''%s'' is already open. ',...
+      'Close it before running ''%s''.'], ...
+      proj.Name, PROJECT_FILE_NAME);
+  else
+    % If name is correct, show message.
+    fprintf(2,'Attention: Project with name ''%s'' already open.\n',proj.Name);
+    fprintf('To prevent issues, check if project path is correct.\n');
+    fprintf('Project path: %s\n\n',proj.RootFolder);
+  end
 end
 
 %% Read parameters from JSON files.
@@ -63,28 +84,6 @@ coordfiles = circshift(coordfiles,-1);
 disp(coordfiles');
 
 %% Run Simulink file
-
-% Check if there is any Matlab project already open.
-if(isempty(matlab.project.rootProject))
-  % If there is no project open, launch project from path.
-  proj = openProject(projectPath);
-else
-  % If there is a project already open, get the Project object.
-  proj = currentProject();
-  % Check if the name of the project is correct.
-  if(~strcmp(proj.Name,PROJECT_FILE_NAME))
-    % If name is different, show error.
-    error(['Project ''%s'' is already open. ',...
-      'Close it before running ''%s''.'], ...
-      proj.Name, PROJECT_FILE_NAME);
-  else
-    % If name is correct, show message.
-    fprintf(2,'Project with name ''%s'' already open.\n',proj.Name);
-    fprintf('To prevent issues, check if project path is correct.\n');
-    fprintf('Project path: %s\n',proj.RootFolder);
-  end
-end
-
 % Define satellite struct.
 simsat(1).lat   = struct('time',0,'signals',struct('dimensions',0,'values',0));
 simsat(1).long  = struct('time',0,'signals',struct('dimensions',0,'values',0));
