@@ -9,7 +9,7 @@
 
   "V0": 0,
   "KeplerStepSize": 1,
-  "PlotLatLonIn2D": true,
+  "PlotLatLonIn2D": false,
   "WriteLLRRPYData": true,
 
   "SmoothSatOrientationChanges": true,

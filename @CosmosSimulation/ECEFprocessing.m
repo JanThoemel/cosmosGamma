@@ -1,6 +1,6 @@
 function ECEFprocessing(this, altitude, inclination, RAAN, vizScale, ...
     keplerStepSize, v0, plotLatLonIn2D, writeLLRRPYData, rpyParentFolderName,...
-    rpyNotScaledFolderName, rpyScaledFolderName)
+    rpyNotScaledFolderName, rpyScaledFolderName, enablePlot)
 %% input:
 % altitude: altitude used for visualization. The actual altitude may change for long periods of
 %   operations. However, this will be so small that it is irrelevant for visualization
@@ -171,7 +171,7 @@ for i=1:size(vizTime,2)
 end %% time step
 
 %% plot latitude and longitude in X-Y plot
-if plotLatLonIn2D
+if plotLatLonIn2D || enablePlot
     figure
     for i=1:ns+1
       plot(lon(i,2:end-1),lat(i,2:end-1),'.');hold on;

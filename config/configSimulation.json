@@ -1,10 +1,10 @@
 {
-  "EnablePlotting": 1,
+  "EnablePlotting": 0,
   "EnableGNSSRProcessing": 0,
+  "AutoOpen3DVisualization": 0,
 
   "ParentFolderForFilesLLRRPY": "LLR-RPY-runtime",
   "FolderForNonScaledLLRRPY": "not-scaled",
   "FolderForScaledLLRRPY": "scaled",
-
   "SimAccelerationFactor": 100e3
 }
