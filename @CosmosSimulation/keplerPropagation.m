@@ -1,46 +1,55 @@
-function [time,lat,lon,rad]=keplerPropagation(cosmosTime,keplerStepSize,inclination,RAAN,v0,altitude,radiusOfEarth)
+function [time,lat,lon,rad]=keplerPropagation(cosmosTime,keplerStepSize,incDeg,RAAN,v0,altitude,radiusOfEarth)
+
+ENABLE_ROD_METHOD = true;
+
+%% Constants
+% Earth rotation velocity around Z-axis.
+EARTH_ROT = (2*pi/86164); % [rad/s]
 
 %% this function adds the global movement of the satellite based on Kepler's laws
 %this function works with km instead of m %!harmonize
 
-mu=3.986004418E14;                  %% [m3?s?2] gravitational constant
-RE = radiusOfEarth/1000;          % Earth's radius                            [km]
+mu=3.986004418E14;                  %% [m^3/s^2] gravitational constant
+RE = radiusOfEarth;     % Earth's radius [m]
 muE = mu/1e9;    % Earth gravitational parameter             [km^3/sec^2]
 wE = (2*pi/86164);  % Earth rotation velocity aorund z-axis     [rad/sec]
 
 
 %% ORBIT INPUT
 w=0;    %%w       = input(' Argument of perigee                  [  0,360[    w      [deg] = ');
-sstTemp=RE+altitude/1000;%a       = input(' Major semi-axis                       (>6378)     a      [km]  = ');
-ecc_max = sprintf('%6.4f',1-RE/sstTemp);     % maximum value of eccentricity allowed
+sma = (RE+altitude)/1000;%a       = input(' Major semi-axis                       (>6378)     a      [km]  = ');
+ecc_max = sprintf('%6.4f',1-RE/sma);     % maximum value of eccentricity allowed
 e=0;%e       = input([' Eccentricity                         (<',ecc_max,')    e            = ']);
 
 RAAN  = RAAN*pi/180;        % RAAN                          [rad]
 w     = w*pi/180;           % Argument of perigee           [rad]
 v0    = v0*pi/180;          % True anomaly at the departure [rad]
-inclination     = inclination*pi/180;           % inclination                   [rad]
+incRad     = incDeg*pi/180;           % inclination                   [rad]
 
 
 %% ORBIT COMPUTATION
-rp = sstTemp*(1-e);               % radius of perigee             [km]
-ra = sstTemp*(1+e);               % radius of apogee              [km]
-Vp = sqrt(muE*(2/rp-1/sstTemp));  % velocity at the perigee       [km/s]
-Va = sqrt(muE*(2/ra-1/sstTemp));  % velocity at the  apogee       [km/s]
-n  = sqrt(muE./sstTemp^3);        % mean motion                   [rad/s]
-p  = sstTemp*(1-e^2);             % semi-latus rectus             [km]
-T  = 2*pi/n;                % period                        [s]
+rp = sma*(1-e);               % radius of perigee             [km]
+ra = sma*(1+e);               % radius of apogee              [km]
+Vp = sqrt(muE*(2/rp-1/sma));  % velocity at the perigee       [km/s]
+Va = sqrt(muE*(2/ra-1/sma));  % velocity at the  apogee       [km/s]
+n  = sqrt(muE./sma^3);        % mean motion                   [rad/s]
+p  = sma*(1-e^2);             % semi-latus rectus             [km]
+T  = 2*pi/n                % period                        [s]
 h  = sqrt(p*muE);           % moment of the momentum        [km^2/s]
-h1 = sin(inclination)*sin(RAAN);      % x-component of unit vector h
-h2 = -sin(inclination)*cos(RAAN);     % y-component of unit vector h
-h3 = cos(inclination);                % z-component of unit vector h
+h1 = sin(incRad)*sin(RAAN);      % x-component of unit vector h
+h2 = -sin(incRad)*cos(RAAN);     % y-component of unit vector h
+h3 = cos(incRad);                % z-component of unit vector h
 n1 = -h2/(sqrt(h1^2+h2^2)); % x-component of nodes' line
 n2 =  h1/(sqrt(h1^2+h2^2)); % y-component of nodes' line
 n3 = 0;                     % z-component of nodes' line
 N  = [n1,n2,n3];            % nodes' line (unit vector)
+
+%%ndeg = n * 180/pi; % [deg/s]
+
 %% PRINT SOME DATAS
-hours   = floor(T/3600);                   % hours   of the orbital period
-minutes = floor((T-hours*3600)/60);        % minutes of the orbital period
-seconds = floor(T-hours*3600-minutes*60);  % seconds of the orbital period
+hours   = floor(T/3600)                   % hours   of the orbital period
+minutes = floor((T-hours*3600)/60)        % minutes of the orbital period
+seconds = floor(T-hours*3600-minutes*60)  % seconds of the orbital period
 t0   = cosmosTime(1,1);                           % initial time          [s]
 tf=cosmosTime(end,1);                             % final time
 time    = t0:keplerStepSize:tf;                          % vector of time        [s]
@@ -64,14 +73,14 @@ sin_v = (sqrt(1-e.^2).*sin(E))./(1-e.*cos(E));   % sine of true anomaly
 cos_v = (cos(E)-e)./(1-e.*cos(E));               % cosine of true anomaly
 v     = atan2(sin_v,cos_v);                      % true anomaly              [rad]
 theta = v + w;                                   % argument of latitude      [rad]
-r     = (sstTemp.*(1-e.^2))./(1+e.*cos(v));            % radius                    [km]
+r     = (sma.*(1-e.^2))./(1+e.*cos(v));            % radius                    [km]
 %% Satellite coordinates
 % "Inertial" reference system ECI (Earth Centered Inertial)
 xp = r.*cos(theta);                          % In-plane x position (node direction)             [km]
 yp = r.*sin(theta);                          % In-plane y position (perpendicular node direct.) [km]
-xs = xp.*cos(RAAN)-yp.*cos(inclination).*sin(RAAN);    % ECI x-coordinate SAT                             [km]
-ys = xp.*sin(RAAN)+yp.*cos(inclination).*cos(RAAN);    % ECI y-coordinate SAT                             [km]
-zs = yp.*sin(inclination);                             % ECI z-coordinate SAT                             [km]
+xs = xp.*cos(RAAN)-yp.*cos(incRad).*sin(RAAN);    % ECI x-coordinate SAT                             [km]
+ys = xp.*sin(RAAN)+yp.*cos(incRad).*cos(RAAN);    % ECI y-coordinate SAT                             [km]
+zs = yp.*sin(incRad);                             % ECI z-coordinate SAT                             [km]
 rs = p./(1+e.*cos(theta-w));                 % norm of radius SAT                               [km]
 %% GREENWICH HOUR ANGLE
 %disp(' From ephemeridis you can reach the greenwich hour angle at the epoch and reset it from Aries'' point');
@@ -97,9 +106,45 @@ for j=1:size(time,2)
   end
 end
 
-lat      = asin(sin(inclination).*sin(theta))/pi*180;           % Latitude             [deg]
+lat      = asin(sin(incRad).*sin(theta))/pi*180;           % Latitude             [deg]
 lon      = wrapTo360((atan2(ys./rs,xs./rs)-rot_earth')/pi*180); % Longitude            [deg]
 rad      = rs;                                                  % radius                [km]
+
+if(ENABLE_ROD_METHOD)
+  % Initial angular position in orbit = true anomaly at departure.
+  init_pos_ang = v0; % [rad]
+  
+  % Mean angular velocity.
+  w = sqrt(muE/sma^3); % [rad/s]
+  
+  % Vector of angular positions.
+  pos_ang = init_pos_ang + w.*time; % [rad]
+  
+  % Total Earth spin since beginning of simulation.
+  earthPosRad = EARTH_ROT.*time; % [rad]
+  earthPosDeg = earthPosRad.*180./pi; % [deg]
+  
+  % Create vector of positions on ECEF [x y z].
+  % Initial position vector on Lat=0, Long=0, ECEF: [sma 0 0].
+  pos_ecef = zeros(length(time),3);
+  for i = 1:length(time)
+    % Angle in orbit is the current angular position.
+    angle = pos_ang(i);
+    % Translate angle to ECEF position.
+    x = sma * cos(angle);
+    y = sma * sin(angle);
+    % Rotate vector on ECEF X-axis to account for orbit inclination.
+    temp_pos = rotx(incDeg)*[x y 0]'; % [3x1 vector]
+    % Rotate vector on ECEF Z-axis to account for Earth rotation.
+    temp_pos = rotz(earthPosDeg)*temp_pos; % [3x1 vector]
+    pos_ecef(i,:) = temp_pos'; % [1x3 vector]
+    
+    
+    
+    
+  end
+    
+end
 
 end %% kepler function
 
@@ -155,8 +200,3 @@ function [E] = anom_ecc(M,e)
   %fprintf(' La soluzione E è stata trovata nell''intervallo [%2.5f,%2.5f]',sx,dx);
   %fprintf(' \n errore inferiore a %1.2e: [rad] E = %3.5f',err,E);
 end
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   

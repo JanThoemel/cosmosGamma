@@ -1,5 +1,9 @@
 %% File to open visualization for Cosmos Beta in MATLAB Simulink
 
+%% Constants
+% Earth rotation velocity around Z-axis.
+EARTH_ROT = (2*pi/86164); % [rad/s]
+
 %% Set paths
 % The parameters below normally should never change.
 warning on verbose;
@@ -385,10 +389,8 @@ for i = 1:dataLength
     
     
     %% Compute Orbit Precession
-    % Earth rotation velocity around Z-axis.
-    wEarth = (2*pi/86164); % [rad/sec]
     % Total Earth rotation since beginning of simulation.
-    rotEarth = wEarth * time; % [rad]
+    rotEarth = EARTH_ROT * time; % [rad]
     % Rotate normal orbit vector around Z-axis.
     normalOrbitVector = rotz(-rotEarth)*normalOrbitVector;
     
