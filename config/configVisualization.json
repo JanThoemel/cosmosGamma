@@ -1,6 +1,6 @@
 {
 
-  "AutoRun": false,
+  "AutoRun": 0,
 
   "ParentCoordFolder": "LLR-RPY-runtime",
   "CoordFolder": "scaled",
@@ -9,13 +9,14 @@
 
   "V0": 0,
   "KeplerStepSize": 1,
-  "PlotLatLonIn2D": false,
-  "WriteLLRRPYData": true,
+  "PlotLatLonIn2D": 1,
+  "WriteLLRRPYData": 1,
 
-  "SmoothSatOrientationChanges": true,
+  "SmoothSatOrientationChanges": false,
   "SmoothingDataSpan": 51,
   "SmoothingMethodChosen": 1,
   "SmoothingMethodList": [ "moving" ],
-  "OverrideRPY": true
+  "OverrideLLR": 0,
+  "OverrideRPY": 1
 
 }

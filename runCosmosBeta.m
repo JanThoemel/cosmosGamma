@@ -8,9 +8,17 @@
 % parameters for riccati equation can be found in riccatiequation
 
 %% Set paths and MATLAB parameters
+clc;
 warning on verbose;
 delete(gcp('nocreate'));
-close all; clc;
+% Try to get handle of the figure window for 3D visualization.
+cosmosVisHandle = findall(groot, 'Name', 'COSMOS Visualization');
+% If handle for 3D visualization is empty, simply close all figures.
+if isempty(cosmosVisHandle)
+  close all;
+else % If handle is found, close all figures with exception of 3D visualization.
+  cab(cosmosVisHandle);
+end
 
 % Inform the name of this file without the extension "m".
 THIS_FILE_NAME = 'runCosmosBeta';
@@ -87,8 +95,15 @@ end
 %% Save data for autonomous documentation generation
 % Save current MATLAB workspace variables.
 warning off parallel:lang:spmd:CompositeSave;
+% Set name for file with workspace variables.
 workspaceFileName = '.workspace.mat';
-save(fullfile(filepath, workspaceFileName));
+% Get a list of all variables.
+allvars = whos;
+% Identify the variables that ARE NOT graphics handles. This uses a regular
+% expression on the class of each variable to check if it's a graphics object.
+tosave = cellfun(@isempty, regexp({allvars.class}, '^matlab\.(ui|graphics)\.'));
+% Pass these variable names to save.
+save(fullfile(filepath, workspaceFileName), allvars(tosave).name);
 % Print custom objects and classes used.
 csim.createListCustomClasses(filepath, workspaceFileName);
 

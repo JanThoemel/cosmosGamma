@@ -1,5 +1,5 @@
 {
   "InitOrbitAltitude": 500e3,
-  "OrbitInclinationDegrees": 90,
+  "OrbitInclinationDegrees": 45,
   "RAAN": 0
 }

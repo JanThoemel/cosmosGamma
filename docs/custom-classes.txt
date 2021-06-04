@@ -3,7 +3,6 @@ Simulink.Bus
 Simulink.Bus
 Simulink.Bus
 Simulink.Bus
-matlab.ui.Figure
 CosmosSimulation
 FlightControl
 GPS

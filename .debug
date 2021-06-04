@@ -1,0 +1,2 @@
+% Force close all figures with the 'HandleVisibility' property set to 'off'.
+delete(findall(0));
