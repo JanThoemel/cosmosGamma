@@ -1,6 +1,6 @@
 function ECEFprocessing(this, altitude, inclination, RAAN, vizScale, ...
-    keplerStepSize, v0, plotLatLonIn2D, writeLLRRPYData, rpyParentFolderName,...
-    rpyNotScaledFolderName, rpyScaledFolderName, enablePlot)
+    keplerStepSize, v0, plotLatLonIn2D, writeLLRRPYData, parentCoordFolder,...
+    llrNotScaledFolderName, llrScaledFolderName, xyzScaledFolderName, enablePlot)
 %% input:
 % altitude: altitude used for visualization. The actual altitude may change for long periods of
 %   operations. However, this will be so small that it is irrelevant for visualization
@@ -24,17 +24,20 @@ radiusOfEarth = this.Orbits(1).MeanEarthRadius;
 % Get path to telemetry files from CosmosSimulation object.
 tmFolderPath = this.TelemetryPath;
 
-% Set path for LLR-RPY files.
-rpyNotScaledFolderPath = strcat(rpyParentFolderName,filesep,rpyNotScaledFolderName);
-rpyScaledFolderPath = strcat(rpyParentFolderName,filesep,rpyScaledFolderName);
+% Set path for coordinate folders.
+llrNotScaledFolderPath = strcat(parentCoordFolder,filesep,llrNotScaledFolderName);
+llrScaledFolderPath = strcat(parentCoordFolder,filesep,llrScaledFolderName);
+xyzScaledFolderPath = strcat(parentCoordFolder,filesep,xyzScaledFolderName);
 
 % Create required folders and delete old files.
-[~,~,~] = mkdir(rpyParentFolderName); % [status, msg, msgID]
-[~,~,~] = mkdir(rpyNotScaledFolderPath); % [status, msg, msgID]
-[~,~,~] = mkdir(rpyScaledFolderPath); % [status, msg, msgID]
-delete(strcat(rpyParentFolderName,filesep,'*.csv'));
-delete(strcat(rpyNotScaledFolderPath,filesep,'*.csv'));
-delete(strcat(rpyScaledFolderPath,filesep,'*.csv'));
+[~,~,~] = mkdir(parentCoordFolder); % [status, msg, msgID]
+[~,~,~] = mkdir(llrNotScaledFolderPath); % [status, msg, msgID]
+[~,~,~] = mkdir(llrScaledFolderPath); % [status, msg, msgID]
+[~,~,~] = mkdir(xyzScaledFolderPath); % [status, msg, msgID]
+delete(strcat(parentCoordFolder,filesep,'*.csv'));
+delete(strcat(llrNotScaledFolderPath,filesep,'*.csv'));
+delete(strcat(llrScaledFolderPath,filesep,'*.csv'));
+delete(strcat(xyzScaledFolderPath,filesep,'*.csv'));
 
 %% read data from telemery files
 % JT: this works only if the telemetry data of all satellites is equal in size 
@@ -51,9 +54,9 @@ for i=1:ns
   if i==1
       timeSteps=size(tempTime,1);
       cosmosTime=zeros(timeSteps,ns);
-      sstXViz =zeros(ns,timeSteps);
-      sstYViz =zeros(ns,timeSteps);
-      sstZViz =zeros(ns,timeSteps);
+      sstX =zeros(ns,timeSteps);
+      sstY =zeros(ns,timeSteps);
+      sstZ =zeros(ns,timeSteps);
       roll =zeros(ns,timeSteps);
       pitch=zeros(ns,timeSteps);
       yaw  =zeros(ns,timeSteps);
@@ -67,18 +70,42 @@ for i=1:ns
   yaw(i,:)   =tempSatStates(:,9)';
 end
 
+%% Enable Rod method for circular orbits and all interdependent sections
+ENABLE_ROD_METHOD = true;
+% Vector of time.
+t0 = cosmosTime(1,1); % Initial time [s].
+tf = cosmosTime(end,1); % Final time [s].
+vizTime = (t0:keplerStepSize:tf)'; % [s] [TIMEx1 vector]
+dataLength = length(vizTime);
+% Relative positions at the timestamps of cosmos simulation.
+temp_xlocal = sstX'; % [TIMExNUMSATS vector]
+temp_ylocal = sstY'; % [TIMExNUMSATS vector]
+temp_zlocal = sstZ'; % [TIMExNUMSATS vector]
+% Interpolate relative positions at the visualization timestamps.
+xlocal = zeros(dataLength,ns);
+ylocal = zeros(dataLength,ns);
+zlocal = zeros(dataLength,ns);
+for n = 1:ns
+  xlocal(:,n) = interp1(cosmosTime(:,n), temp_xlocal(:,n), vizTime);
+  ylocal(:,n) = interp1(cosmosTime(:,n), temp_ylocal(:,n), vizTime);
+  zlocal(:,n) = interp1(cosmosTime(:,n), temp_zlocal(:,n), vizTime);
+end
 
 %% rotate relative coordinate system to align x+ with flight direction (inclination)
 for i=1:ns
-  for j=1:size(sstXViz,2)
+  for j=1:size(sstX,2)
     sstTemp=rotz(inclination-90)*[sstX(i,j) sstY(i,j) 0]';
   end
   sstX(i,j)=sstTemp(1);
   sstY(i,j)=sstTemp(2);
 end
-  
+
 %% compute orbit
 [vizTime,latitude,longitude,radius] = this.keplerPropagation(cosmosTime,keplerStepSize,inclination,RAAN,v0,altitude,radiusOfEarth);
+if(ENABLE_ROD_METHOD)
+  [vizTime,x,y,z] = this.getPosECEF(cosmosTime,keplerStepSize,inclination,RAAN,v0,altitude,radiusOfEarth,...
+    xlocal,ylocal,zlocal,vizScale,ns);
+end
 
 %% interpolate relative position on visualization time steps
 for i=1:ns
@@ -125,7 +152,7 @@ for i=1:size(vizTime,2)
     LatOffsetAngle(j,i)            = asind( localTransformedCoSystem(2)/1000 / (rad(1,i) + localTransformedCoSystem(3)/1000) );
   end
 end
-  
+
 %% Lat, Lon, Rad of formation satellites
 for i=1:size(vizTime,2)
   for j=2:ns+1
@@ -189,14 +216,21 @@ end
 %% write files for LLR & RPY of each satellite and the reference (satellite). Latter is numbered as sat0.
 if writeLLRRPYData 
   % Create inclination vector to write to output file.
-  inclinationVector = inclination * ones(size(vizTime));
+  incVec = inclination * ones(size(vizTime));
+  fprintf('\nWriting ECEF files...');
   for i=1:ns+1
-    llrFileName = strcat(rpyNotScaledFolderPath,filesep,'sat',num2str(i-1),'_LLR.csv');
-    llrrpyScaledFileName = strcat(rpyScaledFolderPath,filesep,'sat',num2str(i-1),'_LLR_RPY_Scaled.csv');
-    writematrix([vizTime' latScaled(i,:)' lonScaled(i,:)' radScaled(i,:)' rollVizTime(i,:)' pitchVizTime(i,:)' yawVizTime(i,:)' inclinationVector'], llrrpyScaledFileName);
-    writematrix([vizTime' lat(i,:)' lon(i,:)' rad(i,:)'], llrFileName);
+    llrFileName = strcat(llrNotScaledFolderPath,filesep,'sat',num2str(i-1),'_LLR.csv');
+    llrrpyScaledFileName = strcat(llrScaledFolderPath,filesep,'sat',num2str(i-1),'_LLR_RPY_Scaled.csv');
+    xyzrpyScaledFileName = strcat(xyzScaledFolderPath,filesep,'sat',num2str(i-1),'_XYZ_RPY_Scaled.csv');
+    if(ENABLE_ROD_METHOD)
+      writematrix([vizTime x(:,i) y(:,i) z(:,i) rollVizTime(i,:)' pitchVizTime(i,:)' yawVizTime(i,:)' incVec], xyzrpyScaledFileName);
+    else
+      vizTime = vizTime';
+    end
+    writematrix([vizTime latScaled(i,:)' lonScaled(i,:)' radScaled(i,:)' rollVizTime(i,:)' pitchVizTime(i,:)' yawVizTime(i,:)' incVec], llrrpyScaledFileName);
+    writematrix([vizTime lat(i,:)' lon(i,:)' rad(i,:)'], llrFileName);
   end
-  fprintf('\nECEF files...written');
+  fprintf('done');
 end
 
 fprintf('\nECEF processing...done');

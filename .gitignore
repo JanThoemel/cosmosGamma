@@ -5,7 +5,7 @@
 *~
 *.asv
 .workspace.mat
-LLR-RPY-runtime/**
+COORD-runtime/**
 NO-TRACK/**
 recordings/*.avi
 storage/**/*.json

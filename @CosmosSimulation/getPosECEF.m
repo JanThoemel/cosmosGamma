@@ -1,6 +1,7 @@
-function [time,lat,lon,rad]=keplerPropagation(cosmosTime,keplerStepSize,incDeg,RAAN,v0,altitude,radiusOfEarth)
+function [time,x,y,z]=getPosECEF(~,cosmosTime,keplerStepSize,incDeg,RAAN,v0,altitude,radiusOfEarth,...
+  xlocal,ylocal,zlocal,scale,ns)
 
-ENABLE_ROD_METHOD = false;
+ENABLE_ROD_METHOD = true;
 
 %% Constants
 % Earth rotation velocity around Z-axis.
@@ -23,6 +24,7 @@ e=0;%e       = input([' Eccentricity                         (<',ecc_max,')    e
 
 RAAN  = RAAN*pi/180;        % RAAN                          [rad]
 w     = w*pi/180;           % Argument of perigee           [rad]
+thetaPeriapsis = w;
 v0    = v0*pi/180;          % True anomaly at the departure [rad]
 incRad     = incDeg*pi/180;           % inclination                   [rad]
 
@@ -110,42 +112,64 @@ lat      = asin(sin(incRad).*sin(theta))/pi*180;           % Latitude           
 lon      = wrapTo360((atan2(ys./rs,xs./rs)-rot_earth')/pi*180); % Longitude            [deg]
 rad      = rs;                                                  % radius                [km]
 
+%% Simplified method for circular orbits
 if(ENABLE_ROD_METHOD)
-  % Set vectors of Lat, Long, Radius.
-  lat = zeros(length(time),1);
-  lon = zeros(length(time),1);
-  rad = zeros(length(time),1);
+  % Vector of time.
+  t0 = cosmosTime(1,1); % Initial time [s].
+  tf = cosmosTime(end,1); % Final time [s].
+  time = (t0:keplerStepSize:tf)'; % [s] [TIMEx1 vector]
   
-  % Initial angular position in orbit = true anomaly at departure.
-  theta0 = v0; % [rad]
+  % Semi-major axis.
+  sma = radiusOfEarth + altitude; % [m]
+  
+  % Initial angular position in orbit, equal to the true anomaly at departure
+  % plus the argument of periapsis; aka: argument of latitude.
+  theta0 = v0 + thetaPeriapsis; % [rad]
   
   % Mean angular velocity of the satellites.
   w = sqrt(muE/sma^3); % [rad/s]
   
   % Vector of angular positions.
-  theta = theta0 + w.*time; % [rad]
+  thetaRad = theta0 + w.*time; % [rad] [TIMEx1 vector]
+  thetaDeg = thetaRad.*180./pi; % [deg] [TIMEx1 vector]
   
   % Total Earth spin since beginning of simulation.
-  thetaEarthRad = EARTH_ROT.*time; % [rad]
-  thetaEarthDeg = thetaEarthRad.*180./pi; % [deg]
+  thetaEarthRad = EARTH_ROT.*time; % [rad] [TIMEx1 vector]
+  thetaEarthDeg = thetaEarthRad.*180./pi; % [deg] [TIMEx1 vector]
   
-  % Create vector of positions on ECEF [x y z].
-  % Initial position vector on Lat=0, Long=0, ECEF: [sma 0 0].
-  pos_ecef = zeros(length(time),3);
-  for i = 1:length(time)
-    % Translate angle to ECEF position. Angle is the current angular position.
-    x = sma * cos(theta(i)); % [km]
-    y = sma * sin(theta(i)); % [km]
-    % Rotate vector on ECEF X-axis to account for orbit inclination.
-    temp_pos = rotx(incDeg)*[x y 0]'; % [3x1 vector]
-    % Rotate vector on ECEF Z-axis to account for Earth rotation.
-    temp_pos = rotz(thetaEarthDeg(i))*temp_pos; % [3x1 vector]
-    pos_ecef(i,:) = temp_pos'; % [1x3 vector]
-    
-    % Convert ECEF position to Lat, Long, Radius.
-    
+  % Create vectors of x, y, and z positions on ECEF.
+  x = zeros(length(time),ns+1); % [TIMExNUMSATS+1 vector]
+  y = zeros(length(time),ns+1); % [TIMExNUMSATS+1 vector]
+  z = zeros(length(time),ns+1); % [TIMExNUMSATS+1 vector]
+  
+  % Initial reference vector on ECEF Lat=0 Long=0: [SMA 0 0].
+  x(:,1) = sma; % [m]
+  y(:,1) = 0;   % [m]
+  z(:,1) = 0;   % [m]
+  
+  % Convert local-XYZ satellite positions to scaled ECEF.
+  for n = 2:(ns+1)
+    x(:,n) = sma + zlocal(:,n-1).*scale;
+    y(:,n) = xlocal(:,n-1).*scale;
+    z(:,n) = ylocal(:,n-1).*scale;
   end
-    
+  
+  % Compute current position of satellites in orbit.
+  for t = 1:length(time)
+    for n = 1:(ns+1)
+      tempXYZ = [x(t,n) y(t,n) z(t,n)]'; % [m] [3x1 vector]
+      % Positive rotation on ECEF Z-axis to account for angular position.
+      tempXYZ = rotz(thetaDeg(t))*tempXYZ; % [m] [3x1 vector]
+      % Positive rotation on ECEF X-axis to account for orbit inclination.
+      tempXYZ = rotx(incDeg)*tempXYZ; % [m] [3x1 vector]
+      % Negative rotation on ECEF Z-axis to account for Earth rotation.
+      tempXYZ = rotz(-thetaEarthDeg(t))*tempXYZ; % [m] [3x1 vector]
+      % ECEF position.
+      x(t,n) = tempXYZ(1); % [m]
+      y(t,n) = tempXYZ(2); % [m]
+      z(t,n) = tempXYZ(3); % [m]
+    end
+  end
 end
 
 end %% kepler function

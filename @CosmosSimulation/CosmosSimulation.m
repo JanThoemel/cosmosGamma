@@ -161,11 +161,14 @@ end
     plotting(this, ns, meanMotionRad)
     
     ECEFprocessing(this, altitude, inclination, RAAN, vizScale, ...
-      keplerStepSize, v0, plotLatLonIn2D, writeLLRRPYData, rpyParentFolderName,...
-      rpyNotScaledFolderName, rpyScaledFolderName, enablePlot)
+      keplerStepSize, v0, plotLatLonIn2D, writeLLRRPYData, parentCoordFolder,...
+      llrNotScaledFolderName, llrScaledFolderName, xyzScaledFolderName, enablePlot)
     
     GNSSRprocessing(this, ns, radiusOfEarth, rpyParentFolderName,...
       rpyNotScaledFolderName)
+    
+    [time,x,y,z] = getPosECEF(this,cosmosTime,keplerStepSize,incDeg,RAAN,v0,altitude,radiusOfEarth,...
+      xlocal,ylocal,zlocal,scale,ns)
     
   end % Public methods.
   

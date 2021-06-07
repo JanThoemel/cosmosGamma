@@ -68,6 +68,7 @@ AUTORUN = vis.AutoRun; % [true: 1 | false: 0]
 % the other satellites.
 COORD_FOLDER = strcat(vis.ParentCoordFolder,filesep,vis.CoordFolder);
 COORD_FOLDER = fullfile(filepath,COORD_FOLDER);
+XYZ_MODE = vis.ModeXYZ;
 
 % Set parameter to automatically smooth changes in satellite orientations.
 SMOOTH_ENABLE = vis.SmoothSatOrientationChanges; % [true: 1 | false: 0]

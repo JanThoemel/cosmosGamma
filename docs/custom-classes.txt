@@ -1,11 +1,5 @@
-Simulink.Bus
-Simulink.Bus
-Simulink.Bus
-Simulink.Bus
-Simulink.Bus
 CosmosSimulation
 FlightControl
 GPS
 Orbit
-matlab.project.Project
 Satellite
