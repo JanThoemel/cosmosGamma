@@ -1,7 +1,7 @@
 {
   "EnablePlotting": 0,
   "EnableGNSSRProcessing": 0,
-  "AutoOpen3DVisualization": 0,
+  "AutoOpen3DVisualization": 1,
 
   "ParentFolderForCoordFolders": "COORD-runtime",
   "FolderForNonScaledLLRRPY": "LLR-nonscaled",

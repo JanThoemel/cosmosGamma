@@ -119,6 +119,9 @@ if(ENABLE_ROD_METHOD)
   tf = cosmosTime(end,1); % Final time [s].
   time = (t0:keplerStepSize:tf)'; % [s] [TIMEx1 vector]
   
+  % Earth gravitational parameter.
+  mu = 3.986004418e14; % [m^3/s^2]
+  
   % Semi-major axis.
   sma = radiusOfEarth + altitude; % [m]
   
@@ -127,7 +130,7 @@ if(ENABLE_ROD_METHOD)
   theta0 = v0 + thetaPeriapsis; % [rad]
   
   % Mean angular velocity of the satellites.
-  w = sqrt(muE/sma^3); % [rad/s]
+  w = sqrt(mu/sma^3); % [rad/s]
   
   % Vector of angular positions.
   thetaRad = theta0 + w.*time; % [rad] [TIMEx1 vector]

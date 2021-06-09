@@ -102,7 +102,9 @@ workspaceFileName = '.workspace.mat';
 allvars = whos;
 % Identify the variables that ARE NOT graphics handles. This uses a regular
 % expression on the class of each variable to check if it's a graphics object.
-tosave = cellfun(@isempty, regexp({allvars.class}, '^matlab\.(ui|graphics)\.'));
+tosave = cellfun( @isempty, regexp(...
+  {allvars.class},...
+  '^(matlab\.(ui|graphics|project)\.|Simulink\.)') );
 % Pass these variable names to save.
 save(fullfile(filepath, workspaceFileName), allvars(tosave).name);
 % Print custom objects and classes used.

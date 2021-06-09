@@ -233,6 +233,6 @@ if writeLLRRPYData
   fprintf('done');
 end
 
-fprintf('\nECEF processing...done');
+fprintf('\nECEF processing...done\n');
 
 end
