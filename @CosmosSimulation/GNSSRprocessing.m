@@ -95,9 +95,9 @@ else %% option 2: read GNSS location from data file, this option is not tested
   ;
 end
 
-fprintf('\nsetting up GNSS constellation time: %s seconds.',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
+fprintf('\nSetting up GNSS constellation time: %s seconds.',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
 
-fprintf('\ncomputing specular point location');
+fprintf('\nComputing specular point location...');
 
 %% compute SP location per each cubesat, per each GNSS constellation and per each GNSS satellite
 latSP=zeros(ns+1,size(constellations,2),max(noOfGNSSsatsArray),size(timeCubeSat,2));
@@ -107,7 +107,7 @@ for i=2:ns+1
     for k=1:noOfGNSSsatsArray(j)
       [latSP(i,j,k,:), lonSP(i,j,k,:)]  =  computeSPlocation(timeCubeSat(i,:),latCubeSat(i,:)',lonCubeSat(i,:)',radCubeSat(i,:)',squeeze(latGNSS(j,k,:))',squeeze(lonGNSS(j,k,:))',squeeze(altGNSS(j,k,:))'+radiusOfEarth/1000,radiusOfEarth/1000);
       if i==2 && j==1 && k==1%% screenoutput on progress
-        fprintf('\ncomputing specular points \n')
+        fprintf('\nComputing specular points:\n')
         fprintf('%4.0f/%4.0f',(i-2)*size(constellations,2)*max(noOfGNSSsatsArray) +(j-1)*max(noOfGNSSsatsArray)+k,ns*size(constellations,2)*max(noOfGNSSsatsArray));
       else
         %fprintf('\b\b\b\b\b\b\b\b\b');
@@ -119,11 +119,11 @@ end
 
 save(strcat('NO-TRACK',filesep,'latSP.mat'),'latSP');
 save(strcat('NO-TRACK',filesep,'lonSP.mat'),'lonSP');
-fprintf('\ncomputing specular point location time: %s seconds.',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
+fprintf('\nComputing time for specular points location: %s seconds.',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
 
 %% 3D plot: position of the CubeSat, the GNSS satellites and the specular point
 if plotSPlocationIn3D 
-  fprintf('\ndisplaying in 3D');
+  fprintf('\nDisplaying in 3D...');
   %% set-up GIS
   grs80 = referenceEllipsoid('grs80','km');
   load topo
@@ -160,12 +160,12 @@ if plotSPlocationIn3D
   end
   legend(plotname,legendname);
   view(90,0)
-  fprintf('\ndisplaying 3D time: %s seconds.\n',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
+  fprintf('\nDisplaying in 3D time: %s seconds.\n',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
 end %% plot3D
 
 %%2D plot: position of the CubeSat and the specular point
 if plotSPlocationIn2D 
-  fprintf('\ndisplaying in 2D');
+  fprintf('\nDisplaying in 2D...');
   figure
   ax = worldmap('World');
   setm(ax, 'Origin', [0 0 0])
@@ -196,7 +196,7 @@ if plotSPlocationIn2D
     end
   end
   legend(plotname,legendname);
-  fprintf('\ndisplaying 2D time: %s seconds.\n',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
+  fprintf('\nDisplaying in 2D time: %s seconds.\n',num2str(posixtime(datetime('now')) - GNSScpuStartTime));
 end %% plot 2D
 
 %% basic statistical analysis and visualization of the location of the specular point
