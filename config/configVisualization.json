@@ -13,11 +13,11 @@
   "PlotLatLonIn2D": 0,
   "WriteLLRRPYData": 1,
 
-  "SmoothSatOrientationChanges": false,
+  "SmoothSatOrientationChanges": true,
   "SmoothingDataSpan": 51,
   "SmoothingMethodChosen": 1,
   "SmoothingMethodList": [ "moving" ],
   "OverrideLLR": 0,
-  "OverrideRPY": 1
+  "OverrideRPY": 0
 
 }

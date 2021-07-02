@@ -170,15 +170,15 @@ for n = 1:numsats
     if n == 1
       pitch = onesArray * 0;
       yaw   = onesArray * 0;
-      roll  = onesArray * 0;
+      roll  = onesArray * 45;
     elseif n == 2
       pitch = onesArray * 0;
-      yaw   = onesArray * 0;
-      roll  = onesArray * 0;
+      yaw   = onesArray * 90;
+      roll  = onesArray * 45;
     elseif n == 3
-      pitch = onesArray * 0;
+      pitch = onesArray * 45;
       yaw   = onesArray * 0;
-      roll  = onesArray * 0;
+      roll  = onesArray * 90;
     else
       % Reference (n == 4).
     end
@@ -252,15 +252,15 @@ for n = 1:numsats
   
   simsat(n).pitch.time = timestamps;
   simsat(n).pitch.signals.dimensions = 1;
-  simsat(n).pitch.signals.values = pitch;
+  simsat(n).pitch.signals.values = pitch; % [rad]
   
   simsat(n).yaw.time = timestamps;
   simsat(n).yaw.signals.dimensions = 1;
-  simsat(n).yaw.signals.values = yaw;
+  simsat(n).yaw.signals.values = yaw; % [rad]
   
   simsat(n).roll.time = timestamps;
   simsat(n).roll.signals.dimensions = 1;
-  simsat(n).roll.signals.values = roll;
+  simsat(n).roll.signals.values = roll; % [rad]
   
   simsat(n).inc = inclinationRad;
   simsat(n).time = timestamps; % [seconds]
@@ -303,9 +303,9 @@ for i = 1:dataLength
     simsat(n).pos.signals.values(i,3) = z;
     
     % Get roll, pitch, yaw angles.
-    rollAngle  = simsat(n).roll.signals.values(i);
-    pitchAngle = simsat(n).pitch.signals.values(i);
-    yawAngle   = simsat(n).yaw.signals.values(i);
+    rollAngle  = simsat(n).roll.signals.values(i);  % [rad]
+    pitchAngle = simsat(n).pitch.signals.values(i); % [rad]
+    yawAngle   = simsat(n).yaw.signals.values(i);   % [rad]
     
     % Compute unit vector from x, y, z.
     xyzUnit = [x;y;z] / norm([x;y;z]); % [3x1 unit vector]
@@ -405,10 +405,6 @@ for i = 1:dataLength
     % To correct orientation of the 3D satellite to initial attitude,
     % Rotate -90deg (-pi/2) on ECEF's Y-axis.
     a = -pi/2;
-% Testing
-if n == 1
-  %a = 0;
-end
     rot = [cos(a/2), 0, sin(a/2), 0]; % [quaternion]
     
     
@@ -477,9 +473,47 @@ end
     rodriguesRotMatrix = I + sin(a)*W + (2*sin(a/2)^2)*(W^2);
     % Convert Rodrigues rotation matrix to quaternions.
     pitchCorrection = rotm2quat(rodriguesRotMatrix);
-%if n == 2
-      rot = quatmultiply(pitchCorrection, rot);
-%end
+    rot = quatmultiply(pitchCorrection, rot);
+    % Correct local body axes.
+    localYaw   = rodriguesRotMatrix*localYaw;   % [3x1 U-vector]
+    localRoll  = rodriguesRotMatrix*localRoll;  % [3x1 U-vector]
+    localPitch = rodriguesRotMatrix*localPitch; % [3x1 U-vector]
+    
+    
+    %% Roll
+    u = localRoll; % Set axis for rotation.
+    a = rollAngle; % [rad]
+    W = [  0  -u(3)  u(2);
+         u(3)   0   -u(1);
+        -u(2)  u(1)   0 ];
+    I = eye(3); % identity matrix 3x3
+    rodriguesRotMatrix = I + sin(a)*W + (2*sin(a/2)^2)*(W^2);
+    rodriguesQuat = rotm2quat(rodriguesRotMatrix);
+    rot = quatmultiply(rodriguesQuat, rot);
+    
+    
+    %% Pitch
+    u = localPitch; % Set axis for rotation.
+    a = pitchAngle; % [rad]
+    W = [  0  -u(3)  u(2);
+         u(3)   0   -u(1);
+        -u(2)  u(1)   0 ];
+    I = eye(3); % identity matrix 3x3
+    rodriguesRotMatrix = I + sin(a)*W + (2*sin(a/2)^2)*(W^2);
+    rodriguesQuat = rotm2quat(rodriguesRotMatrix);
+    rot = quatmultiply(rodriguesQuat, rot);
+    
+    
+    %% Yaw
+    u = localYaw; % Set axis for rotation.
+    a = yawAngle; % [rad]
+    W = [  0  -u(3)  u(2);
+         u(3)   0   -u(1);
+        -u(2)  u(1)   0 ];
+    I = eye(3); % identity matrix 3x3
+    rodriguesRotMatrix = I + sin(a)*W + (2*sin(a/2)^2)*(W^2);
+    rodriguesQuat = rotm2quat(rodriguesRotMatrix);
+    rot = quatmultiply(rodriguesQuat, rot);
     
     
     %% Satellite correction for Earth rotation
@@ -686,11 +720,7 @@ end
     
     %% Total rotation
     % Multiplied all rotation quaternions to get final rotation.
-    % Loop to save all elements of the final rotation quaternion.
     simsat(n).rot.signals.values(i,:) = rot;
-%     for q = 1:4
-%       simsat(n).rot.signals.values(i,q) = rot(q);
-%     end
     
   end
 end
