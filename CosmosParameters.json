@@ -1,5 +1,5 @@
 {
-  "SelectedFormationFlightMode": 2,
+  "SelectedFormationFlightMode": 1,
   "SimMaxNumOrbits": 2,
   "SimAccelerationFactor": 100e3,
   "Modes": [
@@ -16,8 +16,8 @@
       "AvailableTLE": false,
       "InitialConditions": [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        [-100, -50, 0, 0, 0, 0, 0, 0, 0],
+        [-200, 50, 0, 0, 0, 0, 0, 0, 0]
       ],
       "FFPSFolder": "Cluster",
       "FFPSValues": [
@@ -39,8 +39,8 @@
       "AvailableGPS": true,
       "AvailableTLE": false,
       "InitialConditions": [
-        [-700, -700, 0, 0, 0, 0, 0, 0, 0],
-        [500, 500, 0, 0, 0, 0, 0, 0, 0],
+        [-700, 0, 0, 0, 0, 0, 0, 0, 0],
+        [500, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0]
       ],
       "FFPSFolder": "Cluster2",

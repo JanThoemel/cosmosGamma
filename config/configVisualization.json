@@ -6,7 +6,7 @@
   "CoordFolder": "XYZ-RPY-scaled",
   "ModeXYZ": true,
 
-  "VizScale": 100,
+  "VizScale": 1000,
 
   "V0": 0,
   "KeplerStepSize": 1,
