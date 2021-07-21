@@ -40,6 +40,8 @@ end
 if(isempty(matlab.project.rootProject))
   % If there is no project open, launch project from path.
   proj = openProject(projectPath);
+  fprintf('To prevent issues, check if project path is correct.\n');
+  fprintf('Project path: %s\n\n',proj.RootFolder);
 else
   % If there is a project already open, get the Project object.
   proj = currentProject();
@@ -725,12 +727,93 @@ for i = 1:dataLength
   end
 end
 
+
+%% Simulink
 % Change working directory to the directory of the project file.
 cd(fullfile(filepath,PROJECT_FOLDER));
 
-% Open Simulink model and run it.
-open_system('asbCubeSat');
+% Model names.
+modelMain = 'asbCubeSat';
+model3DWorld = 'asbCubeSat/Visualization/Virtual Reality World';
+%= strcat('asbCubeSat',filesep,'Visualization',filesep,'Virtual Reality World');
 
+% Load/open main Simulink model.
+open_system(modelMain,'loadonly');
+% open_system(modelMain);
+
+
+
+
+
+
+%% Delete all code-generated lines and blocks
+blockPaths = find_system(model3DWorld,'Type','Block');
+
+% Find '/_Sat' in blockPaths.
+blocksToDelete = find(contains(blockPaths,'/_Sat'));
+
+% Delete lines and blocks.
+for n = 1:length(blocksToDelete)
+  
+  % Check if block is a main- or sub-block in the Simulink model.
+  % First get block name.
+  blockName = blockPaths{blocksToDelete(n)};
+  % Then check number of '/' occurrences.
+  pathSeparators = count(blockName,'/');
+  
+  if pathSeparators == 3 % it is a main-block.
+    
+%   h = get_param(blocksToDelete{n},'LineHandles');
+%   for p = 1:length(h.Outport) % for each output port
+%     delete_line(h.Outport(p)); % delete its line
+%   end
+
+    delete_block(blockName);
+  end
+end
+
+
+
+
+
+
+
+%% Tests
+numsats = 1;
+for n=1:numsats
+  % Help
+  % To check the dialog parameters of a block:
+  % get_param(blockPath,'DialogParameters')
+  bSatPos = [model3DWorld,'/_Sat',num2str(n),'_Pos'];
+  add_block('simulink/Sources/From Workspace',bSatPos,...% [type, name]
+    'VariableName',['simsat(',num2str(n),').pos']);
+  
+  bSatPosConv = [model3DWorld,'/_Sat',num2str(n),'_ECEFtoVRML'];
+  add_block([model3DWorld,'/ECEF to VRML'],bSatPosConv); % [type, name]
+  
+  bSatRot = [model3DWorld,'/_Sat',num2str(n),'_Rot'];
+  add_block('simulink/Sources/From Workspace',bSatRot,...% [type, name]
+    'VariableName',['simsat(',num2str(n),').rot']);
+  
+  bSatRotConv = [model3DWorld,'/_Sat',num2str(n),'_QUATtoVRML'];
+  add_block([model3DWorld,'/Quaternion to VRML'],bSatRotConv); % [type, name]
+  
+  % Connect blocks
+  
+  
+  
+  
+  
+  
+end
+
+
+
+
+
+
+
+%% Check and run
 % To see all object handles open in MATLAB, enter in Command Window:
 % object_handles = findall(groot)
 % To find object handle of the figure window for 3D visualization, enter
@@ -753,5 +836,5 @@ end
 
 if AUTORUN
   % Start Simulink visualization.
-  sim('asbCubeSat',stopTime);
+  sim(modelMain, stopTime);
 end
