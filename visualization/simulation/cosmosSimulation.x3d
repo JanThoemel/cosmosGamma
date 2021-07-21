@@ -188,12 +188,6 @@
       </Viewpoint>
     </Transform>
   </Transform>
-  <Transform DEF='AntennaCone1'  rotation='0.50838 0.84409 -0.087941 3.4347'>
-  </Transform>
-  <Transform DEF='AntennaCone2'  rotation='0.50838 0.84409 -0.087941 3.4347'>
-  </Transform>
-  <Transform DEF='AntennaCone3'  rotation='0.50838 0.84409 -0.087941 3.4347'>
-  </Transform>
   <!--def: 0 0 0-->
   <!--before: Original/100-->
   <Transform DEF='Sun'  translation='-13528.3 -5687.39 1011.79'>

@@ -12,7 +12,7 @@
     <Inline url='"earthAnim.wrl" '>
     </Inline>
   </Transform>
-  <Transform DEF='SatelliteReference'  scale='0.1 0.1 0.1' rotation='0.50838 0.84409 -0.08794 2'>
+  <Transform DEF='SatelliteReference'  scale='1e-11 1e-11 1e-11' rotation='0.50838 0.84409 -0.08794 2'>
     <Transform DEF='FollowReference'  translation='-5.5 2 0' rotation='-0.0923 -0.7011 -0.0923 1.5878'>
       <Viewpoint DEF='FollowReferenceViewpoint'  fieldOfView='0.7854' description='Follow Local-Ref' position='0 0 0'>
       </Viewpoint>

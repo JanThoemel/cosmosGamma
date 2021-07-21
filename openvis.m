@@ -734,16 +734,12 @@ cd(fullfile(filepath,PROJECT_FOLDER));
 
 % Model names.
 modelMain = 'asbCubeSat';
-model3DWorld = 'asbCubeSat/Visualization/Virtual Reality World';
-%= strcat('asbCubeSat',filesep,'Visualization',filesep,'Virtual Reality World');
+model3DWorld = 'asbCubeSat/Visualization/Virtual Reality World/';
+%= strcat('asbCubeSat',filesep,'Visualization',filesep,'Virtual Reality World',filesep);
 
 % Load/open main Simulink model.
 open_system(modelMain,'loadonly');
 % open_system(modelMain);
-
-
-
-
 
 
 %% Delete all code-generated lines and blocks
@@ -754,20 +750,20 @@ blocksToDelete = find(contains(blockPaths,'/_Sat'));
 
 % Delete lines and blocks.
 for n = 1:length(blocksToDelete)
-  
   % Check if block is a main- or sub-block in the Simulink model.
   % First get block name.
   blockName = blockPaths{blocksToDelete(n)};
   % Then check number of '/' occurrences.
   pathSeparators = count(blockName,'/');
-  
   if pathSeparators == 3 % it is a main-block.
-    
-%   h = get_param(blocksToDelete{n},'LineHandles');
-%   for p = 1:length(h.Outport) % for each output port
-%     delete_line(h.Outport(p)); % delete its line
-%   end
-
+    % Delete line(s).
+    h = get_param(blockName,'LineHandles');
+    for p = 1:length(h.Outport) % for each output port
+      if h.Outport(p) > 0 % if line exists
+        delete_line(h.Outport(p)); % delete line
+      end
+    end
+    % Delete block.
     delete_block(blockName);
   end
 end
@@ -781,24 +777,55 @@ end
 %% Tests
 numsats = 1;
 for n=1:numsats
-  % Help
+  % Help!
   % To check the dialog parameters of a block:
   % get_param(blockPath,'DialogParameters')
-  bSatPos = [model3DWorld,'/_Sat',num2str(n),'_Pos'];
-  add_block('simulink/Sources/From Workspace',bSatPos,...% [type, name]
+  bSatPos = ['_Sat',num2str(n),'_Pos'];
+  add_block('simulink/Sources/From Workspace',[model3DWorld,bSatPos],...
     'VariableName',['simsat(',num2str(n),').pos']);
   
-  bSatPosConv = [model3DWorld,'/_Sat',num2str(n),'_ECEFtoVRML'];
-  add_block([model3DWorld,'/ECEF to VRML'],bSatPosConv); % [type, name]
+  bSatPosConv = ['_Sat',num2str(n),'_ECEFtoVRML'];
+  add_block([model3DWorld,'ECEF to VRML'],[model3DWorld,bSatPosConv]);
   
-  bSatRot = [model3DWorld,'/_Sat',num2str(n),'_Rot'];
-  add_block('simulink/Sources/From Workspace',bSatRot,...% [type, name]
+  bSatRot = ['_Sat',num2str(n),'_Rot'];
+  add_block('simulink/Sources/From Workspace',[model3DWorld,bSatRot],...
     'VariableName',['simsat(',num2str(n),').rot']);
   
-  bSatRotConv = [model3DWorld,'/_Sat',num2str(n),'_QUATtoVRML'];
-  add_block([model3DWorld,'/Quaternion to VRML'],bSatRotConv); % [type, name]
+  bSatRotConv = ['_Sat',num2str(n),'_QUATtoVRML'];
+  add_block([model3DWorld,'Quaternion to VRML'],[model3DWorld,bSatRotConv]);
   
-  % Connect blocks
+  % Help!
+  % To get the port connectivity of the 3D World block:
+  % p = get_param([model3DWorld,'VR Sink1'],'PortConnectivity')
+  % for n=1:length(p), disp([num2str(n),' : ',num2str(p(n).Position)]), end
+  b3DWorld = 'VR Sink1/'; % must match the name of the block in Simulink.
+  
+  % Compute 3D World's input port numbers for current satellite.
+  pSatN = 15 - (n-1)*3;
+  pRotation    = num2str(pSatN - 2);
+  
+  
+  
+  
+  
+  
+  
+  %PUT scale directly into xml code generation for satellites
+  pScale       = num2str(pSatN - 1);
+  
+  
+  
+  
+  
+  
+  pTranslation = num2str(pSatN);
+  
+  % Add lines to connect blocks.
+  add_line(model3DWorld,[bSatPos,'/1'],[bSatPosConv,'/1']);
+  add_line(model3DWorld,[bSatPosConv,'/1'],[b3DWorld,pTranslation]);
+  
+  add_line(model3DWorld,[bSatRot,'/1'],[bSatRotConv,'/1']);
+  add_line(model3DWorld,[bSatRotConv,'/1'],[b3DWorld,pRotation]);
   
   
   
