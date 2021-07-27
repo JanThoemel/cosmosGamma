@@ -769,14 +769,85 @@ for n = 1:length(blocksToDelete)
 end
 
 
+%% Update VR sink block
+b3DWorld = 'VR Sink1/'; % must match the name of the block in Simulink.
+
+% Open x3D file.
+% .\visualization\simulation\cosmosSimulation.x3d
+% use filesep
+
+% Erase file.
+
+
+% Write initial structure before satellites section.
+% copy from file .\visualization\simulation\cosmosSimulation_struct1.x3d
+
+
+% Write N satellite structures.
+% copy from file .\visualization\simulation\cosmosSimulation_struct2.x3d
+% for n=1:numsats
+
+
+% Write final structure after satellites section.
+% copy from file .\visualization\simulation\cosmosSimulation_struct3.x3d
+
+
+% Close x3D file.
+
+
+% Update input ports to VR block.
+% To see structure of the input ports:
+% get_param([model3DWorld,b3DWorld],'FieldsWritten')
+b3DWorldInputPorts = [...
+  'Earth.rotation.4.1.1.double',...
+  '#Sun.translation.3.1.1.double',...
+  '#Umbra.rotation.4.1.1.double',...
+  '#Umbra.translation.3.1.1.double',...
+  '#FollowReference.rotation.4.1.1.double',...
+  '#FollowReference.translation.3.1.1.double',...
+  '#SatelliteReference.rotation.4.1.1.double',...
+  '#SatelliteReference.translation.3.1.1.double'];
+
+for n=1:(numsats-1)
+  b3DWorldInputPorts = [b3DWorldInputPorts,...
+    '#Satellite',num2str(n),'.rotation.4.1.1.double',...
+    '#Satellite',num2str(n),'.translation.3.1.1.double'];
+end
+
+set_param([model3DWorld,b3DWorld],'FieldsWritten',b3DWorldInputPorts);
 
 
 
 
 
 %% Tests
-numsats = 1;
-for n=1:numsats
+
+% Update input variables for reference satellite.
+refSatVar = ['simsat(',num2str(numsats),')'];
+set_param([model3DWorld,'Local_Ref_Rot'],'VariableName',[refSatVar,'.rot']);
+set_param([model3DWorld,'Local_Ref_Pos'],'VariableName',[refSatVar,'.pos']);
+
+for n=1:(numsats-1)
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   % Help!
   % To check the dialog parameters of a block:
   % get_param(blockPath,'DialogParameters')
@@ -796,13 +867,13 @@ for n=1:numsats
   
   % Help!
   % To get the port connectivity of the 3D World block:
-  % p = get_param([model3DWorld,'VR Sink1'],'PortConnectivity')
+  % p = get_param([model3DWorld,b3DWorld],'PortConnectivity')
   % for n=1:length(p), disp([num2str(n),' : ',num2str(p(n).Position)]), end
-  b3DWorld = 'VR Sink1/'; % must match the name of the block in Simulink.
   
   % Compute 3D World's input port numbers for current satellite.
-  pSatN = 15 - (n-1)*3;
-  pRotation    = num2str(pSatN - 2);
+  pSatN = 9 + (n-1)*2;
+  pRotation    = num2str(pSatN);
+  pTranslation = num2str(pSatN + 1);
   
   
   
@@ -811,14 +882,18 @@ for n=1:numsats
   
   
   %PUT scale directly into xml code generation for satellites
-  pScale       = num2str(pSatN - 1);
+  satSizeInitial = [2e5 2e5 2e5]; % defined by Simulink model.
+  satSizeConverted = satSizeInitial .* (1/.3e6); % Model to VRML conversion.
+  satUserScale = 0.1; % defined by user (configurable).
+  satSizeFinal = satSizeConverted .* satUserScale; % [1x3 VRML]
+  % 0.066666666666667 -> 0.067
+    
   
   
   
   
   
   
-  pTranslation = num2str(pSatN);
   
   % Add lines to connect blocks.
   add_line(model3DWorld,[bSatPos,'/1'],[bSatPosConv,'/1']);
