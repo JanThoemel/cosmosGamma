@@ -14,32 +14,31 @@ THIS_FILE_NAME = 'openvis';
 
 % Inform the name of the project file for the Cosmos simulation.
 PROJECT_FILE_NAME = 'cosmosVisualization'; % Without extension 'prj'.
-PROJECT_FOLDER = 'visualization';
 
 if(~isdeployed)
   % Get directory path of the active file in MATLAB's Editor.
-  [filepath,~,~] = fileparts(matlab.desktop.editor.getActiveFilename);
-  addpath(genpath(filepath)); % Add file path to the current MATLAB path.
+  [pathActiveFile,~,~] = fileparts(matlab.desktop.editor.getActiveFilename);
+  addpath(genpath(pathActiveFile)); % Append path to the current MATLAB path.
   
   % Get path for directory of the file name set in THIS_FILE_NAME.
-  [filepath,~,~] = fileparts(which(THIS_FILE_NAME));
-  addpath(genpath(filepath)); % Add file path to the current MATLAB path.
+  [pathCosmos,~,~] = fileparts(which(THIS_FILE_NAME));
+  addpath(genpath(pathCosmos)); % Append path to the current MATLAB path.
   
   % Add path to ancillary folders.
-  addpath(strcat(filepath,filesep,'config'));
-  addpath(strcat(filepath,filesep,'utils'));
+  addpath(strcat(pathCosmos,filesep,'config'));
+  addpath(strcat(pathCosmos,filesep,'utils'));
   
   % Get path for directory of the simulation project.
-  [projectPath,~,~] = fileparts(which([PROJECT_FILE_NAME,'.prj']));
+  [pathVisualization,~,~] = fileparts(which([PROJECT_FILE_NAME,'.prj']));
   
   % Change working directory to the directory of this m-file.
-  cd(filepath);
+  cd(pathCosmos);
 end
 
 % Check if there is any Matlab project already open.
 if(isempty(matlab.project.rootProject))
   % If there is no project open, launch project from path.
-  proj = openProject(projectPath);
+  proj = openProject(pathVisualization);
   fprintf('To prevent issues, check if project path is correct.\n');
   fprintf('Project path: %s\n\n',proj.RootFolder);
 else
@@ -69,7 +68,7 @@ AUTORUN = vis.AutoRun; % [true: 1 | false: 0]
 % IMPORTANT: The FIRST file in the coordinates folder MUST BE the reference for
 % the other satellites.
 COORD_FOLDER = strcat(vis.ParentCoordFolder,filesep,vis.CoordFolder);
-COORD_FOLDER = fullfile(filepath,COORD_FOLDER);
+COORD_FOLDER = fullfile(pathCosmos,COORD_FOLDER);
 XYZ_MODE = vis.ModeXYZ;
 
 % Set parameter to automatically smooth changes in satellite orientations.
@@ -729,17 +728,12 @@ end
 
 
 %% Simulink
-% Change working directory to the directory of the project file.
-cd(fullfile(filepath,PROJECT_FOLDER));
-
 % Model names.
 modelMain = 'asbCubeSat';
 model3DWorld = 'asbCubeSat/Visualization/Virtual Reality World/';
-%= strcat('asbCubeSat',filesep,'Visualization',filesep,'Virtual Reality World',filesep);
 
 % Load/open main Simulink model.
 open_system(modelMain,'loadonly');
-% open_system(modelMain);
 
 
 %% Delete all code-generated lines and blocks
@@ -785,7 +779,9 @@ b3DWorld = 'VR Sink1/'; % must match the name of the block in Simulink.
 
 % Write N satellite structures.
 % copy from file .\visualization\simulation\cosmosSimulation_struct2.x3d
-% for n=1:numsats
+for n=1:(numsats-1)
+  
+end
 
 
 % Write final structure after satellites section.
@@ -820,34 +816,14 @@ set_param([model3DWorld,b3DWorld],'FieldsWritten',b3DWorldInputPorts);
 
 
 
-%% Tests
-
+%% Add Blocks and Lines
 % Update input variables for reference satellite.
 refSatVar = ['simsat(',num2str(numsats),')'];
 set_param([model3DWorld,'Local_Ref_Rot'],'VariableName',[refSatVar,'.rot']);
 set_param([model3DWorld,'Local_Ref_Pos'],'VariableName',[refSatVar,'.pos']);
 
+% Add blocks and lines for each satellite in the formation.
 for n=1:(numsats-1)
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   % Help!
   % To check the dialog parameters of a block:
   % get_param(blockPath,'DialogParameters')
@@ -901,21 +877,10 @@ for n=1:(numsats-1)
   
   add_line(model3DWorld,[bSatRot,'/1'],[bSatRotConv,'/1']);
   add_line(model3DWorld,[bSatRotConv,'/1'],[b3DWorld,pRotation]);
-  
-  
-  
-  
-  
-  
 end
 
 
-
-
-
-
-
-%% Check and run
+%% Check and Run
 % To see all object handles open in MATLAB, enter in Command Window:
 % object_handles = findall(groot)
 % To find object handle of the figure window for 3D visualization, enter
@@ -923,12 +888,12 @@ end
 % findall(groot, 'Name', 'COSMOS Visualization')
 
 % Try to get handle of the figure window for 3D visualization.
-cosmosVisHandle = findall(groot, 'Name', 'COSMOS Visualization');
+cosmosVisHandle = findall(groot,'Name','COSMOS Visualization');
 if isempty(cosmosVisHandle)
   % If handle is empty, means that the figure is closed.
   % Open figure.
   open('cosmosSimulation.x3d');
-  cosmosVisHandle = findall(groot, 'Name', 'COSMOS Visualization');
+  cosmosVisHandle = findall(groot,'Name','COSMOS Visualization');
   % Find VRSimMenu in cosmosVisHandle.Children(5)
   % Find submenus in cosmosVisHandle.Children(5).Children(1) to (3)
 else
