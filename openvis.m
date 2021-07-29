@@ -763,37 +763,116 @@ for n = 1:length(blocksToDelete)
 end
 
 
-%% Update VR sink block
-b3DWorld = 'VR Sink1/'; % must match the name of the block in Simulink.
+%% Update X3D File and VR Block
+% Name must match the name of the block in Simulink.
+b3DWorld = 'VR Sink1/';
 
-% Open x3D file.
-% .\visualization\simulation\cosmosSimulation.x3d
-% use filesep
-
-% Erase file.
-
+% Open x3D file for writing and discard all contents ('w' option).
+fid_main = fopen([pathVisualization,filesep,'simulation',filesep,...
+  'cosmosSimulation.x3d'],'w');
 
 % Write initial structure before satellites section.
-% copy from file .\visualization\simulation\cosmosSimulation_struct1.x3d
-
+% Open file with initial structure.
+fid_struct1 = fopen([pathVisualization,filesep,'simulation',filesep,...
+  'cosmosSimulation_struct1.x3d'],'r');
+while ~feof(fid_struct1)
+  sline = fgetl(fid_struct1);
+  fprintf(fid_main,'%s\n',sline);
+end
+% Close file.
+fclose(fid_struct1);
 
 % Write N satellite structures.
-% copy from file .\visualization\simulation\cosmosSimulation_struct2.x3d
 for n=1:(numsats-1)
+  % Define satellite structure.
+  structSat = {
+    ['  <Transform DEF="Satellite',num2str(n),'"  scale="0.1 0.1 0.1" rotation="0.50838 0.84409 -0.08794 2">']
+    ['    <Shape DEF="SatelliteBus',num2str(n),'" >']
+    '      <Appearance>'
+    '        <ImageTexture url=''"texture/cubesat.jpg" ''>'
+    '        </ImageTexture>'
+    '        <Material specularColor="1 1 1" shininess="1" emissiveColor="0.2 0.2 0.2" diffuseColor="0.2 0.2 0.2" ambientIntensity="0.6">'
+    '        </Material>'
+    '      </Appearance>'
+    '      <Box size="0.3 0.3 0.3">'
+    '      </Box>'
+    '    </Shape>'
+    ['    <Transform DEF="SolarPanelTwo',num2str(n),'"  translation="0 0.16 -0.3">']
+    '      <Shape>'
+    '        <Appearance>'
+    '          <ImageTexture url=''"texture/solarpanel.jpg" ''>'
+    '          </ImageTexture>'
+    '          <Material shininess="1" diffuseColor="0.9 0.76733 0.61963" ambientIntensity="0">'
+    '          </Material>'
+    '        </Appearance>'
+    '        <Box size="0.3 0.02 0.3">'
+    '        </Box>'
+    '      </Shape>'
+    '    </Transform>'
+    ['    <Transform DEF="SolarPanelOne',num2str(n),'"  translation="0 0.16 0.3">']
+    '      <Shape>'
+    '        <Appearance>'
+    '          <ImageTexture url=''"texture/solarpanel.jpg" ''>'
+    '          </ImageTexture>'
+    '          <Material shininess="1" diffuseColor="0.9 0.76733 0.61963" ambientIntensity="0">'
+    '          </Material>'
+    '        </Appearance>'
+    '        <Box size="0.3 0.02 0.3">'
+    '        </Box>'
+    '      </Shape>'
+    '    </Transform>'
+    ['    <Transform DEF="Antenna',num2str(n),'" >']
+    ['      <Transform DEF="AntennaDish',num2str(n),'"  translation="0 -0.15 0">']
+    '        <Shape>'
+    '          <Appearance>'
+    '            <Material specularColor="1 1 1" shininess="1" diffuseColor="0.9 0.65504 0.31917">'
+    '            </Material>'
+    '          </Appearance>'
+    '          <Cone height="0.07" bottomRadius="0.06">'
+    '          </Cone>'
+    '        </Shape>'
+    '      </Transform>'
+    '    </Transform>'
+    ['    <Transform DEF="FollowSat',num2str(n),'"  translation="-5.5 2 0" rotation="-0.0923 -0.7011 -0.0923 1.5878">']
+    ['      <Viewpoint DEF="FollowSatView',num2str(n),'"  fieldOfView="0.7854" description="Lock Satellite-',num2str(n),'" position="0 0 0">']
+    '      </Viewpoint>'
+    '    </Transform>'
+    '  </Transform>'
+  };
   
+  % Write structure to X3D file.
+  fprintf(fid_main,'%s\n',structSat{:});
 end
 
+% Define final structure after satellites section.
+structFinal = {
+  '</Transform>'
+  '</Scene>'
+  '</X3D>'
+};
 
-% Write final structure after satellites section.
-% copy from file .\visualization\simulation\cosmosSimulation_struct3.x3d
-
+% Write structure to X3D file.
+fprintf(fid_main,'%s\n',structFinal{:});
 
 % Close x3D file.
+fclose(fid_main);
 
-
-% Update input ports to VR block.
-% To see structure of the input ports:
+% Help!
+% VR block input ports - To see structure of the input ports:
 % get_param([model3DWorld,b3DWorld],'FieldsWritten')
+
+
+
+
+
+%%TO DO
+% Define length of variable holding the description of the input ports.
+
+
+
+
+
+% Define input ports order.
 b3DWorldInputPorts = [...
   'Earth.rotation.4.1.1.double',...
   '#Sun.translation.3.1.1.double',...
@@ -803,17 +882,14 @@ b3DWorldInputPorts = [...
   '#FollowReference.translation.3.1.1.double',...
   '#SatelliteReference.rotation.4.1.1.double',...
   '#SatelliteReference.translation.3.1.1.double'];
-
 for n=1:(numsats-1)
   b3DWorldInputPorts = [b3DWorldInputPorts,...
     '#Satellite',num2str(n),'.rotation.4.1.1.double',...
     '#Satellite',num2str(n),'.translation.3.1.1.double'];
 end
 
+% Update input ports to VR block.
 set_param([model3DWorld,b3DWorld],'FieldsWritten',b3DWorldInputPorts);
-
-
-
 
 
 %% Add Blocks and Lines
@@ -879,6 +955,12 @@ for n=1:(numsats-1)
   add_line(model3DWorld,[bSatRotConv,'/1'],[b3DWorld,pRotation]);
 end
 
+% Auto-arrange model3DWorld.
+% Not necessary yet.
+
+% Save model.
+save_system(modelMain);
+
 
 %% Check and Run
 % To see all object handles open in MATLAB, enter in Command Window:
@@ -901,7 +983,11 @@ else
   figure(cosmosVisHandle);
 end
 
+fprintf('%s','Ready to play visualization: ')
 if AUTORUN
+  fprintf('%s\n','Autoplay ON.')
   % Start Simulink visualization.
   sim(modelMain, stopTime);
+else
+  fprintf('%s\n','Autoplay OFF.')
 end
