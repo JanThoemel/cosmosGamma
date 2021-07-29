@@ -1,12 +1,12 @@
 {
 
-  "AutoRun": 1,
+  "AutoRun": 0,
 
   "ParentCoordFolder": "COORD-runtime",
   "CoordFolder": "XYZ-RPY-scaled",
   "ModeXYZ": true,
 
-  "VizScale": 1000,
+  "VizScale": 5000,
 
   "V0": 0,
   "KeplerStepSize": 1,

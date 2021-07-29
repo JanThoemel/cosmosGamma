@@ -732,8 +732,8 @@ end
 modelMain = 'asbCubeSat';
 model3DWorld = 'asbCubeSat/Visualization/Virtual Reality World/';
 
-% Load/open main Simulink model.
-open_system(modelMain,'loadonly');
+% Load and open main Simulink model.
+open_system(modelMain);
 
 
 %% Delete all code-generated lines and blocks
@@ -786,7 +786,7 @@ fclose(fid_struct1);
 for n=1:(numsats-1)
   % Define satellite structure.
   structSat = {
-    ['  <Transform DEF="Satellite',num2str(n),'"  scale="0.1 0.1 0.1" rotation="0.50838 0.84409 -0.08794 2">']
+    ['  <Transform DEF="Satellite',num2str(n),'"  scale="0.05 0.05 0.05" rotation="0.50838 0.84409 -0.08794 2">']
     ['    <Shape DEF="SatelliteBus',num2str(n),'" >']
     '      <Appearance>'
     '        <ImageTexture url=''"texture/cubesat.jpg" ''>'
@@ -963,24 +963,36 @@ save_system(modelMain);
 
 
 %% Check and Run
+% Help!
 % To see all object handles open in MATLAB, enter in Command Window:
 % object_handles = findall(groot)
-% To find object handle of the figure window for 3D visualization, enter
-% in Command Window:
-% findall(groot, 'Name', 'COSMOS Visualization')
+% To find handle of the figure for 3D visualization, enter in Command Window:
+% findall(groot,'Name','COSMOS Visualization')
+
+% Create a virtual world associated with the virtual world 3D file filename and
+% return its handle. If the VR world already exists, a handle to the existing
+% virtual world is returned. Specify the file name as a string.
+vrWorldObj = vrworld('cosmosSimulation.x3d');
+reload(vrWorldObj);
+
+% Get handle of the current virtual reality figure. The current virtual reality
+% figure is the currently active virtual reality figure window in which you can
+% get and set the viewer properties. If no virtual reality figure exists, the
+% MATLAB software returns an empty vrfigure object.
+% vrFigHandle = vrgcf;
 
 % Try to get handle of the figure window for 3D visualization.
-cosmosVisHandle = findall(groot,'Name','COSMOS Visualization');
-if isempty(cosmosVisHandle)
-  % If handle is empty, means that the figure is closed.
-  % Open figure.
-  open('cosmosSimulation.x3d');
-  cosmosVisHandle = findall(groot,'Name','COSMOS Visualization');
+vrFigHandle = findall(groot,'Name','COSMOS Visualization');
+if isempty(vrFigHandle)
+  % If handle is empty, means that the virtual world figure is closed.
+  % Then, open VR figure.
+  vrFigHandle = vrfigure(vrWorldObj);
+  % cosmosVisHandle = findall(groot,'Name','COSMOS Visualization');
   % Find VRSimMenu in cosmosVisHandle.Children(5)
   % Find submenus in cosmosVisHandle.Children(5).Children(1) to (3)
 else
-  % If handle is found, figure is already open. Bring it to front.
-  figure(cosmosVisHandle);
+  % If handle is found, bring figure to front.
+  figure(vrFigHandle);
 end
 
 fprintf('%s','Ready to play visualization: ')

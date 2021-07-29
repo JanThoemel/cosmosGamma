@@ -12,7 +12,7 @@ clc;
 warning on verbose;
 delete(gcp('nocreate'));
 % Try to get handle of the figure window for 3D visualization.
-cosmosVisHandle = findall(groot, 'Name', 'COSMOS Visualization');
+cosmosVisHandle = findall(groot,'Name','COSMOS Visualization');
 % If handle for 3D visualization is empty, simply close all figures.
 if isempty(cosmosVisHandle)
   close all;

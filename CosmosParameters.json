@@ -1,5 +1,5 @@
 {
-  "SelectedFormationFlightMode": 1,
+  "SelectedFormationFlightMode": 7,
   "SimMaxNumOrbits": 2,
   "SimAccelerationFactor": 100e3,
   "Modes": [
@@ -175,7 +175,7 @@
     }
 ,
     {
-      "ModeID": 7,
+      "ModeID": 700,
       "ModeName": "SPlocationFinderTest",
       "NumSatellites": 2,
       "AttitudeResolutionDeg": 45,

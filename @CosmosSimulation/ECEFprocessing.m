@@ -140,6 +140,7 @@ rollVizTime         = [zeros(1,size(pitchVizTime,2)); rollVizTime];
 pitchVizTime        = [zeros(1,size(pitchVizTime,2)); pitchVizTime];
 yawVizTime          = [zeros(1,size(pitchVizTime,2)); yawVizTime];
 
+%{
 %% off set of the formation satellites
 for i=1:length(vizTime)
   for j=1:ns
@@ -197,6 +198,7 @@ for i=1:length(vizTime)
       %}
   end %% number of satellites
 end %% time step
+%}
 
 %% plot latitude and longitude in X-Y plot
 if plotLatLonIn2D || enablePlot
@@ -226,8 +228,8 @@ if writeLLRRPYData
     if(ENABLE_ROD_METHOD)
       writematrix([vizTime x(:,i) y(:,i) z(:,i) rollVizTime(i,:)' pitchVizTime(i,:)' yawVizTime(i,:)' incVec], xyzrpyScaledFileName);
     end
-    writematrix([vizTime latScaled(i,:)' lonScaled(i,:)' radScaled(i,:)' rollVizTime(i,:)' pitchVizTime(i,:)' yawVizTime(i,:)' incVec], llrrpyScaledFileName);
-    writematrix([vizTime lat(i,:)' lon(i,:)' rad(i,:)'], llrFileName);
+    %writematrix([vizTime latScaled(i,:)' lonScaled(i,:)' radScaled(i,:)' rollVizTime(i,:)' pitchVizTime(i,:)' yawVizTime(i,:)' incVec], llrrpyScaledFileName);
+    %writematrix([vizTime lat(i,:)' lon(i,:)' rad(i,:)'], llrFileName);
   end
   fprintf('done');
 end
