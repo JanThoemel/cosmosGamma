@@ -104,7 +104,7 @@ allvars = whos;
 % expression on the class of each variable to check if it's a graphics object.
 tosave = cellfun( @isempty, regexp(...
   {allvars.class},...
-  '^(matlab\.(ui|graphics|project)\.|Simulink\.)') );
+  '^(matlab\.(ui|graphics|project)|Simulink|parallel|vrworld)') );
 % Pass these variable names to save.
 save(fullfile(filepath, workspaceFileName), allvars(tosave).name);
 % Print custom objects and classes used.
