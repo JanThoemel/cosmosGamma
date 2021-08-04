@@ -5,6 +5,10 @@ function startSimulation(this)
 % Details here.
 % ______________________________________________________________________________
 
+% Create a cluster object according to the specified profile.
+c = parcluster('local');
+c.NumWorkers = this.NumSatellites;
+
 % Create data queue for parallel pool.
 dq = parallel.pool.DataQueue;
 
@@ -357,8 +361,6 @@ delete(gcp('nocreate'));
 % Calculate the execution time of the parallel pool.
 timeEndPool = posixtime(datetime('now')); % Posixtime [seconds].
 timeDurationPool = timeEndPool - timeStartPool;
-fprintf('Total simulation time: %s seconds.\n',...
-num2str(timeDurationPool));
+fprintf('Total simulation time: %s seconds.\n',num2str(timeDurationPool));
 
 end % Function CosmosSimulation.startSimulation
-
