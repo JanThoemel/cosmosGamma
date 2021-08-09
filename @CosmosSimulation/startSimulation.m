@@ -355,12 +355,12 @@ this.Orbits = orbits{1};
 this.FlightControlModules = flightControlModules{1};
 this.GPSModules = gpsModules{1};
 
-% Terminate the existing parallel pool session.
-delete(gcp('nocreate'));
-
 % Calculate the execution time of the parallel pool.
 timeEndPool = posixtime(datetime('now')); % Posixtime [seconds].
 timeDurationPool = timeEndPool - timeStartPool;
-fprintf('Total simulation time: %s seconds.\n',num2str(timeDurationPool));
+fprintf('\nTotal simulation time: %s seconds\n',num2str(timeDurationPool));
+
+% Terminate the existing parallel pool session.
+delete(gcp('nocreate'));
 
 end % Function CosmosSimulation.startSimulation

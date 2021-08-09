@@ -133,7 +133,7 @@ classdef Satellite < handle
       if isfile(fileSatPositionTM), delete(fileSatPositionTM); end
       if isfile(fileTimeVectorTM), delete(fileTimeVectorTM); end
       if isfile(fileSatStatesTM), delete(fileSatStatesTM); end
-      this.comm("Telemetry data has been cleared.");
+      this.comm("Telemetry data has been cleared");
     end
     function writeAndResetMissionTM(this,satID)
       fileControlVectorTM = strcat('telemetry',filesep,'ControlVectorTM',num2str(satID),'.csv');

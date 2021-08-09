@@ -110,9 +110,12 @@ save(fullfile(filepath, workspaceFileName), allvars(tosave).name);
 % Print custom objects and classes used.
 csim.createListCustomClasses(filepath, workspaceFileName);
 
-fprintf('\nDone.\n\n');
-
-%% Autorun 3D visualization, if enabled.
+%% Autorun 3D visualization
 if(configSim.AutoOpen3DVisualization)
   run('openvis.m');
 end
+
+%% Confirmation
+fprintf('\nDone.\n\n');
+msgfig = msgbox('Simulation Completed','MATLAB Info','help','modal');
+uiwait(msgfig);

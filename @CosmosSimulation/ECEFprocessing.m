@@ -199,6 +199,7 @@ for i=1:length(vizTime)
   end %% number of satellites
 end %% time step
 %}
+fprintf('done.\n');
 
 %% plot latitude and longitude in X-Y plot
 if plotLatLonIn2D || enablePlot
@@ -220,7 +221,7 @@ end
 if writeLLRRPYData 
   % Create inclination vector to write to output file.
   incVec = inclination * ones(size(vizTime));
-  fprintf('\nWriting ECEF files...');
+  fprintf('Writing ECEF files...');
   for i=1:ns+1
     llrFileName = strcat(llrNotScaledFolderPath,filesep,'sat',num2str(i-1),'_LLR.csv');
     llrrpyScaledFileName = strcat(llrScaledFolderPath,filesep,'sat',num2str(i-1),'_LLR_RPY_Scaled.csv');
@@ -231,9 +232,7 @@ if writeLLRRPYData
     %writematrix([vizTime latScaled(i,:)' lonScaled(i,:)' radScaled(i,:)' rollVizTime(i,:)' pitchVizTime(i,:)' yawVizTime(i,:)' incVec], llrrpyScaledFileName);
     %writematrix([vizTime lat(i,:)' lon(i,:)' rad(i,:)'], llrFileName);
   end
-  fprintf('done');
+  fprintf('done.\n');
 end
-
-fprintf('\nECEF processing...done\n');
 
 end

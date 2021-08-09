@@ -39,22 +39,22 @@ end
 if(isempty(matlab.project.rootProject))
   % If there is no project open, launch project from path.
   proj = openProject(pathVisualization);
-  fprintf('To prevent issues, check if project path is correct.\n');
-  fprintf('Project path: %s\n\n',proj.RootFolder);
+  fprintf('\nTo prevent issues, check if project path is correct:\n');
+  fprintf('%s\n\n',proj.RootFolder);
 else
   % If there is a project already open, get the Project object.
   proj = currentProject();
   % Check if the name of the project is correct.
   if(~strcmp(proj.Name,PROJECT_FILE_NAME))
     % If name is different, show error.
-    error(['Project ''%s'' is already open. ',...
+    error(['\nProject ''%s'' is already open. ',...
       'Close it before running ''%s''.'], ...
       proj.Name, PROJECT_FILE_NAME);
   else
     % If name is correct, show message.
-    fprintf(2,'Attention: Project with name ''%s'' already open.\n',proj.Name);
-    fprintf('To prevent issues, check if project path is correct.\n');
-    fprintf('Project path: %s\n\n',proj.RootFolder);
+    fprintf(2,'\nAttention: Project with name ''%s'' already open.\n',proj.Name);
+    fprintf('To prevent issues, check if project path is correct:\n');
+    fprintf('%s\n\n',proj.RootFolder);
   end
 end
 
@@ -997,9 +997,9 @@ end
 
 fprintf('%s','Ready to play visualization: ')
 if AUTORUN
-  fprintf('%s\n','Autoplay ON.')
+  fprintf('%s\n','Autoplay [ON]')
   % Start Simulink visualization.
   sim(modelMain, stopTime);
 else
-  fprintf('%s\n','Autoplay OFF.')
+  fprintf('%s\n','Autoplay [OFF]')
 end

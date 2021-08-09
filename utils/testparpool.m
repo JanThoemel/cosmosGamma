@@ -50,3 +50,6 @@ fprintf('Total parallel runtime: %s seconds.\n',num2str(timeDurationPool));
 timeEndScript = posixtime(datetime('now')); % Posixtime [seconds].
 timeDurationScript = timeEndScript - timeStartScript;
 fprintf('Total script runtime: %s seconds.\n',num2str(timeDurationScript));
+
+msgfig = msgbox('Simulation Completed','MATLAB Info','help','modal');
+uiwait(msgfig);
