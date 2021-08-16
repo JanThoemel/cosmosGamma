@@ -1,6 +1,6 @@
 {
-  "SelectedFormationFlightModes": [2],
-  "NumberOfOrbitsForEachMode":    [2],
+  "SelectedFormationFlightModes": [2 1 2 1 2],
+  "NumberOfOrbitsForEachMode":    [2 2 2 2 2],
   "Modes": [
 
     {

@@ -2,7 +2,7 @@
 warning on verbose;
 delete(gcp('nocreate'));
 
-NUMBER_WORKERS = 36;
+NUMBER_WORKERS = 8;
 
 % Set start time of script.
 timeStartScript = posixtime(datetime('now')); % Posixtime [seconds].
@@ -38,18 +38,15 @@ spmd(NUMBER_WORKERS)
   
 end % Parallel code.
 
-% Terminate the existing parallel pool session.
-delete(gcp('nocreate'));
-
 % Calculate the execution time of the parallel pool.
 timeEndPool = posixtime(datetime('now')); % Posixtime [seconds].
 timeDurationPool = timeEndPool - timeStartPool;
 fprintf('Total parallel runtime: %s seconds.\n',num2str(timeDurationPool));
 
+% Terminate the existing parallel pool session.
+delete(gcp('nocreate'));
+
 % Calculate the execution time of this script.
 timeEndScript = posixtime(datetime('now')); % Posixtime [seconds].
 timeDurationScript = timeEndScript - timeStartScript;
 fprintf('Total script runtime: %s seconds.\n',num2str(timeDurationScript));
-
-msgfig = msgbox('Simulation Completed','MATLAB Info','help','modal');
-uiwait(msgfig);

@@ -117,5 +117,5 @@ end
 
 %% Confirmation
 fprintf('\nDone.\n\n');
-msgfig = msgbox('Simulation Completed','MATLAB Info','help','modal');
+msgfig = msgbox('CosmosBeta Simulation Completed','MATLAB Info','help','modal');
 uiwait(msgfig);
