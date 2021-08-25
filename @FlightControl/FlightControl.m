@@ -86,7 +86,8 @@ end
 			%this.SatelliteMass = 1; % Kilogram(s).
 			this.SatelliteMass = 2; % Kilogram(s).
 			%this.Panels = [0 0 2];
-			this.Panels = [0 0 6];
+			%this.Panels = [0 0 6];
+      this.Panels = [0 0 3.5];
 			this.SurfacePanel = 0.01; % Squared meters.
 			this.SurfaceRef = this.SurfacePanel * this.Panels(3);
 						

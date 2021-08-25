@@ -71,6 +71,18 @@ COORD_FOLDER = strcat(vis.ParentCoordFolder,filesep,vis.CoordFolder);
 COORD_FOLDER = fullfile(pathCosmos,COORD_FOLDER);
 XYZ_MODE = vis.ModeXYZ;
 
+
+
+
+
+% Set parameters to reduce timesteps of original simulation.
+%COARSE_ENABLE = vis.TimeCompressionEnable;
+%COARSE_FACTOR = vis.TimeCompressionFactor;
+
+
+
+
+
 % Set parameter to automatically smooth changes in satellite orientations.
 SMOOTH_ENABLE = vis.SmoothSatOrientationChanges; % [true: 1 | false: 0]
 
@@ -123,6 +135,7 @@ numsats = length(coordfiles);
 simsat = repmat(simsat(1),numsats,1);
 
 %% Read data from coordinate files
+fprintf('%s','Reading data from coordinate files...');
 for n = 1:numsats
   coord = readmatrix(coordfiles{n});
   timestamps = coord(:,1); % [seconds]
@@ -139,6 +152,29 @@ for n = 1:numsats
   yaw   = coord(:,7); % [degrees]
   roll  = coord(:,5); % [degrees]
   inclinationDeg = coord(1,8); % [degrees]
+  
+  % Interpolation for a coarser data sample.
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  % Smoothing of the satellite position data.
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   % Get length of data samples.
   dataLength = length(timestamps);
@@ -266,6 +302,7 @@ for n = 1:numsats
   simsat(n).inc = inclinationRad;
   simsat(n).time = timestamps; % [seconds]
 end
+fprintf('%s\n','done.');
 
 %% Make transformations for 3D visualization
 % Get last timestamp of the time vector, set it as simulation time.
@@ -275,6 +312,7 @@ stopTime = simsat(1).time(end);
 dataLength = length(simsat(1).time);
 
 % Get each time-coordinate-orientation triple for each satellite.
+fprintf('%s','Processing data from coordinate files...');
 for i = 1:dataLength
   for n = 1:numsats
     
@@ -725,10 +763,12 @@ for i = 1:dataLength
     
   end
 end
+fprintf('%s\n','done.');
 
 
 %% Simulink
 % Model names.
+fprintf('%s','Preparing Simulink models...');
 modelMain = 'asbCubeSat';
 model3DWorld = 'asbCubeSat/Visualization/Virtual Reality World/';
 
@@ -960,6 +1000,7 @@ end
 
 % Save model.
 save_system(modelMain);
+fprintf('%s\n','done.');
 
 
 %% Check and Run
@@ -995,11 +1036,14 @@ else
   figure(vrFigHandle);
 end
 
-fprintf('%s','Ready to play visualization: ')
+fprintf('\n%s','Ready to play visualization: ')
 if AUTORUN
-  fprintf('%s\n','Autoplay [ON]')
+  fprintf('%s\n\n','Autoplay [ON]')
   % Start Simulink visualization.
   sim(modelMain, stopTime);
 else
-  fprintf('%s\n','Autoplay [OFF]')
+  fprintf('%s\n\n','Autoplay [OFF]')
+  % Confirmation here:
+  msgfig = msgbox('Visualization Processing Completed','MATLAB Info','help','modal');
+  uiwait(msgfig);
 end

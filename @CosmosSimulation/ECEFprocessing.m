@@ -202,7 +202,7 @@ end %% time step
 fprintf('done.\n');
 
 %% plot latitude and longitude in X-Y plot
-if plotLatLonIn2D || enablePlot
+if plotLatLonIn2D && enablePlot
     figure
     for i=1:ns+1
       plot(lon(i,2:end-1),lat(i,2:end-1),'.');hold on;

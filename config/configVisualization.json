@@ -3,15 +3,26 @@
   "AutoRun": 0,
 
   "ParentCoordFolder": "COORD-runtime",
-  "CoordFolder": "XYZ-RPY-scaled",
+  "CoordFolder": "SnTMission5GTrailing-XYZ-RPY-scaled-300",
   "ModeXYZ": true,
 
-  "VizScale": 5000,
+
+
+
+
+  "VizScale": 400,
 
   "V0": 0,
   "KeplerStepSize": 1,
-  "PlotLatLonIn2D": 0,
+  "PlotLatLonIn2D": false,
   "WriteLLRRPYData": 1,
+
+
+
+
+
+  "TimeCompressionEnable": true,
+  "TimeCompressionFactor": 100,
 
   "SmoothSatOrientationChanges": true,
   "SmoothingDataSpan": 51,

@@ -112,10 +112,12 @@ csim.createListCustomClasses(filepath, workspaceFileName);
 
 %% Autorun 3D visualization
 if(configSim.AutoOpen3DVisualization)
-  run('openvis.m');
+  run('openvis.m'); % Confirmation inside openvis.
+else
+  % Confirmation here:
+  msgfig = msgbox('CosmosBeta Simulation Completed','MATLAB Info','help','modal');
+  uiwait(msgfig);
 end
 
-%% Confirmation
+%% End
 fprintf('\nDone.\n\n');
-msgfig = msgbox('CosmosBeta Simulation Completed','MATLAB Info','help','modal');
-uiwait(msgfig);
