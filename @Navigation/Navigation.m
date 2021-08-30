@@ -1,12 +1,12 @@
-%% Instantiate GPS objects.
+%% Instantiate Navigation objects.
 %_____________________________________________________________________
 %
-% Class GPS:
+% Class Navigation:
 %
 % Detailed explanation goes here.
 %_____________________________________________________________________
 
-classdef GPS < handle
+classdef Navigation < handle
 	
 	properties (GetAccess = public, SetAccess = public)
 		
@@ -21,7 +21,7 @@ classdef GPS < handle
 	
 	methods % Constructor.
 		
-		function this = GPS()
+		function this = Navigation()
 			
 			this.OrbitCounter = 0;
 			
@@ -53,4 +53,4 @@ classdef GPS < handle
 		
 	end % Public methods.
 	
-end % Class GPS.
+end % Class Navigation.

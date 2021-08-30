@@ -13,7 +13,7 @@ properties (GetAccess = public, SetAccess = public)
   AccelFactor % Acceleration factor for the simulation.
   AllParams % Struct with all parameters set by the user.
   FlightControlModules % Array of FlightControl objects.
-  GPSModules % Array of GPS objects.
+  GPSModules % Array of Navigation objects.
 %!RW: deleted param idx: replaced it by OrbitSectionNow
 % IDX % 
 %!RW: change name? initial conditions for what?
@@ -96,7 +96,7 @@ end
       % Aliases allow calling children objects with shorter commands.
       this.Orbits = Orbit.empty(numSatellites,0);
       this.FlightControlModules = FlightControl.empty(numSatellites,0);
-      this.GPSModules = GPS.empty(numSatellites,0);
+      this.GPSModules = Navigation.empty(numSatellites,0);
       
       % Set location in which to save files with FFPS for the satellites.
       ffpsFolderPath = strcat('storage',filesep,ffpsFolderName);

@@ -19,7 +19,7 @@ classdef Satellite < handle
     AutoResponse % If satellite should send responses [true/false].
     CommChannel % Communication channel.
     FlightControl % Object of class FlightControl.
-    GPSModule % Object of class GPS.
+    GPSModule % Object of class Navigation.
     Name % Unique name for identification of the satellite.
     Orbit % Object of class Orbit.
  
@@ -59,7 +59,7 @@ classdef Satellite < handle
 			this.AutoResponse = autoResponse;
 			this.FlightControl = FlightControl(numSats, mode, deltaAngle, ffpsPath, tmFolderPath);
 			this.Orbit = Orbit(altitude, gpsAvailability, tleAvailability);
-			this.GPSModule = GPS();
+			this.GPSModule = Navigation();
       
       this.controlVector=zeros(numSats,3);
       this.controlVectorTM=zeros(numSats,3);
