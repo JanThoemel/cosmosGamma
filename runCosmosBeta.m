@@ -8,6 +8,9 @@
 % parameters for riccati equation can be found in riccatiequation
 
 %% Set paths and MATLAB parameters
+% Set timer start time.
+timeMatlabStart = posixtime(datetime('now')); % Posixtime [seconds].
+
 clc;
 warning on verbose;
 delete(gcp('nocreate'));
@@ -113,12 +116,18 @@ csim.createListCustomClasses(filepath, workspaceFileName);
 
 %% Autorun 3D visualization
 if(configSim.AutoOpen3DVisualization)
-  run('openvis.m'); % Confirmation inside openvis.
-else
+  % Confirmation inside openvis:
+  run('openvis.m');
+end
+
+%% End
+% Set timer stop time.
+timeMatlabStop = posixtime(datetime('now')); % Posixtime [seconds].
+timeMatlabDuration = timeMatlabStop - timeMatlabStart;
+fprintf('\nDone. Runtime: %.3f seconds\n\n',timeMatlabDuration);
+
+if ~configSim.AutoOpen3DVisualization
   % Confirmation here:
   msgfig = msgbox('CosmosBeta Simulation Completed','MATLAB Info','help','modal');
   uiwait(msgfig);
 end
-
-%% End
-fprintf('\nDone.\n\n');
