@@ -1,13 +1,23 @@
 {
   "EnablePlotting": 0,
   "EnableGNSSRProcessing": 0,
-  "AutoOpen3DVisualization": 0,
+  "AutoOpen3DVisualization": 1,
 
   "ParentFolderForCoordFolders": "COORD-runtime",
   "FolderForNonScaledLLRRPY": "LLR-nonscaled",
   "FolderForScaledLLRRPY": "LLR-RPY-scaled",
-  "FolderForScaledXYZRPY": "XYZ-RPY-scaled",
-  "SimAccelerationFactor": 100e3,
+  "FolderForScaledXYZRPY": "XYZ-RPY-scaled-300_SnTMission5GTrailing_10orb",
+  "SimAccelerationFactor": 1000e3,
 
-  "OutputScale": 400
+
+
+
+
+
+
+
+
+
+
+  "NOT_USED_YET_OutputScale": 400
 }

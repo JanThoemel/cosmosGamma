@@ -96,7 +96,8 @@ OVERRIDE_RPY = vis.OverrideRPY;
 
 %% Prepare coordinate files
 disp('Satellite coordinate files:');
-disp(COORD_FOLDER);
+disp(strcat(pathCosmos,filesep));
+fprintf('  %s\n',strcat(vis.ParentCoordFolder,filesep,vis.CoordFolder));
 % Read names of coordinate files.
 coordfiles = {dir(strcat(COORD_FOLDER,filesep,'*.csv')).name};
 % Rearrange files so that the local coordinate is the last one in the list.

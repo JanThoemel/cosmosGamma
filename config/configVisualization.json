@@ -3,15 +3,9 @@
   "AutoRun": 0,
 
   "ParentCoordFolder": "COORD-runtime",
-  "CoordFolder": "XYZ-RPY-scaled",
-  "CoordFolder_old": "SnTMission5GTrailing-XYZ-RPY-scaled-300",
-  "ModeXYZ": true,
-
-
-
-
-
-  "VizScale": 400,
+  "CoordFolder": "XYZ-RPY-scaled-300_SnTMission5GTrailing_10orb",
+  
+  "VizScale": 300,
 
   "V0": 0,
   "KeplerStepSize": 1,
@@ -21,11 +15,11 @@
 
 
 
+  "ModeXYZ": true,
+  "TimeCompressionEnable": 0,
+  "TimeCompressionFactor": 50,
 
-  "TimeCompressionEnable": true,
-  "TimeCompressionFactor": 5,
-
-  "SmoothSatOrientationChanges": true,
+  "SmoothSatOrientationChanges": 1,
   "SmoothingDataSpan": 51,
   "SmoothingMethodChosen": 1,
   "SmoothingMethodList": [ "moving" ],
