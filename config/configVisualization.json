@@ -3,7 +3,8 @@
   "AutoRun": 0,
 
   "ParentCoordFolder": "COORD-runtime",
-  "CoordFolder": "SnTMission5GTrailing-XYZ-RPY-scaled-300",
+  "CoordFolder": "XYZ-RPY-scaled",
+  "CoordFolder_old": "SnTMission5GTrailing-XYZ-RPY-scaled-300",
   "ModeXYZ": true,
 
 
@@ -22,7 +23,7 @@
 
 
   "TimeCompressionEnable": true,
-  "TimeCompressionFactor": 100,
+  "TimeCompressionFactor": 5,
 
   "SmoothSatOrientationChanges": true,
   "SmoothingDataSpan": 51,

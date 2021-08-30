@@ -58,6 +58,10 @@ else
   end
 end
 
+% Set timer start time.
+timeScriptStart = posixtime(datetime('now')); % Posixtime [seconds].
+
+
 %% Read parameters from JSON files
 vis = readjson('configVisualization.json');
 
@@ -71,17 +75,9 @@ COORD_FOLDER = strcat(vis.ParentCoordFolder,filesep,vis.CoordFolder);
 COORD_FOLDER = fullfile(pathCosmos,COORD_FOLDER);
 XYZ_MODE = vis.ModeXYZ;
 
-
-
-
-
 % Set parameters to reduce timesteps of original simulation.
-%COARSE_ENABLE = vis.TimeCompressionEnable;
-%COARSE_FACTOR = vis.TimeCompressionFactor;
-
-
-
-
+COARSE_ENABLE = vis.TimeCompressionEnable;
+COARSE_FACTOR = vis.TimeCompressionFactor;
 
 % Set parameter to automatically smooth changes in satellite orientations.
 SMOOTH_ENABLE = vis.SmoothSatOrientationChanges; % [true: 1 | false: 0]
@@ -97,6 +93,7 @@ OVERRIDE_LLR = vis.OverrideLLR;
 % Option to override roll-pitch-yaw values for testing purposes.
 OVERRIDE_RPY = vis.OverrideRPY;
 
+
 %% Prepare coordinate files
 disp('Satellite coordinate files:');
 disp(COORD_FOLDER);
@@ -107,7 +104,7 @@ coordfiles = {dir(strcat(COORD_FOLDER,filesep,'*.csv')).name};
 coordfiles = circshift(coordfiles,-1);
 disp(coordfiles');
 
-%% Define satellite struct
+% Define satellite struct
 simsat(1).time  = -1;
 
 simsat(1).x     = struct('time',0,'signals',struct('dimensions',0,'values',0));
@@ -134,10 +131,13 @@ simsat(1).inc   = -1;
 numsats = length(coordfiles);
 simsat = repmat(simsat(1),numsats,1);
 
+
 %% Read data from coordinate files
 fprintf('%s','Reading data from coordinate files...');
+% Set timer start time.
+timeReadStart = posixtime(datetime('now')); % Posixtime [seconds].
 for n = 1:numsats
-  coord = readmatrix(coordfiles{n});
+  coord = readmatrix(strcat(COORD_FOLDER,filesep,coordfiles{n}));
   timestamps = coord(:,1); % [seconds]
   if(XYZ_MODE)
     x = coord(:,2); % [m]
@@ -153,28 +153,17 @@ for n = 1:numsats
   roll  = coord(:,5); % [degrees]
   inclinationDeg = coord(1,8); % [degrees]
   
-  % Interpolation for a coarser data sample.
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  % Smoothing of the satellite position data.
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  % Interpolate to a coarser data sample.
+  if (COARSE_ENABLE && XYZ_MODE)
+    timestamps = timestamps(1:COARSE_FACTOR:end, 1);
+    x = x(1:COARSE_FACTOR:end, 1);
+    y = y(1:COARSE_FACTOR:end, 1);
+    z = z(1:COARSE_FACTOR:end, 1);
+    pitch = pitch(1:COARSE_FACTOR:end, 1);
+    yaw = yaw(1:COARSE_FACTOR:end, 1);
+    roll = roll(1:COARSE_FACTOR:end, 1);
+    inclinationDeg = inclinationDeg(1:COARSE_FACTOR:end, 1);
+  end
   
   % Get length of data samples.
   dataLength = length(timestamps);
@@ -302,7 +291,12 @@ for n = 1:numsats
   simsat(n).inc = inclinationRad;
   simsat(n).time = timestamps; % [seconds]
 end
-fprintf('%s\n','done.');
+fprintf('%s','done. ');
+% Set timer stop time.
+timeReadStop = posixtime(datetime('now')); % Posixtime [seconds].
+timeReadDuration = timeReadStop - timeReadStart;
+fprintf('(%.2f seconds)\n',timeReadDuration);
+
 
 %% Make transformations for 3D visualization
 % Get last timestamp of the time vector, set it as simulation time.
@@ -310,11 +304,15 @@ stopTime = simsat(1).time(end);
 
 % Get data length.
 dataLength = length(simsat(1).time);
+fprintf('%s%d.\n','Data length of each coordinate file: ',dataLength);
 
 % Get each time-coordinate-orientation triple for each satellite.
-fprintf('%s','Processing data from coordinate files...');
-for i = 1:dataLength
-  for n = 1:numsats
+fprintf('%s\n','Processing data from coordinate files...');
+for n = 1:numsats
+  % Set timer start time.
+  timeProcStart = posixtime(datetime('now')); % Posixtime [seconds].
+  fprintf('  %d/%d...',n,numsats);
+  for i = 1:dataLength
     
     % Get time, in seconds, since beginning of simulation.
     time = simsat(n).time(i);
@@ -762,8 +760,12 @@ for i = 1:dataLength
     simsat(n).rot.signals.values(i,:) = rot;
     
   end
+  fprintf('%s','done. ');
+  % Set timer stop time.
+  timeProcStop = posixtime(datetime('now')); % Posixtime [seconds].
+  timeProcDuration = timeProcStop - timeProcStart;
+  fprintf('(%.2f seconds)\n',timeProcDuration);
 end
-fprintf('%s\n','done.');
 
 
 %% Simulink
@@ -808,19 +810,19 @@ end
 b3DWorld = 'VR Sink1/';
 
 % Open x3D file for writing and discard all contents ('w' option).
-fid_main = fopen([pathVisualization,filesep,'simulation',filesep,...
+file3DWorld = fopen([pathVisualization,filesep,'simulation',filesep,...
   'cosmosSimulation.x3d'],'w');
 
 % Write initial structure before satellites section.
 % Open file with initial structure.
-fid_struct1 = fopen([pathVisualization,filesep,'simulation',filesep,...
+file3DWorld_part1 = fopen([pathVisualization,filesep,'simulation',filesep,...
   'cosmosSimulation_struct1.x3d'],'r');
-while ~feof(fid_struct1)
-  sline = fgetl(fid_struct1);
-  fprintf(fid_main,'%s\n',sline);
+while ~feof(file3DWorld_part1)
+  sline = fgetl(file3DWorld_part1);
+  fprintf(file3DWorld,'%s\n',sline);
 end
 % Close file.
-fclose(fid_struct1);
+fclose(file3DWorld_part1);
 
 % Write N satellite structures.
 for n=1:(numsats-1)
@@ -881,7 +883,7 @@ for n=1:(numsats-1)
   };
   
   % Write structure to X3D file.
-  fprintf(fid_main,'%s\n',structSat{:});
+  fprintf(file3DWorld,'%s\n',structSat{:});
 end
 
 % Define final structure after satellites section.
@@ -892,10 +894,10 @@ structFinal = {
 };
 
 % Write structure to X3D file.
-fprintf(fid_main,'%s\n',structFinal{:});
+fprintf(file3DWorld,'%s\n',structFinal{:});
 
 % Close x3D file.
-fclose(fid_main);
+fclose(file3DWorld);
 
 % Help!
 % VR block input ports - To see structure of the input ports:
@@ -1036,13 +1038,18 @@ else
   figure(vrFigHandle);
 end
 
-fprintf('\n%s','Ready to play visualization: ')
+% Set timer stop time.
+timeScriptStop = posixtime(datetime('now')); % Posixtime [seconds].
+timeScriptDuration = timeScriptStop - timeScriptStart;
+fprintf('\nTotal visualization processing time: %.2f seconds\n',timeScriptDuration);
+
+fprintf('%s','Ready to play visualization: ')
 if AUTORUN
-  fprintf('%s\n\n','Autoplay [ON]')
+  fprintf('%s\n','Autoplay [ON]')
   % Start Simulink visualization.
   sim(modelMain, stopTime);
 else
-  fprintf('%s\n\n','Autoplay [OFF]')
+  fprintf('%s\n','Autoplay [OFF]')
   % Confirmation here:
   msgfig = msgbox('Visualization Processing Completed','MATLAB Info','help','modal');
   uiwait(msgfig);
