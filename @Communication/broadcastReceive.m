@@ -5,12 +5,12 @@ function msg = broadcastReceive(this)
 % Details here.
 %_____________________________________________________________________
 
-msg = zeros(6, this.FlightControl.NumSatellites);
+msg = zeros(6, this.NumSats);
 
-for i = 1 : this.FlightControl.NumSatellites
-	if i ~= this.FlightControl.SatID
-		msg(:, i) = labReceive(i);
-	end
+for i = 1 : this.NumSats
+  if i ~= this.SatID
+    msg(:, i) = labReceive(i);
+  end
 end
 
-end % Function Satellite.broadcastReceive.
+end % Function Communication.broadcastReceive().

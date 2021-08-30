@@ -1,5 +1,5 @@
 {
-  "EnablePlotting": 1,
+  "EnablePlotting": 0,
   "EnableGNSSRProcessing": 0,
   "AutoOpen3DVisualization": 0,
 

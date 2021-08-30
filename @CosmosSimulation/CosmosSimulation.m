@@ -12,6 +12,7 @@ properties (GetAccess = public, SetAccess = public)
 
   AccelFactor % Acceleration factor for the simulation.
   AllParams % Struct with all parameters set by the user.
+  CommModules % Array of Communication objects.
   FlightControlModules % Array of FlightControl objects.
   GPSModules % Array of Navigation objects.
 %!RW: deleted param idx: replaced it by OrbitSectionNow
@@ -97,6 +98,7 @@ end
       this.Orbits = Orbit.empty(numSatellites,0);
       this.FlightControlModules = FlightControl.empty(numSatellites,0);
       this.GPSModules = Navigation.empty(numSatellites,0);
+      this.CommModules = Communication.empty(numSatellites,0);
       
       % Set location in which to save files with FFPS for the satellites.
       ffpsFolderPath = strcat('storage',filesep,ffpsFolderName);
@@ -133,6 +135,7 @@ end
         this.Orbits(i) = this.Satellites(i).Orbit;
         this.FlightControlModules(i) = this.Satellites(i).FlightControl;
         this.GPSModules(i) = this.Satellites(i).GPSModule;
+        this.CommModules(i) = this.Satellites(i).CommModule;
       end
       
       this.WindFactor = 1;      %% shall aerodynamics be simulated?

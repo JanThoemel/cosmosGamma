@@ -24,13 +24,15 @@ fclose(fid);
 % Set satellite name.
 this.Name = ['sat ',num2str(id)];
 
-% Set satellite communication channel.
-this.CommChannel = commChannel;
+% Set satellite communication module.
+this.CommModule.CommChannel = commChannel;
+this.CommModule.SatID = id;
+this.CommModule.SatName = this.Name;
 
 % Make satellite alive.
 this.Alive = true;
 msg = sprintf('Satellite number %d is alive', id);
-this.comm(msg);
+this.CommModule.groundSend(msg);
 
 % Get battery status from the satellite.
 battery_status = 1;

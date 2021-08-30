@@ -49,6 +49,7 @@ spmd(this.NumSatellites)
   orbit = this.Orbits(uid);
   fc    = this.FlightControlModules(uid);
   gps   = this.GPSModules(uid);
+  comms = this.CommModules(uid);
   
   %!JT: we should have
   % - a class COM where we hide all details of the communication between the
@@ -321,7 +322,7 @@ plannedExperimentTimes=[36900	38700;
       sat.writeAndResetMissionTM(uid)      
 			msg = ['Orbit ',num2str(orbit.OrbitCounter),' finished ',...
 				'(',num2str(orbit.TimeOrbitDuration(2)),' s)'];
-			sat.comm(msg);
+			comms.groundSend(msg);
       this.setIDX(1);
 		end
 
@@ -342,6 +343,7 @@ plannedExperimentTimes=[36900	38700;
   orbits = gcat(orbit,1,1);
   flightControlModules = gcat(fc,1,1);
   gpsModules = gcat(gps,1,1);
+  commModules = gcat(comms,1,1);
 end % Parallel code.
 %-------------------------------------------------------------------------------  
 %-------------------------------------------------------------------------------  
@@ -354,6 +356,7 @@ this.Satellites = satellites{1};
 this.Orbits = orbits{1};
 this.FlightControlModules = flightControlModules{1};
 this.GPSModules = gpsModules{1};
+this.CommModules = commModules{1};
 
 % Calculate the execution time of the parallel pool.
 timeEndPool = posixtime(datetime('now')); % Posixtime [seconds].

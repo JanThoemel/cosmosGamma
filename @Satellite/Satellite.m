@@ -16,8 +16,7 @@ classdef Satellite < handle
     forceVectorTM
     
     Alive % If satellite is alive or not [true/false].
-    AutoResponse % If satellite should send responses [true/false].
-    CommChannel % Communication channel.
+    CommModule % Object of class Communication.
     FlightControl % Object of class FlightControl.
     GPSModule % Object of class Navigation.
     Name % Unique name for identification of the satellite.
@@ -56,10 +55,10 @@ classdef Satellite < handle
       % Output:
       % - Object of class Satellite.
       
-			this.AutoResponse = autoResponse;
 			this.FlightControl = FlightControl(numSats, mode, deltaAngle, ffpsPath, tmFolderPath);
 			this.Orbit = Orbit(altitude, gpsAvailability, tleAvailability);
 			this.GPSModule = Navigation();
+      this.CommModule = Communication(autoResponse, numSats);
       
       this.controlVector=zeros(numSats,3);
       this.controlVectorTM=zeros(numSats,3);
@@ -81,10 +80,7 @@ classdef Satellite < handle
 	methods (Access = public)
 		
 		initialize(this, id, commChannel, iniConditions)
-		comm(this, msg)
 		fly(this, currentOrbitSection, sizeOrbitSection,plannedExperimentTime)
-		broadcastSend(this, msg)
-		msg = broadcastReceive(this)
 		turnOff(this)
     
     function updControlVectorTM(this)
@@ -133,7 +129,7 @@ classdef Satellite < handle
       if isfile(fileSatPositionTM), delete(fileSatPositionTM); end
       if isfile(fileTimeVectorTM), delete(fileTimeVectorTM); end
       if isfile(fileSatStatesTM), delete(fileSatStatesTM); end
-      this.comm("Telemetry data has been cleared");
+      this.CommModule.groundSend("Telemetry data has been cleared");
     end
     function writeAndResetMissionTM(this,satID)
       fileControlVectorTM = strcat('telemetry',filesep,'ControlVectorTM',num2str(satID),'.csv');

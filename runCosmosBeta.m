@@ -60,7 +60,8 @@ csim.startSimulation();
 sat   = csim.Satellites; % Aliases: sat(1) to sat(n).
 orbit = csim.Orbits; % Aliases: orbit(1) to orbit(n).
 fc    = csim.FlightControlModules; % Aliases: fc(1) to fc(n).
-gps   = csim.GPSModules; % Aliases: gps(1) to gps(n).
+nav   = csim.GPSModules; % Aliases: nav(1) to nav(n).
+comms = csim.CommModules; % Aliases: comms(1) to comms(n).
 
 %% Post-processing and plotting methods
 % Use a Kepler propagator to compute ECEF coordinates

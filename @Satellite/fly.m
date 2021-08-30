@@ -51,11 +51,10 @@ this.FlightControl.updateStateDesired(timeSinceEqCrossing, this.Orbit.MeanMotion
 % Get updated error between the current and desired states for this satellite.
 stateError = this.FlightControl.getStateError();
 
-%%JT: this should go through COM module
 % Communicate new state error of this satellite to other satellites.
-this.broadcastSend(stateError);
+this.CommModule.broadcastSend(stateError);
 % Receive the state errors from other satellites.
-receivedStateErrors = this.broadcastReceive();
+receivedStateErrors = this.CommModule.broadcastReceive();
 
 % Update information on state errors as received from other satellites.
 this.FlightControl.updateStateErrors(receivedStateErrors);
