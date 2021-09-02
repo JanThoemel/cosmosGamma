@@ -58,22 +58,33 @@ end
       fclose(fid);
       
       % Get all parameters that are contained in the JSON file.
-      modeID = params.SelectedFormationFlightMode;
+      selectedModeID = params.SelectedFormationFlightMode;
+      
+      % Go through list of formation flight modes.
+      for i = 1:length(params.Modes)
+          if params.Modes(i).ModeID == selectedModeID
+              selectedMode = params.Modes(i);
+              break;
+          else
+              %% Throw error that Mode ID could not be found
+          end
+      end
+      
       maxNumOrbits = params.SimMaxNumOrbits;
       accelFactor = params.SimAccelerationFactor;
-      modeName = params.Modes(modeID).ModeName;
-      numSatellites = params.Modes(modeID).NumSatellites;
+      modeName = selectedMode.ModeName;
+      numSatellites = selectedMode.NumSatellites;
 %!RW: attitudeResolutionDeg -> former deltaAngle
-      attitudeResolutionDeg = params.Modes(modeID).AttitudeResolutionDeg;
-      initOrbitAltitude = params.Modes(modeID).InitOrbitAltitude;
-      sizeOrbitSection = params.Modes(modeID).SizeOrbitSectionDeg;
-      initOrbitSection = params.Modes(modeID).InitOrbitSectionID;
-      autoResponse = params.Modes(modeID).AutoResponse;
-      availableGPS = params.Modes(modeID).AvailableGPS;
-      availableTLE = params.Modes(modeID).AvailableTLE;
-      initConditions = params.Modes(modeID).InitialConditions;
-      ffpsFolderName = params.Modes(modeID).FFPSFolder;
-      ffpsValues = params.Modes(modeID).FFPSValues;
+      attitudeResolutionDeg = selectedMode.AttitudeResolutionDeg;
+      initOrbitAltitude = selectedMode.InitOrbitAltitude;
+      sizeOrbitSection = selectedMode.SizeOrbitSectionDeg;
+      initOrbitSection = selectedMode.InitOrbitSectionID;
+      autoResponse = selectedMode.AutoResponse;
+      availableGPS = selectedMode.AvailableGPS;
+      availableTLE = selectedMode.AvailableTLE;
+      initConditions = selectedMode.InitialConditions;
+      ffpsFolderName = selectedMode.FFPSFolder;
+      ffpsValues = selectedMode.FFPSValues;
       
       % Set simulation parameters.
       this.AccelFactor = accelFactor;
@@ -127,7 +138,7 @@ end
           availableGPS, ...
           availableTLE, ...
           numSatellites, ...
-          modeID, ...
+          selectedModeID, ...
           ffpsFullPath, ...
           tmFolderPath);
         

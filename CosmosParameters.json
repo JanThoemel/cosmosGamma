@@ -1,6 +1,6 @@
 {
-  "SelectedFormationFlightMode": 5,
-  "SimMaxNumOrbits": 10,
+  "SelectedFormationFlightMode": 10,
+  "SimMaxNumOrbits": 15,
   "SimAccelerationFactor": 1000e3,
   "Modes": [
     {
@@ -313,6 +313,28 @@
         {"ffp1": 0,"ffp2": 0,"ffp3": 300000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7":0,"ffp8": 0},
         {"ffp1": 0,"ffp2": 0,"ffp3": 400000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7":0,"ffp8": 0},
         {"ffp1": 0,"ffp2": 0,"ffp3": 500000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7":0,"ffp8": 0}
+      ]
+    }
+,
+    {
+      "ModeID": 10,
+      "ModeName": "SnTMissionCircling",
+      "NumSatellites": 2,
+      "AttitudeResolutionDeg": 45,
+      "InitOrbitAltitude": 450e3,
+      "SizeOrbitSectionDeg": 0.1,
+      "InitOrbitSectionID": 1,
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-110, 1000, -0.0873, 0.0002, -0.002, -0.056, 0, 0, 0]
+      ],
+      "FFPSFolder": "SnTMissionCircling",
+      "FFPSValues": [
+        {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": -100,"ffp2": -10,"ffp3": 1000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
       ]
     }
 

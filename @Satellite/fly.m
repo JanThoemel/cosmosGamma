@@ -39,7 +39,7 @@ end
 
 
 %% to-be-double-checked theory: if R is large then the control error is secondary to the minimization of the control action
-R=diag([1e14 1e14 1e14]);%diag([1e12 1e12 1e12]);
+R=diag([1e15 1e15 1e15]);%diag([1e14 1e14 1e14]);%diag([1e12 1e12 1e12]);
 [P, IR, A, B] = this.FlightControl.riccatiequation(this.Orbit.MeanMotionRad, this.FlightControl.SSCoeff,R);
 
 % determine time elapsed since last ascending equator crossing
