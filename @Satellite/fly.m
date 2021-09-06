@@ -39,7 +39,16 @@ end
 
 
 %% to-be-double-checked theory: if R is large then the control error is secondary to the minimization of the control action
-R=diag([1e15 1e15 1e15]);%diag([1e14 1e14 1e14]);%diag([1e12 1e12 1e12]);
+%J=int(eQe+uRu)
+%R=diag([1e12 1e12 1e12]);
+%R=diag([1e13 1e13 1e13]);
+%R=diag([1e14 1e14 1e14]);
+R=diag([1e15 1e15 1e15]);
+%R=diag([1e16 1e16 1e16]);
+%R=diag([1e17 1e17 1e17]);
+%R=diag([1e18 1e18 1e18]);
+%R=diag([1e19 1e19 1e19]);
+
 [P, IR, A, B] = this.FlightControl.riccatiequation(this.Orbit.MeanMotionRad, this.FlightControl.SSCoeff,R);
 
 % determine time elapsed since last ascending equator crossing
@@ -119,7 +128,34 @@ if  not(plannedExperimentTime)
     this.forceVector(this.FlightControl.SatID,:)=[0 0 0]'; rollAngleOpt=0; pitchAngleOpt=0; yawAngleOpt=0;
   end
 else %% do this if experiment time
-  this.forceVector(this.FlightControl.SatID,:) = [0 0 0]'; rollAngleOpt=0; pitchAngleOpt=0; yawAngleOpt=0; %% this is not correct because solar radiation causes a force during experiment time
+  if plannedExperimentTime
+    %this.Orbit.R0
+    %this.Orbit.Altitude
+    alpha=acosd((this.Orbit.R0- this.Orbit.Altitude)/this.Orbit.R0);
+    beta=asind((this.Orbit.R0- this.Orbit.Altitude)/this.Orbit.R0);
+
+    orbitalPeriod=360/this.Orbit.MeanMotionDeg;
+    omegaRS=(90-beta)/orbitalPeriod/alpha*360;
+
+    %sectionTime=currentOrbitSection/this.Orbit.MeanMotionDeg;
+    %orsst=omegaRS*plannedExperimentTime
+    %plannedExperimentTime
+
+    if labindex==1
+      rollAngleOpt=90;
+      %pitchAngleOpt=wrapTo180(beta+omegaRS*sectionTime);
+      pitchAngleOpt=beta+omegaRS*plannedExperimentTime;
+    else
+      rollAngleOpt=270;
+      %pitchAngleOpt=wrapTo180(-(beta+omegaRS*sectionTime));
+      pitchAngleOpt=-(beta+omegaRS*plannedExperimentTime);
+    end
+
+    yawAngleOpt=0;
+  end
+
+  this.forceVector(this.FlightControl.SatID,:) = [0 0 0]'; %% this is not correct
+  %forceVector=squeeze(totalForceVector(:,goodThetai(optIndex),goodThetaj(optIndex),goodThetak(optIndex)));
   %%check: are satellites within their mutual cones at all angles=0?
   %% if not: 1 abort experiment 2 align satellites(what is the condition?)
   %% option 1
