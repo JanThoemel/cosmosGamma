@@ -8,37 +8,44 @@
 
 classdef CosmosSimulation < handle
 
-properties (GetAccess = public, SetAccess = public)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Properties %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  AccelFactor % Acceleration factor for the simulation.
-  AllParams % Struct with all parameters set by the user.
-  CommModules % Array of Communication objects.
-  FlightControlModules % Array of FlightControl objects.
-  GPSModules % Array of Navigation objects.
+  properties (GetAccess = public, SetAccess = public)
+
+    AccelFactor % Acceleration factor for the simulation.
+    AllParams % Struct with all parameters set by the user.
+    CommModules % Array of Communication objects.
+    FlightControlModules % Array of FlightControl objects.
+    GPSModules % Array of Navigation objects.
 %!RW: deleted param idx: replaced it by OrbitSectionNow
-% IDX % 
+    %IDX
 %!RW: change name? initial conditions for what?
-  InitConditions % 
-  MaxNumOrbits % Maximum number of orbits to run.
-  ModeName % Formation flight mode name.
-  NumOrbitSections % Total number of orbit sections.
-  NumSatellites % Total number of satellites in the formation.
-  Orbits % Array of Orbit objects.
-  OrbitSections % Array of orbit sections with defined angle step [deg].
-  OrbitSectionInitial % Initial orbit section ID for the simulation.
-  OrbitSectionNow % Current orbit section ID.
-  OrbitSectionSize % Size of each orbit section [deg].
-  Satellites % Array of Satellite objects.
-  SatPositions % Satellite positions in relation to the reference.
-  SatPositionsLengths % Length of the satellite positions vectors.
+    InitConditions % 
+    MaxNumOrbits % Maximum number of orbits to run.
+    ModeName % Formation flight mode name.
+    NumOrbitSections % Total number of orbit sections.
+    NumSatellites % Total number of satellites in the formation.
+    Orbits % Array of Orbit objects.
+    OrbitSections % Array of orbit sections with defined angle step [deg].
+    OrbitSectionInitial % Initial orbit section ID for the simulation.
+    OrbitSectionNow % Current orbit section ID.
+    OrbitSectionSize % Size of each orbit section [deg].
+    Satellites % Array of Satellite objects.
+    SatPositions % Satellite positions in relation to the reference.
+    SatPositionsLengths % Length of the satellite positions vectors.
 %!RW: leave parameter status for later implementation.
-% Status % Simulation status.
-  TelemetryPath %
-  WindFactor %% switch on whether aerodynamics shall be simulated
-	SolarFactor  %% switch on whether solar radiation pressure shall be simulated
+    %Status % Simulation status.
+    TelemetryPath %
+    WindFactor %% switch on whether aerodynamics shall be simulated
+    SolarFactor  %% switch on whether solar radiation pressure shall be simulated
 
+  end
 
-end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Constructor Method %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   methods % Constructor.
     
@@ -62,12 +69,12 @@ end
       
       % Go through list of formation flight modes.
       for i = 1:length(params.Modes)
-          if params.Modes(i).ModeID == selectedModeID
-              selectedMode = params.Modes(i);
-              break;
-          else
-              %% Throw error that Mode ID could not be found
-          end
+        if params.Modes(i).ModeID == selectedModeID
+          selectedMode = params.Modes(i);
+          break;
+        else
+          %% Throw error that Mode ID could not be found
+        end
       end
       
       maxNumOrbits = params.SimMaxNumOrbits;
@@ -100,7 +107,7 @@ end
       this.OrbitSectionNow = initOrbitSection;
       this.OrbitSectionSize = sizeOrbitSection;
       this.NumOrbitSections = length(this.OrbitSections);
-            
+      
       % Create array for objects of class Satellite.
       this.Satellites = Satellite.empty(numSatellites,0);
       
@@ -168,7 +175,7 @@ end
     
 %!RW: later rename function to setOrbitSection?
     function setIDX(this, value)
-%       this.IDX = value;
+%     this.IDX = value;
       this.OrbitSectionNow = value;
     end
     
@@ -190,12 +197,12 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Static Methods %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-methods (Static)
-  
-  [time,lat,lon,rad]=  keplerPropagation(cosmosTime,keplerStepSize,inclination,RAAN,v0,altitude,radiusOfEarth)
-  
-  createListCustomClasses(filepath, workspaceFileName)
-  
-end % Static methods.
+  methods (Static)
+
+    [time,lat,lon,rad]=  keplerPropagation(cosmosTime,keplerStepSize,inclination,RAAN,v0,altitude,radiusOfEarth)
+
+    createListCustomClasses(filepath, workspaceFileName)
+
+  end % Static methods.
 
 end % Class CosmosSimulation.
