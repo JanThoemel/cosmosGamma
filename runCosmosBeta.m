@@ -38,6 +38,7 @@ if(~isdeployed)
   % Add path to ancillary folders.
   addpath(strcat(filepath,filesep,'config'));
   addpath(strcat(filepath,filesep,'utils'));
+  addpath(strcat(filepath,filesep,'Experiment-Times'));
 	
 	% Change working directory to the directory of this m-file.
 	cd(filepath);
