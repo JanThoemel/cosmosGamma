@@ -8,7 +8,8 @@ function startSimulation(this)
 %plannedExperimentTimes=readmatrix('2times20minperdayfor7days.csv');
 %plannedExperimentTimes=readmatrix('2times40minperdayfor7days.csv');
 %plannedExperimentTimes=readmatrix('2times240minperdayfor7days.csv');
-plannedExperimentTimes=readmatrix('everyday6times30minperdayfor7daysTBC.csv');
+%plannedExperimentTimes=readmatrix('everyday6times30minperdayfor7daysTBC.csv');
+enablePlannedExperimentTimes = false;
 
 % Create a cluster object according to the specified profile.
 c = parcluster('local');
@@ -154,7 +155,7 @@ spmd(this.NumSatellites)
 
       plannedExperimentTime=0;
 
-      if 1
+      if enablePlannedExperimentTimes
         for i=1:size(plannedExperimentTimes,1)
           if (lastTime+timeStep)>plannedExperimentTimes(i,1) && (lastTime+timeStep)<plannedExperimentTimes(i,2)
             plannedExperimentTime=(lastTime+timeStep-plannedExperimentTimes(i,1));

@@ -1,13 +1,13 @@
 {
   "EnablePlotting": 0,
   "EnableGNSSRProcessing": 0,
-  "AutoOpen3DVisualization": 1,
+  "AutoOpen3DVisualization": 0,
 
   "ParentFolderForCoordFolders": "COORD-runtime",
   "FolderForNonScaledLLRRPY": "LLR-nonscaled",
   "FolderForScaledLLRRPY": "LLR-RPY-scaled",
   "FolderForScaledXYZRPY": "XYZ-RPY-scaled-150_SnTMissionCircling_15orb",
-  "SimAccelerationFactor": 1000e3,
+  "SimAccelerationFactor": 100e3,
 
 
 

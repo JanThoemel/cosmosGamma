@@ -15,7 +15,8 @@ classdef CosmosSimulation < handle
   properties (GetAccess = public, SetAccess = public)
 
     AccelFactor % Acceleration factor for the simulation.
-    AllParams % Struct with all parameters set by the user.
+%!RW: Delete AllParams; not used anymore; test first
+    %AllParams % Struct with all parameters set by the user.
     CommModules % Array of Communication objects.
     FlightControlModules % Array of FlightControl objects.
     GPSModules % Array of Navigation objects.
@@ -49,53 +50,22 @@ classdef CosmosSimulation < handle
 
   methods % Constructor.
     
-    function this = CosmosSimulation()
+    function this = CosmosSimulation(maxNumOrbits, accelFactor, modeName,...
+      numSatellites, attitudeResolutionDeg, initOrbitAltitude, sizeOrbitSection,...
+      initOrbitSection, autoResponse, availableGPS, availableTLE, initConditions,...
+      ffpsFolderName, ffpsValues)
       %% Constructor for class CosmosSimulation
       %
       % Input:
-      % - Struct of parameters.
+      % - Simulation parameters.
       %
       % Output:
       % - Object of class Simulation.
       
-      % Read parameters from JSON file.
-      filename = 'CosmosParameters.json';
-      fid = fopen(filename,'r');
-      params = jsondecode(fscanf(fid,'%s'));
-      fclose(fid);
-      
-      % Get all parameters that are contained in the JSON file.
-      selectedModeID = params.SelectedFormationFlightMode;
-      
-      % Go through list of formation flight modes.
-      for i = 1:length(params.Modes)
-        if params.Modes(i).ModeID == selectedModeID
-          selectedMode = params.Modes(i);
-          break;
-        else
-          %% Throw error that Mode ID could not be found
-        end
-      end
-      
-      maxNumOrbits = params.SimMaxNumOrbits;
-      accelFactor = params.SimAccelerationFactor;
-      modeName = selectedMode.ModeName;
-      numSatellites = selectedMode.NumSatellites;
 %!RW: attitudeResolutionDeg -> former deltaAngle
-      attitudeResolutionDeg = selectedMode.AttitudeResolutionDeg;
-      initOrbitAltitude = selectedMode.InitOrbitAltitude;
-      sizeOrbitSection = selectedMode.SizeOrbitSectionDeg;
-      initOrbitSection = selectedMode.InitOrbitSectionID;
-      autoResponse = selectedMode.AutoResponse;
-      availableGPS = selectedMode.AvailableGPS;
-      availableTLE = selectedMode.AvailableTLE;
-      initConditions = selectedMode.InitialConditions;
-      ffpsFolderName = selectedMode.FFPSFolder;
-      ffpsValues = selectedMode.FFPSValues;
       
       % Set simulation parameters.
       this.AccelFactor = accelFactor;
-      this.AllParams = params;
       this.MaxNumOrbits = maxNumOrbits;
       this.ModeName = modeName;
       this.NumSatellites = numSatellites;
