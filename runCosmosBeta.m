@@ -94,6 +94,10 @@ comms = csim.CommModules; % Aliases: comms(1) to comms(n).
 
 %% Post-processing and plotting methods
 % Use a Kepler propagator to compute ECEF coordinates
+
+
+
+%!RW: Move this to openvis
 csim.ECEFprocessing(...
   selectedMode.OrbitInitAltitude,...
   selectedMode.OrbitInclinationDeg,...
@@ -108,6 +112,10 @@ csim.ECEFprocessing(...
   configSim.FolderForScaledLLRRPY,...
   configSim.FolderForScaledXYZRPY,...
   configSim.EnablePlotting);
+%^^
+
+
+
 
 % Compute the location of the specular point for the GNSS-reflectometry method
 if(configSim.EnableGNSSRProcessing)
