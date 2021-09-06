@@ -6,7 +6,8 @@
   "ParentFolderForCoordFolders": "COORD-runtime",
   "FolderForNonScaledLLRRPY": "LLR-nonscaled",
   "FolderForScaledLLRRPY": "LLR-RPY-scaled",
-  "FolderForScaledXYZRPY": "XYZ-RPY-scaled-150_SnTMissionCircling_15orb",
+  "FolderForScaledXYZRPY": "XYZ-RPY-scaled",
+
   "SimAccelerationFactor": 100e3,
 
 

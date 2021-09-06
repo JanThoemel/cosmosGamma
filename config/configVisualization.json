@@ -1,9 +1,8 @@
 {
-
   "AutoRun": 0,
 
   "ParentCoordFolder": "COORD-runtime",
-  "CoordFolder": "XYZ-RPY-scaled-150_SnTMissionCircling_15orb",
+  "CoordFolder": "XYZ-RPY-scaled",
   
   "VizScale": 150,
 
@@ -19,11 +18,10 @@
   "TimeCompressionEnable": 0,
   "TimeCompressionFactor": 50,
 
-  "SmoothSatOrientationChanges": 0,
+  "SmoothSatOrientationChanges": 1,
   "SmoothingDataSpan": 51,
   "SmoothingMethodChosen": 1,
   "SmoothingMethodList": [ "moving" ],
   "OverrideLLR": 0,
   "OverrideRPY": 0
-
 }
