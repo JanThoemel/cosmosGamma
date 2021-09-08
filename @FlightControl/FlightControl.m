@@ -23,6 +23,7 @@ classdef FlightControl < handle
     FormationMode % Mode for the satellites formation flight.
     NumSatellites % Total number of satellites in the formation.
     Panels % Satellite panels.
+    RMatrix % R-Matrix parameter used in control algorithm.
     SatelliteMass % Mass of the satellite [kg].
     SatID % Unique identification number of the satellite.
     SolarPressure % Pressure from sunlight. Will be rotated over the orbit
@@ -55,7 +56,8 @@ classdef FlightControl < handle
 
   methods % Constructor.
 
-    function this = FlightControl(ns, mode, deltaAngle, ffpsFilePath, tmFolderPath)
+    function this = FlightControl(ns, mode, deltaAngle, rMatrixDiagonal,...
+      ffpsFilePath, tmFolderPath)
       %% Constructor for class FlightControl
       %
       % Input:
@@ -64,12 +66,9 @@ classdef FlightControl < handle
       %
       % Output:
       % - Object of class FlightControl.
-
-      % Read formation flight parameters from JSON file.
-      %%% Already done in Satellite.initialize
-      %fid = fopen(ffpsFilePath,'r');
-      %this.FFPS = jsondecode(fscanf(fid,'%s'));
-      %fclose(fid);
+      
+      % Set R-Matrix parameter for control algorithm.
+      this.RMatrix = diag(rMatrixDiagonal);
 
       % Save path to formation flight parameters.
       this.FFPSFilePath = ffpsFilePath;
@@ -115,6 +114,8 @@ classdef FlightControl < handle
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   methods (Access = public)
+
+    [P, IR, A, B] = riccatiequation(this, meanMotion, SSCoeff)
 
     updateStateErrorsAvg(this, receivedAverageStateErrors)
     avg = getStateErrorAverage(this)
@@ -165,8 +166,6 @@ classdef FlightControl < handle
       rollAngles, pitchAngles, yawAngles)
 
     vRot = rodriguesRotation(v, k, theta)
-
-    [P, IR, A, B] = riccatiequation(meanMotion, SSCoeff,R)
 
     [forceVector, rollAngleOpt, pitchAngleOpt, yawAngleOpt] = findBestAttitude(...
       totalForceVector, controlVector, rollAngles, pitchAngles, yawAngles,...

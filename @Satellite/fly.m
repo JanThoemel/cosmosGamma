@@ -1,4 +1,4 @@
-function fly(this, currentOrbitSection, sizeOrbitSection,plannedExperimentTime)
+function fly(this, currentOrbitSection, sizeOrbitSection, plannedExperimentTime)
 %% Initialize flight control
 % ______________________________________________________________________________
 %
@@ -40,16 +40,7 @@ end
 
 %% to-be-double-checked theory: if R is large then the control error is secondary to the minimization of the control action
 %J=int(eQe+uRu)
-%R=diag([1e12 1e12 1e12]);
-%R=diag([1e13 1e13 1e13]);
-%R=diag([1e14 1e14 1e14]);
-R=diag([1e15 1e15 1e15]);
-%R=diag([1e16 1e16 1e16]);
-%R=diag([1e17 1e17 1e17]);
-%R=diag([1e18 1e18 1e18]);
-%R=diag([1e19 1e19 1e19]);
-
-[P, IR, A, B] = this.FlightControl.riccatiequation(this.Orbit.MeanMotionRad, this.FlightControl.SSCoeff,R);
+[P, IR, A, B] = this.FlightControl.riccatiequation(this.Orbit.MeanMotionRad, this.FlightControl.SSCoeff);
 
 % determine time elapsed since last ascending equator crossing
 timeSinceEqCrossing = currentOrbitSection / this.Orbit.MeanMotionDeg;

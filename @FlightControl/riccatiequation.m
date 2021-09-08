@@ -1,4 +1,4 @@
-function [P, IR, A, B] = riccatiequation(meanMotion, SSCoeff,R)
+function [P, IR, A, B] = riccatiequation(this, meanMotion, SSCoeff)
 %% according to:
 %% C. Traub, G. H. Herdrich, and S. Fasoulas, “Influence of energy accommodation on a robust spacecraft rendezvous maneuver using differential aerodynamic forces,” CEAS Sp. J., 2019.
 %% but with Ivanov's coordinate system and variable renaming
@@ -51,11 +51,11 @@ function [P, IR, A, B] = riccatiequation(meanMotion, SSCoeff,R)
    
   B=[Z;
      E];
-  IR=inv(R);
+  IR=inv(this.RMatrix);
   %%https://nl.mathworks.com/help/control/ref/care.html
   %% the function care is replaced by icare in later matlab versions
   S=zeros(6,3);
   E2=eye(6);
- [P,~,~] = care(A,B,Q,R,S,E2);
+ [P,~,~] = care(A,B,Q,this.RMatrix,S,E2);
  
-end % Function FlightControl.riccatiequation.
+end % Function FlightControl.riccatiequation()

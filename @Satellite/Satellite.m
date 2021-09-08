@@ -47,7 +47,7 @@ classdef Satellite < handle
 
   methods % Constructor.
 
-    function this = Satellite(altitude, deltaAngle, autoResponse, ...
+    function this = Satellite(altitude, deltaAngle, rMatrixDiagonal, autoResponse, ...
       gpsAvailability, tleAvailability, numSats, mode, ffpsPath, tmFolderPath)
       %% Constructor for class Satellite
       %
@@ -63,7 +63,8 @@ classdef Satellite < handle
       % Output:
       % - Object of class Satellite.
 
-      this.FlightControl = FlightControl(numSats, mode, deltaAngle, ffpsPath, tmFolderPath);
+      this.FlightControl = FlightControl(numSats, mode, deltaAngle,...
+        rMatrixDiagonal, ffpsPath, tmFolderPath);
       this.Orbit = Orbit(altitude, gpsAvailability, tleAvailability);
       this.GPSModule = Navigation();
       this.CommModule = Communication(autoResponse, numSats);
@@ -92,7 +93,7 @@ classdef Satellite < handle
   methods (Access = public)
 
     initialize(this, id, commChannel, iniConditions)
-    fly(this, currentOrbitSection, sizeOrbitSection,plannedExperimentTime)
+    fly(this, currentOrbitSection, sizeOrbitSection, plannedExperimentTime)
     turnOff(this)
 
     function updControlVectorTM(this)
