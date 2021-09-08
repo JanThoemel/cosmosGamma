@@ -1,5 +1,29 @@
-function aerototalforcevector = getWindPressureVector(wind,panelSurface,noxpanels,noypanels,nozpanels,rollAngles,pitchAngles,yawAngles,rho,v,Tatmos)
-  
+function aerototalforcevector = getWindPressureVector(this, rho, v, Tatmos)
+%% Short title description here
+% ______________________________________________________________________________
+
+    % FlightControl.getWindPressureVector()
+    % Public method called in:
+    %   CosmosSimulation.startSimulation()
+    % Class properties used:
+    %   PanelArea
+    %   PanelQuantity
+    %   WindPressure
+    %   rollAngles
+    %   pitchAngles
+    %   yawAngles
+% ______________________________________________________________________________
+
+  % Get parameters from class FlightControl.
+  wind = this.WindPressure;
+  panelSurface = this.PanelArea;
+  noxpanels = this.PanelQuantity(1);
+  noypanels = this.PanelQuantity(2);
+  nozpanels = this.PanelQuantity(3);
+  rollAngles = this.rollAngles;
+  pitchAngles = this.pitchAngles;
+  yawAngles = this.yawAngles;
+
 	aerototalforcevector =zeros(3,size(rollAngles,2),size(pitchAngles,2),size(yawAngles,2));
  
   if norm(wind)==0

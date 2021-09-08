@@ -22,7 +22,9 @@ classdef FlightControl < handle
 
     FormationMode % Mode for the satellites formation flight.
     NumSatellites % Total number of satellites in the formation.
-    Panels % Satellite panels.
+    PanelArea % Surface area of each of the satellite panels [m^2].
+    PanelQuantity % Number of panels on the satellite.
+    PanelTotalAreaZDir % Total surface area on Z-direction [m^2].
     RMatrix % R-Matrix parameter used in control algorithm.
     SatelliteMass % Mass of the satellite [kg].
     SatID % Unique identification number of the satellite.
@@ -35,8 +37,6 @@ classdef FlightControl < handle
     StateErrors % State errors of all satellites in the formation.
     StateErrorsAvg % Average of the state errors of all satellites.
     StateOld % Old satellite state.
-    SurfacePanel % Surface area of each of the satellite panels [m^2].
-    SurfaceRef % Reference surface area.
     WindPressure % Pressure from wind.
     WindPressureVector % Wind pressure for all satellite attitudes.
 
@@ -57,7 +57,7 @@ classdef FlightControl < handle
   methods % Constructor.
 
     function this = FlightControl(ns, mode, deltaAngle, rMatrixDiagonal,...
-      ffpsFilePath, tmFolderPath)
+      satMass, panelArea, panelQuantity, ffpsFilePath, tmFolderPath)
       %% Constructor for class FlightControl
       %
       % Input:
@@ -89,21 +89,14 @@ classdef FlightControl < handle
       this.rollAngles = 0:deltaAngle:360; % Roll.
       this.pitchAngles  = 0:deltaAngle:180; % Pitch.
       this.yawAngles = 0:deltaAngle:360; % Yaw.
+      
+      % Set satellite mass and panels parameters.
+      this.SatelliteMass = satMass;
+      this.PanelArea = panelArea;
+      this.PanelQuantity = panelQuantity;
 
-      %% GoldCrest type
-      %this.SatelliteMass = 1; % Kilogram(s).
-      %this.Panels = [0 0 2];
-
-      %% SnT 5G mission type
-      this.SatelliteMass = 2; % Kilogram(s).
-      this.Panels = [0 0 3.5];
-
-      %% Opssat type
-      %this.SatelliteMass = 5; % Kilogram(s).
-      %this.Panels = [0 0 14];
-
-      this.SurfacePanel = 0.01; % Squared meters.
-      this.SurfaceRef = this.SurfacePanel * this.Panels(3);
+      % Compute total surface area on Z-direction [m^2].
+      this.PanelTotalAreaZDir = panelArea * panelQuantity(3);
 
     end
 
@@ -116,6 +109,17 @@ classdef FlightControl < handle
   methods (Access = public)
 
     [P, IR, A, B] = riccatiequation(this, meanMotion, SSCoeff)
+    
+    aerototalforcevector = getWindPressureVector(this, rho, v, Tatmos)
+    % Public method called in:
+    %   CosmosSimulation.startSimulation()
+    % Class properties used:
+    %   PanelArea
+    %   PanelQuantity
+    %   WindPressure
+    %   rollAngles
+    %   pitchAngles
+    %   yawAngles
 
     updateStateErrorsAvg(this, receivedAverageStateErrors)
     avg = getStateErrorAverage(this)
@@ -157,13 +161,13 @@ classdef FlightControl < handle
 
   methods (Static)
 
-    aerototalforcevector = getWindPressureVector(...
-      wind, panelSurface, noxpanels, noypanels, nozpanels,...
-      rollAngles, pitchAngles, yawAngles, rho, v, Tatmos)
-
     solarpressureforcevector = getSolarPressureVector(...
       sunlight, panelSurface, noxpanels, noypanels, nozpanels,...
       rollAngles, pitchAngles, yawAngles)
+    % Public method called in:
+    %   Satellite.fly()
+    % Class properties used:
+    %   ?
 
     vRot = rodriguesRotation(v, k, theta)
 

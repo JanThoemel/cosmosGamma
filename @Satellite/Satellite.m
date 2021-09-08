@@ -47,8 +47,9 @@ classdef Satellite < handle
 
   methods % Constructor.
 
-    function this = Satellite(altitude, deltaAngle, rMatrixDiagonal, autoResponse, ...
-      gpsAvailability, tleAvailability, numSats, mode, ffpsPath, tmFolderPath)
+    function this = Satellite(satMass, panelArea, panelQuantity, altitude,...
+      deltaAngle, rMatrixDiagonal, autoResponse, gpsAvailability, tleAvailability,...
+      numSats, mode, ffpsPath, tmFolderPath)
       %% Constructor for class Satellite
       %
       % Input:
@@ -64,7 +65,7 @@ classdef Satellite < handle
       % - Object of class Satellite.
 
       this.FlightControl = FlightControl(numSats, mode, deltaAngle,...
-        rMatrixDiagonal, ffpsPath, tmFolderPath);
+        rMatrixDiagonal, satMass, panelArea, panelQuantity, ffpsPath, tmFolderPath);
       this.Orbit = Orbit(altitude, gpsAvailability, tleAvailability);
       this.GPSModule = Navigation();
       this.CommModule = Communication(autoResponse, numSats);
@@ -93,7 +94,13 @@ classdef Satellite < handle
   methods (Access = public)
 
     initialize(this, id, commChannel, iniConditions)
+    
     fly(this, currentOrbitSection, sizeOrbitSection, plannedExperimentTime)
+    % Public method called in:
+    %   CosmosSimulation.startSimulation()
+    % Properties of Satellite used:
+    %   ?
+    
     turnOff(this)
 
     function updControlVectorTM(this)

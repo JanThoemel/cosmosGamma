@@ -1,10 +1,15 @@
 function fly(this, currentOrbitSection, sizeOrbitSection, plannedExperimentTime)
 %% Initialize flight control
 % ______________________________________________________________________________
-%
-% Details here.
-% method of class Satellite
+
+    % Satellite.fly()
+    % Public method called in:
+    %   CosmosSimulation.startSimulation()
+    % Properties of Satellite used:
+    %   ?
 % ______________________________________________________________________________
+%!RW: this method should be moved to CosmosSimulation, because it simulates the
+%flight of the satellite.
 
 %% rotate sunlight (note: rotation for ecliptic already done)
 this.FlightControl.SolarPressure = this.FlightControl.rodriguesRotation(this.FlightControl.initialSolarPressure,[0 1 0]',currentOrbitSection/180*pi);
@@ -13,8 +18,8 @@ totalPressureDirection=this.FlightControl.WindPressure+this.FlightControl.SolarP
 
 % compute for each roll, pitch and yaw angle the solar radiation force
 this.FlightControl.SolarPressureVector = this.FlightControl.getSolarPressureVector( ...
-  this.FlightControl.SolarPressure, this.FlightControl.SurfacePanel, ...
-  this.FlightControl.Panels(1), this.FlightControl.Panels(2), this.FlightControl.Panels(3), ...
+  this.FlightControl.SolarPressure, this.FlightControl.PanelArea, ...
+  this.FlightControl.PanelQuantity(1), this.FlightControl.PanelQuantity(2), this.FlightControl.PanelQuantity(3), ...
   this.FlightControl.rollAngles, this.FlightControl.pitchAngles, this.FlightControl.yawAngles);
 
 % Vector of size 3 x sizeRollAngles x sizePitchAngles x sizeYawAngles.

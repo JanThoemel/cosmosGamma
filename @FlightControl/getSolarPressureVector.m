@@ -1,6 +1,17 @@
 function  solarpressureforcevector = getSolarPressureVector(sunlight,panelSurface,...
           noxpanels,noypanels,nozpanels,rollAngles,pitchAngles,yawAngles)
-%%  computes the experienced force caused by solar pressure for all satellite attitudes (pitch, yaw, roll)
+%% Compute the experienced force caused by solar pressure for all satellite attitudes (pitch, yaw, roll)
+% ______________________________________________________________________________
+
+    % FlightControl.getSolarPressureVector()
+    % Public method called in:
+    %   Satellite.fly()
+    % Class properties used:
+    %   ?
+% ______________________________________________________________________________
+%!RW: Modify this function to turn into a public method, using parameters of the
+%class FlightControl ^^.
+
 %%  input variables
 %%  -sunlight
 %%  -panelSurface

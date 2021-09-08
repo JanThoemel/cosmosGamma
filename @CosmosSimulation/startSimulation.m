@@ -1,8 +1,12 @@
 function startSimulation(this)
 %% Initiate Cosmos simulation
 % ______________________________________________________________________________
-%
-% Details here.
+
+    % CosmosSimulation.startSimulation()
+    % Public method called in:
+    %   ?
+    % Class properties used:
+    %   ?
 % ______________________________________________________________________________
 
 %plannedExperimentTimes=readmatrix('2times20minperdayfor7days.csv');
@@ -82,21 +86,22 @@ spmd(this.NumSatellites)
   lastTime=0; %% lastTime is used to wrap around the time vector for each new orbit
   
   % define nominal wind magnitude and direction
-  sat.FlightControl.WindPressure = this.WindFactor * sat.Orbit.Rho/2 * sat.Orbit.V^2 * [-1 0 0]';
+  fc.WindPressure = this.WindFactor * sat.Orbit.Rho/2 * sat.Orbit.V^2 * [-1 0 0]';
+%!RW: Move computation of Wind Pressure parameter into a function of
+%FlightControl class ^^. Is it a simulated or a measured parameter?
+
   % compute for each roll, pitch and yaw angle the aerodynamic force
-  sat.FlightControl.WindPressureVector = FlightControl.getWindPressureVector(...
-                                              sat.FlightControl.WindPressure, sat.FlightControl.SurfacePanel, ...
-	                                            sat.FlightControl.Panels(1), sat.FlightControl.Panels(2), ...
-                                              sat.FlightControl.Panels(3), sat.FlightControl.rollAngles, sat.FlightControl.pitchAngles,...
-                                              sat.FlightControl.yawAngles, sat.Orbit.Rho, sat.Orbit.V, sat.Orbit.TempAtmos);
+  fc.WindPressureVector = fc.getWindPressureVector(orbit.Rho, orbit.V, orbit.TempAtmos);
+%!RW: Move or Copy parameters orbit.Rho, orbit.V, orbit.TempAtmos into
+%FlightControl class ^^. Is it a simulated or a measured parameter?
 
   %sat.FlightControl.WindPressureVectorUncertainty=0;                                            
 
   % define nominal solar radiation pressure magnitude and direction
-  sat.FlightControl.initialSolarPressure = this.SolarFactor * 2 * 4.5e-6 * [0 -1 0]';
+  fc.initialSolarPressure = this.SolarFactor * 2 * 4.5e-6 * [0 -1 0]';
 
   %% incline by ecliptic
-  sat.FlightControl.initialSolarPressure = sat.FlightControl.rodriguesRotation(sat.FlightControl.initialSolarPressure,[0 0 1]',-23.4/180*pi);
+  fc.initialSolarPressure = fc.rodriguesRotation(fc.initialSolarPressure,[0 0 1]',-23.4/180*pi);
   
   %% for sim
   % for simulation output, set initial conditions
@@ -170,7 +175,7 @@ spmd(this.NumSatellites)
         end
       end
 %}        
-      sat.fly(currentOrbitSection, this.OrbitSectionSize,plannedExperimentTime);
+      sat.fly(currentOrbitSection, this.OrbitSectionSize, plannedExperimentTime);
 
       %%%%%%%%THIS SHOULD GO TO AN ISL COM MODULE
       %% currently, the reference position change is communicated to the other sats
@@ -284,4 +289,4 @@ fprintf('\nTotal simulation time: %s seconds\n',num2str(timeDurationPool));
 % Terminate the existing parallel pool session.
 delete(gcp('nocreate'));
 
-end % Function CosmosSimulation.startSimulation
+end % Function CosmosSimulation.startSimulation()
