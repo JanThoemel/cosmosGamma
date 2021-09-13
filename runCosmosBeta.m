@@ -13,7 +13,6 @@ timeMatlabStart = posixtime(datetime('now')); % Posixtime [seconds].
 
 clc;
 warning on verbose;
-delete(gcp('nocreate'));
 % Try to get handle of the figure window for 3D visualization.
 cosmosVisHandle = findall(groot,'Name','COSMOS Visualization');
 % If handle for 3D visualization is empty, simply close all figures.
@@ -165,6 +164,7 @@ timeMatlabStop = posixtime(datetime('now')); % Posixtime [seconds].
 timeMatlabDuration = timeMatlabStop - timeMatlabStart;
 fprintf('\nDone. Runtime: %.3f seconds\n\n',timeMatlabDuration);
 
+% Automatically open 3D visualization.
 if ~configSim.AutoOpen3DVisualization
   % Confirmation here:
   msgfig = msgbox('CosmosBeta Simulation Completed','MATLAB Info','help','modal');

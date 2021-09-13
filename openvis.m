@@ -7,7 +7,6 @@ EARTH_ROT = (2*pi/86164); % [rad/s]
 %% Set paths
 % The parameters below normally should never change.
 warning on verbose;
-delete(gcp('nocreate'));
 
 % Inform the name of this file without the extension "m".
 THIS_FILE_NAME = 'openvis';
@@ -105,7 +104,10 @@ coordfiles = {dir(strcat(COORD_FOLDER,filesep,'*.csv')).name};
 coordfiles = circshift(coordfiles,-1);
 disp(coordfiles');
 
-% Define satellite struct
+% Clear satellite struct.
+clear simsat;
+
+% Define satellite struct.
 simsat(1).time  = -1;
 
 simsat(1).x     = struct('time',0,'signals',struct('dimensions',0,'values',0));
@@ -131,6 +133,16 @@ simsat(1).inc   = -1;
 % Allocate memory for array of satellites.
 numsats = length(coordfiles);
 simsat = repmat(simsat(1),numsats,1);
+
+
+%% Set parallel pool
+createparpool(numsats);
+
+% Create data queue for parallel pool.
+dq = parallel.pool.DataQueue;
+
+% Define function to call when new data is received on the DataQueue.
+afterEach(dq, @disp);
 
 
 %% Read data from coordinate files
@@ -307,43 +319,49 @@ stopTime = simsat(1).time(end);
 dataLength = length(simsat(1).time);
 fprintf('%s%d.\n','Data length of each coordinate file: ',dataLength);
 
+parsat = simsat;
+
 % Get each time-coordinate-orientation triple for each satellite.
 fprintf('%s\n','Processing data from coordinate files...');
-for n = 1:numsats
+spmd(numsats)
+  
+  n = labindex;
+  
   % Set timer start time.
   timeProcStart = posixtime(datetime('now')); % Posixtime [seconds].
-  fprintf('  %d/%d...',n,numsats);
+  msg = sprintf('%3.d/%d...processing...',n,numsats);
+  send(dq, msg);
   for i = 1:dataLength
     
     % Get time, in seconds, since beginning of simulation.
-    time = simsat(n).time(i);
+    time = parsat(n).time(i);
     
     % Get coordinate values for the current time.
     if(XYZ_MODE)
-      x = simsat(n).x.signals.values(i);
-      y = simsat(n).y.signals.values(i);
-      z = simsat(n).z.signals.values(i);
+      x = parsat(n).x.signals.values(i);
+      y = parsat(n).y.signals.values(i);
+      z = parsat(n).z.signals.values(i);
       lat  = 0;
       long = 0;
       sma  = 0;
     else
-      lat  = simsat(n).lat.signals.values(i);
-      long = simsat(n).long.signals.values(i);
-      sma  = simsat(n).sma.signals.values(i);
+      lat  = parsat(n).lat.signals.values(i);
+      long = parsat(n).long.signals.values(i);
+      sma  = parsat(n).sma.signals.values(i);
       % From latitude-longitude, calculate position in ECEF.
       base = sma * cos(lat);
       z = sma * sin(lat);
       x = base * cos(long);
       y = base * sin(long);
     end
-    simsat(n).pos.signals.values(i,1) = x;
-    simsat(n).pos.signals.values(i,2) = y;
-    simsat(n).pos.signals.values(i,3) = z;
+    parsat(n).pos.signals.values(i,1) = x;
+    parsat(n).pos.signals.values(i,2) = y;
+    parsat(n).pos.signals.values(i,3) = z;
     
     % Get roll, pitch, yaw angles.
-    rollAngle  = simsat(n).roll.signals.values(i);  % [rad]
-    pitchAngle = simsat(n).pitch.signals.values(i); % [rad]
-    yawAngle   = simsat(n).yaw.signals.values(i);   % [rad]
+    rollAngle  = parsat(n).roll.signals.values(i);  % [rad]
+    pitchAngle = parsat(n).pitch.signals.values(i); % [rad]
+    yawAngle   = parsat(n).yaw.signals.values(i);   % [rad]
     
     % Compute unit vector from x, y, z.
     xyzUnit = [x;y;z] / norm([x;y;z]); % [3x1 unit vector]
@@ -354,9 +372,9 @@ for n = 1:numsats
 % unitPositionVector1 = posVector / norm(posVector);
 %     
 % % Set U1.
-% simsat(n).posU1.signals.values(i,1) = unitPositionVector1(1);
-% simsat(n).posU1.signals.values(i,2) = unitPositionVector1(2);
-% simsat(n).posU1.signals.values(i,3) = unitPositionVector1(3);
+% parsat(n).posU1.signals.values(i,1) = unitPositionVector1(1);
+% parsat(n).posU1.signals.values(i,2) = unitPositionVector1(2);
+% parsat(n).posU1.signals.values(i,3) = unitPositionVector1(3);
 % 
 % % For each pair of lat-long, compute unit vector to center of Earth.
 % % Initial vector is [SMA, 0, 0].
@@ -374,9 +392,9 @@ for n = 1:numsats
 % unitPositionVector2 = quatrotate(rotLong, unitPositionVector2);
 % 
 % % Set U2.
-% simsat(n).posU2.signals.values(i,1) = unitPositionVector2(1);
-% simsat(n).posU2.signals.values(i,2) = unitPositionVector2(2);
-% simsat(n).posU2.signals.values(i,3) = unitPositionVector2(3);
+% parsat(n).posU2.signals.values(i,1) = unitPositionVector2(1);
+% parsat(n).posU2.signals.values(i,2) = unitPositionVector2(2);
+% parsat(n).posU2.signals.values(i,3) = unitPositionVector2(3);
     
     
     
@@ -455,7 +473,7 @@ for n = 1:numsats
     
     %% Satellite rotation for orbital inclination
     % Positive rotation on ECEF's X-axis.
-    a = simsat(n).inc; % [rad]
+    a = parsat(n).inc; % [rad]
     rotInc = [cos(a/2), sin(a/2), 0, 0]; % [quaternion]
     rot = quatmultiply(rotInc, rot);
     % Correct local body axes.
@@ -476,7 +494,7 @@ for n = 1:numsats
     %   unitVector = [0; 0; 1];
     % Rotate unit vector on ECEF's X-axis, with angle equal to the orbital
     % inclination. Rotation angle in degrees:
-    angX = simsat(n).inc * 180/pi; % [deg]
+    angX = parsat(n).inc * 180/pi; % [deg]
     % Apply rotation on unit vector. The resulting vector represents the normal
     % vector of the orbital plane:
     normalOrbitVector = rotx(angX)*[0;0;1]; % [3x1 U-vector]
@@ -581,8 +599,8 @@ for n = 1:numsats
 %     
 %     % Check for positive or negative change in latitude.
 %     if i > 1
-%       lat_before = simsat(n).lat.signals.values(i-1);
-%       lat_now = simsat(n).lat.signals.values(i);
+%       lat_before = parsat(n).lat.signals.values(i-1);
+%       lat_now = parsat(n).lat.signals.values(i);
 %       diff = lat_now - lat_before;
 %     else
 %       diff = 0;
@@ -601,9 +619,9 @@ for n = 1:numsats
 %     % latitude decreasing -> use negative orbit inclination for YAW
 %     
 %     if diff < 0
-%       inclinationToUse = -simsat(n).inc;
+%       inclinationToUse = -parsat(n).inc;
 %     else
-%       inclinationToUse = simsat(n).inc;
+%       inclinationToUse = parsat(n).inc;
 %     end
 %     
 %     % Set rotation angle on ECEF's X-axis.
@@ -698,8 +716,8 @@ for n = 1:numsats
 %     
 %     % Check for positive or negative change in latitude.
 %     if i > 1
-%       lat_before = simsat(n).lat.signals.values(i-1);
-%       lat_now = simsat(n).lat.signals.values(i);
+%       lat_before = parsat(n).lat.signals.values(i-1);
+%       lat_now = parsat(n).lat.signals.values(i);
 %       diff = lat_now - lat_before;
 %     else
 %       diff = 0;
@@ -718,9 +736,9 @@ for n = 1:numsats
 %     % latitude decreasing -> use negative orbit inclination for YAW
 %     
 %     if diff < 0
-%       inclinationToUse = -simsat(n).inc;
+%       inclinationToUse = -parsat(n).inc;
 %     else
-%       inclinationToUse = simsat(n).inc;
+%       inclinationToUse = parsat(n).inc;
 %     end
     
 %     %% YAW
@@ -758,14 +776,23 @@ for n = 1:numsats
     
     %% Total rotation
     % Multiplied all rotation quaternions to get final rotation.
-    simsat(n).rot.signals.values(i,:) = rot;
+    parsat(n).rot.signals.values(i,:) = rot;
     
   end
-  fprintf('%s','done. ');
   % Set timer stop time.
   timeProcStop = posixtime(datetime('now')); % Posixtime [seconds].
   timeProcDuration = timeProcStop - timeProcStart;
-  fprintf('(%.2f seconds)\n',timeProcDuration);
+  msg = sprintf('%3.d/%d...done. (%.2f seconds)',n,numsats,timeProcDuration);
+  send(dq, msg);
+  
+  % Globally concatenate all output variables on lab index 1.
+  % Must be the last lines of code of the parallel pool.
+  % satellites = gcat(parsat,1,1);
+end % Parallel code.
+
+for i = 1:numsats
+  allsats = parsat{i};
+  simsat(i) = allsats(i);
 end
 
 
@@ -1055,3 +1082,12 @@ else
   msgfig = msgbox('Visualization Processing Completed','MATLAB Info','help','modal');
   uiwait(msgfig);
 end
+
+% Clear composites.
+% Needed to close active spmd.
+% See: https://nl.mathworks.com/matlabcentral/answers/223939-how-to-specify-the-number-of-labs-in-smpd
+clear a adeg angPos angX c I lat localPitch localRoll localYaw long msg ...
+  normalOrbitVector normalVector pitchAngle pitchCorrection rodriguesQuat ...
+  rodriguesRotMatrix rollAngle rot rotEarthDeg rotEarthFix rotEarthRad rotInc ...
+  sma time timeProcDuration timeProcStart timeProcStop u v1 v2 W x xyzUnit ...
+  y yawAngle z satellites parsat;

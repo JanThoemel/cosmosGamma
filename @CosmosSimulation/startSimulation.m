@@ -15,18 +15,14 @@ function startSimulation(this)
 %plannedExperimentTimes=readmatrix('everyday6times30minperdayfor7daysTBC.csv');
 enablePlannedExperimentTimes = false;
 
-% Create a cluster object according to the specified profile.
-c = parcluster('local');
-c.NumWorkers = this.NumSatellites;
+% Set parallel pool.
+createparpool(this.NumSatellites + 1);
 
 % Create data queue for parallel pool.
 dq = parallel.pool.DataQueue;
 
 % Define function to call when new data is received on the DataQueue.
 afterEach(dq, @disp);
-
-% Create and return pool with the specified number of workers.
-parpool(this.NumSatellites);
 
 % Set the start time for the parallel pool.
 timeStartPool = posixtime(datetime('now')); % Posixtime [seconds].
@@ -285,8 +281,5 @@ this.CommModules = commModules{1};
 timeEndPool = posixtime(datetime('now')); % Posixtime [seconds].
 timeDurationPool = timeEndPool - timeStartPool;
 fprintf('\nTotal simulation time: %s seconds\n',num2str(timeDurationPool));
-
-% Terminate the existing parallel pool session.
-delete(gcp('nocreate'));
 
 end % Function CosmosSimulation.startSimulation()
