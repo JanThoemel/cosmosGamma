@@ -27,21 +27,21 @@ end
 THIS_FILE_NAME = 'runCosmosBeta';
 
 if(~isdeployed)
-	% Get directory path of the active file in MATLAB's Editor.
-	[filepath,~,~] = fileparts(matlab.desktop.editor.getActiveFilename);
-	addpath(filepath); % Add file path to the current MATLAB path.
-	
-	% Get directory path of the file name set in THIS_FILE_NAME.
-	[filepath,~,~] = fileparts(which(THIS_FILE_NAME));
-	addpath(filepath); % Add file path to the current MATLAB path.
-  
+  % Get directory path of the active file in MATLAB's Editor.
+  [filepath,~,~] = fileparts(matlab.desktop.editor.getActiveFilename);
+  addpath(filepath); % Add file path to the current MATLAB path.
+
+  % Get directory path of the file name set in THIS_FILE_NAME.
+  [filepath,~,~] = fileparts(which(THIS_FILE_NAME));
+  addpath(filepath); % Add file path to the current MATLAB path.
+
   % Add path to ancillary folders.
   addpath(strcat(filepath,filesep,'config'));
   addpath(strcat(filepath,filesep,'utils'));
   addpath(strcat(filepath,filesep,'Experiment-Times'));
-	
-	% Change working directory to the directory of this m-file.
-	cd(filepath);
+
+  % Change working directory to the directory of this m-file.
+  cd(filepath);
 end
 
 %% Read parameters from configuration files
