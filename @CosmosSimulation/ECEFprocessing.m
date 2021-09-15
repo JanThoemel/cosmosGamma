@@ -1,4 +1,4 @@
-function ECEFprocessing(this, altitude, inclination, RAAN, vizScale, ...
+function ECEFprocessing(this, altitude, inclination, orbitLAN, vizScale, ...
     keplerStepSize, v0, plotLatLonIn2D, writeLLRRPYData, parentCoordFolder,...
     llrNotScaledFolderName, llrScaledFolderName, xyzScaledFolderName, enablePlot)
 %% input:
@@ -101,10 +101,10 @@ for i=1:ns
 end
 
 %% compute orbit
-[vizTime,latitude,longitude,radius] = this.keplerPropagation(cosmosTime,keplerStepSize,inclination,RAAN,v0,altitude,radiusOfEarth);
+[vizTime,latitude,longitude,radius] = this.keplerPropagation(cosmosTime,keplerStepSize,inclination,orbitLAN,v0,altitude,radiusOfEarth);
 vizTime = vizTime'; % transform to TIMEx1 column vector
 if(ENABLE_ROD_METHOD)
-  [vizTime,x,y,z] = this.getPosECEF(cosmosTime,keplerStepSize,inclination,RAAN,v0,altitude,radiusOfEarth,...
+  [vizTime,x,y,z] = this.getPosECEF(cosmosTime,keplerStepSize,inclination,orbitLAN,v0,altitude,radiusOfEarth,...
     xlocal,ylocal,zlocal,vizScale,ns);
 end
 

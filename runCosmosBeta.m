@@ -8,9 +8,6 @@
 % parameters for riccati equation can be found in riccatiequation
 
 %% Set paths and MATLAB parameters
-% Set timer start time.
-timeMatlabStart = posixtime(datetime('now')); % Posixtime [seconds].
-
 clc;
 warning on verbose;
 % Try to get handle of the figure window for 3D visualization.
@@ -21,6 +18,10 @@ if isempty(cosmosVisHandle)
 else % If handle is found, close all figures with exception of 3D visualization.
   cab(cosmosVisHandle);
 end
+
+% Set timer start time.
+disp('Preparing MATLAB environment...');
+timeMatlabStart = posixtime(datetime('now')); % Posixtime [seconds].
 
 % Inform the name of this file without the extension "m".
 THIS_FILE_NAME = 'runCosmosBeta';
@@ -46,9 +47,9 @@ end
 %% Read parameters from configuration files
 % Read and set initial condition parameters from configuration files.
 % To change a parameter's value, open the respective JSON file and modify it.
-configSim   = readjson('configSimulation.json');
-configFF    = readjson('configFormationFlight.json');
-configVis   = readjson('configVisualization.json');
+configFF  = readjson('configFormationFlight.json');
+configSim = readjson('configSimulation.json');
+configVis = readjson('configVisualization.json');
 
 % Get identifier of the selected formation flight mode.
 selectedModeID = configFF.SelectedFormationFlightMode;
@@ -99,13 +100,11 @@ comms = csim.CommModules; % Aliases: comms(1) to comms(n).
 %% Post-processing and plotting methods
 % Use a Kepler propagator to compute ECEF coordinates
 
-
-
 %!RW: Move this to openvis
 csim.ECEFprocessing(...
   selectedMode.OrbitInitAltitude,...
   selectedMode.OrbitInclinationDeg,...
-  0,... % RAAN
+  selectedMode.OrbitLANDeg,...
   configVis.VizScale,...
   configVis.KeplerStepSize,...
   configVis.V0,...
@@ -117,9 +116,6 @@ csim.ECEFprocessing(...
   configSim.FolderForScaledXYZRPY,...
   configSim.EnablePlotting);
 %^^
-
-
-
 
 % Compute the location of the specular point for the GNSS-reflectometry method
 if(configSim.EnableGNSSRProcessing)

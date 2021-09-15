@@ -31,7 +31,7 @@ this.CommModule.SatName = this.Name;
 
 % Make satellite alive.
 this.Alive = true;
-msg = sprintf('Satellite number %d is alive', id);
+msg = sprintf('Satellite %d is alive', id);
 this.CommModule.groundSend(msg);
 
 % Get battery status from the satellite.

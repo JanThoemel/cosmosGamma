@@ -1,4 +1,4 @@
-function [time,x,y,z]=getPosECEF(~,cosmosTime,keplerStepSize,incDeg,RAAN,v0,altitude,radiusOfEarth,...
+function [time,x,y,z]=getPosECEF(~,cosmosTime,keplerStepSize,incDeg,orbitLANDeg,v0,altitude,radiusOfEarth,...
   xlocal,ylocal,zlocal,scale,ns)
 
 ENABLE_ROD_METHOD = true;
@@ -22,7 +22,7 @@ sma = (RE+altitude)/1000;%a       = input(' Major semi-axis                     
 ecc_max = sprintf('%6.4f',1-RE/sma);     % maximum value of eccentricity allowed
 e=0;%e       = input([' Eccentricity                         (<',ecc_max,')    e            = ']);
 
-RAAN  = RAAN*pi/180;        % RAAN                          [rad]
+RAAN  = orbitLANDeg*pi/180;     % RAAN                          [rad]
 w     = w*pi/180;           % Argument of perigee           [rad]
 thetaPeriapsis = w;
 v0    = v0*pi/180;          % True anomaly at the departure [rad]
@@ -160,7 +160,9 @@ if(ENABLE_ROD_METHOD)
   % Compute current position of satellites in orbit.
   for t = 1:length(time)
     for n = 1:(ns+1)
-      tempXYZ = [x(t,n) y(t,n) z(t,n)]'; % [m] [3x1 vector]
+      % Temporary vector containing initial ECEF position on time t.
+      % Positive rotation on ECEF Z-axis for longitude of ascending node (LAN).
+      tempXYZ = rotz(orbitLANDeg)*[x(t,n) y(t,n) z(t,n)]'; % [m] [3x1 vector]
       % Positive rotation on ECEF Z-axis to account for angular position.
       tempXYZ = rotz(thetaDeg(t))*tempXYZ; % [m] [3x1 vector]
       % Positive rotation on ECEF X-axis to account for orbit inclination.

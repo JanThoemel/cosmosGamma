@@ -25,12 +25,13 @@ dq = parallel.pool.DataQueue;
 afterEach(dq, @disp);
 
 % Set the start time for the parallel pool.
+disp('Starting CosmosBeta simulation...');
 timeStartPool = posixtime(datetime('now')); % Posixtime [seconds].
 
 % Execute parallel code on workers of parallel pool.
-%-------------------------------------------------------------------------------  
-%-------------------------------------------------------------------------------  
-%-------------------------------------------------------------------------------  
+%-------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
 spmd(this.NumSatellites)
   % For DEBUGGING mode:
   % 1. Comment the spmd command above and its end line.
@@ -103,9 +104,11 @@ spmd(this.NumSatellites)
   % for simulation output, set initial conditions
   sat.updSatStatesIni(uid, fc.State);
   
-%-------------------------------------------------------------------------------  
-%-------------------------------------------------------------------------------   
+%-------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
   % Loop for each orbit.
+	msg = sprintf('Satellite %d is flying', uid);
+	comms.groundSend(msg);
 	while sat.Alive % Satellites turned on, but still doing nothing.
         
     % Update orbit counter.
@@ -134,7 +137,7 @@ spmd(this.NumSatellites)
     
     timeStep = this.OrbitSectionSize / orbit.MeanMotionDeg;    
     
-%-------------------------------------------------------------------------------  
+%-------------------------------------------------------------------------------
     %% Start orbit loop
 		while this.OrbitSectionNow <= this.NumOrbitSections
 			
@@ -229,7 +232,7 @@ spmd(this.NumSatellites)
 			pause(this.OrbitSectionSize / orbit.MeanMotionDeg /this.AccelFactor - (now() - timeStartSection));
 			
 		end % While orbit loop
-%-------------------------------------------------------------------------------  
+%-------------------------------------------------------------------------------
 		
 		% Check if orbit counter identifiers do not match.
 		if (orbit.OrbitCounter ~= orbit.TimeOrbitDuration(1))
@@ -253,8 +256,8 @@ spmd(this.NumSatellites)
 		end
 		
 	end % While alive (main loop)
-%-------------------------------------------------------------------------------  
-%-------------------------------------------------------------------------------  
+%-------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
   % Needed for autonomous documentation generation tool.
 	% Globally concatenate all output variables on lab index 1.
 	% Must be the last lines of code of the parallel pool.
@@ -264,9 +267,9 @@ spmd(this.NumSatellites)
   gpsModules = gcat(gps,1,1);
   commModules = gcat(comms,1,1);
 end % Parallel code.
-%-------------------------------------------------------------------------------  
-%-------------------------------------------------------------------------------  
-%-------------------------------------------------------------------------------  
+%-------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
 
 % Needed for autonomous documentation generation tool.
 % Get the globally concatenated values stored on lab index 1.
