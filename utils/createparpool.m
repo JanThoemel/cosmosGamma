@@ -1,4 +1,4 @@
-function [activeParpool] = createparpool(maxNumWorkers)
+function [activeParpool] = createparpool(requiredNumWorkers)
 %CREATEPARPOOL Summary of this function goes here
 % Detailed explanation goes here.
 
@@ -11,14 +11,14 @@ else
 end
 
 % Return pool with the required number of workers.
-if poolsize == maxNumWorkers
+if poolsize >= requiredNumWorkers
   % Current pool already has the required number of workers.
   activeParpool = currentParpool;
 else
   delete(currentParpool); % Delete current pool, if it exists.
   % Create a cluster object according to the specified profile.
   activeCluster = parcluster('local');
-  activeCluster.NumWorkers = maxNumWorkers;
+  activeCluster.NumWorkers = requiredNumWorkers;
   activeParpool = parpool(activeCluster);
 end
 
