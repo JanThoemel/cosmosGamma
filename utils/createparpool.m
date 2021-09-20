@@ -10,8 +10,9 @@ else
   poolsize = currentParpool.NumWorkers;
 end
 
-% Create and return pool with the specified number of workers.
+% Return pool with the required number of workers.
 if poolsize == maxNumWorkers
+  % Current pool already has the required number of workers.
   activeParpool = currentParpool;
 else
   delete(currentParpool); % Delete current pool, if it exists.

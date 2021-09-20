@@ -110,25 +110,27 @@ clear simsat;
 % Define satellite struct.
 simsat(1).time  = -1;
 
-simsat(1).x     = struct('time',0,'signals',struct('dimensions',0,'values',0));
-simsat(1).y     = struct('time',0,'signals',struct('dimensions',0,'values',0));
-simsat(1).z     = struct('time',0,'signals',struct('dimensions',0,'values',0));
-simsat(1).xyz   = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).x      = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).y      = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).z      = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).xyz    = struct('time',0,'signals',struct('dimensions',0,'values',0));
 
-simsat(1).lat   = struct('time',0,'signals',struct('dimensions',0,'values',0));
-simsat(1).long  = struct('time',0,'signals',struct('dimensions',0,'values',0));
-simsat(1).sma   = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).lat    = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).long   = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).sma    = struct('time',0,'signals',struct('dimensions',0,'values',0));
 
-simsat(1).pos   = struct('time',0,'signals',struct('dimensions',0,'values',0));
-simsat(1).posU1 = struct('time',0,'signals',struct('dimensions',0,'values',0));
-simsat(1).posU2 = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).pos    = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).posU1  = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).posU2  = struct('time',0,'signals',struct('dimensions',0,'values',0));
 
-simsat(1).pitch = struct('time',0,'signals',struct('dimensions',0,'values',0));
-simsat(1).yaw   = struct('time',0,'signals',struct('dimensions',0,'values',0));
-simsat(1).roll  = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).pitch  = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).yaw    = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).roll   = struct('time',0,'signals',struct('dimensions',0,'values',0));
 
-simsat(1).rot   = struct('time',0,'signals',struct('dimensions',0,'values',0));
-simsat(1).inc   = -1;
+simsat(1).rot    = struct('time',0,'signals',struct('dimensions',0,'values',0));
+simsat(1).inc    = -1;
+simsat(1).lanDeg = -1;
+simsat(1).lanRad = -1;
 
 % Allocate memory for array of satellites.
 numsats = length(coordfiles);
@@ -165,6 +167,7 @@ for n = 1:numsats
   yaw   = coord(:,7); % [degrees]
   roll  = coord(:,5); % [degrees]
   inclinationDeg = coord(1,8); % [degrees]
+  orbitLANDeg = coord(1,9); % [degrees]
   
   % Interpolate to a coarser data sample.
   if (COARSE_ENABLE && XYZ_MODE)
@@ -241,6 +244,7 @@ for n = 1:numsats
   yaw   = yaw   * (pi/180); % [rad]
   roll  = roll  * (pi/180); % [rad]
   inclinationRad = inclinationDeg * (pi/180); % [rad]
+  orbitLANRad = orbitLANDeg * (pi/180); % [rad]
   
   % Place data into satellite struct.
   if(XYZ_MODE)
@@ -302,6 +306,8 @@ for n = 1:numsats
   simsat(n).roll.signals.values = roll; % [rad]
   
   simsat(n).inc = inclinationRad;
+  simsat(n).lanDeg = orbitLANDeg;
+  simsat(n).lanRad = orbitLANRad;
   simsat(n).time = timestamps; % [seconds]
 end
 fprintf('%s','done. ');
@@ -487,6 +493,9 @@ spmd(numsats)
     %% Total Earth rotation since beginning of simulation
     rotEarthRad = EARTH_ROT * time; % [rad]
     rotEarthDeg = rotEarthRad * 180/pi; % [deg]
+    % Correct for orbit longitude of ascending node (LAN).
+    rotEarthRad = rotEarthRad - parsat(n).lanRad; % [rad]
+    rotEarthDeg = rotEarthDeg - parsat(n).lanDeg; % [deg]
     
     
     %% Normal unit vector of the orbital plane

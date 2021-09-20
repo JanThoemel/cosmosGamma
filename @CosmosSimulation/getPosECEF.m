@@ -139,6 +139,8 @@ if(ENABLE_ROD_METHOD)
   % Total Earth spin since beginning of simulation.
   thetaEarthRad = EARTH_ROT.*time; % [rad] [TIMEx1 vector]
   thetaEarthDeg = thetaEarthRad.*180./pi; % [deg] [TIMEx1 vector]
+  % Correct for orbit longitude of ascending node (LAN).
+  thetaEarthDeg = thetaEarthDeg - orbitLANDeg; % [deg] [TIMEx1 vector]
   
   % Create vectors of x, y, and z positions on ECEF.
   x = zeros(length(time),ns+1); % [TIMExNUMSATS+1 vector]
@@ -161,8 +163,7 @@ if(ENABLE_ROD_METHOD)
   for t = 1:length(time)
     for n = 1:(ns+1)
       % Temporary vector containing initial ECEF position on time t.
-      % Positive rotation on ECEF Z-axis for longitude of ascending node (LAN).
-      tempXYZ = rotz(orbitLANDeg)*[x(t,n) y(t,n) z(t,n)]'; % [m] [3x1 vector]
+      tempXYZ = [x(t,n) y(t,n) z(t,n)]'; % [m] [3x1 vector]
       % Positive rotation on ECEF Z-axis to account for angular position.
       tempXYZ = rotz(thetaDeg(t))*tempXYZ; % [m] [3x1 vector]
       % Positive rotation on ECEF X-axis to account for orbit inclination.
