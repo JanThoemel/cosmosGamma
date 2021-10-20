@@ -1,6 +1,6 @@
 {
-  "SelectedFormationFlightMode": 4,
-  "NumberOfOrbitsForMode": 5,
+  "SelectedFormationFlightMode": 15,
+  "NumberOfOrbitsForMode": 2,
   "Modes": [
     {
       "ModeID": 1,
@@ -533,7 +533,7 @@
       "PanelQuantity": [0, 0, 14],
       "AttitudeResolutionDeg": 45,
       "OrbitInitAltitude": 520e3,
-      "OrbitInclinationDeg": 97,
+      "OrbitInclinationDeg": 10,
       "OrbitLANDeg": 90,
       "OrbitSectionSizeDeg": 0.1,
       "OrbitInitSectionID": 1,
