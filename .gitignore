@@ -16,3 +16,4 @@ tempUML*
 *.x3d
 visualization/CubesatModel/asbCubeSat.slx
 visualization/ProjectTasks/CubeSatStoredValues.mat
+visualization/simulation/cosmosSimulation.x3d
