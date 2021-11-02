@@ -10,10 +10,9 @@ NO-TRACK/**
 recordings/*.avi
 storage/**/*.json
 telemetry/*.csv
-visualization/work/cache/**
 tempUML*
-*.zip
-*.x3d
 visualization/CubesatModel/asbCubeSat.slx
 visualization/ProjectTasks/CubeSatStoredValues.mat
 visualization/simulation/cosmosSimulation.x3d
+visualization/work/cache/**
+*.zip
