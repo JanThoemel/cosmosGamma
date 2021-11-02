@@ -11,8 +11,5 @@ recordings/*.avi
 storage/**/*.json
 telemetry/*.csv
 tempUML*
-visualization/CubesatModel/asbCubeSat.slx
-visualization/ProjectTasks/CubeSatStoredValues.mat
-visualization/simulation/cosmosSimulation.x3d
 visualization/work/cache/**
 *.zip
