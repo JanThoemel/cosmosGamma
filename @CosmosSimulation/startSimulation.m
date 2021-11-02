@@ -13,6 +13,7 @@ function startSimulation(this)
 %plannedExperimentTimes=readmatrix('2times40minperdayfor7days.csv');
 %plannedExperimentTimes=readmatrix('2times240minperdayfor7days.csv');
 %plannedExperimentTimes=readmatrix('everyday6times30minperdayfor7daysTBC.csv');
+plannedExperimentTimes=readmatrix('overLuxembourgOn2ndOrbit.csv');
 enablePlannedExperimentTimes = false;
 
 % Set parallel pool.

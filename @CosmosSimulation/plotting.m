@@ -1,11 +1,11 @@
 function plotting(this, ns, meanMotionRad)
 %function plotting(angles,sst,refPosChange,time,ns,meanMotion,u,e)
 
-plotExperimentTime=1;
+plotExperimentTime=0;
 plot3D=1;
 generalVariablesPlot=1;
 controlVariablesPlot=1;
-
+generalVariablesPlot2=1;
 % Get path to telemetry files from CosmosSimulation object.
 tmFolderPath = this.TelemetryPath;
 
@@ -144,6 +144,38 @@ if generalVariablesPlot %% plot general variables
   axis([-inf inf -inf inf])  
   
   subplot(2,3,6)%%z
+  for i=1:ns
+    plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(sst(i,3,:)));hold on
+  end
+  ylabel('z [m]');xlabel('no. of orbits');grid on;hold off
+  axis([-inf inf -inf inf])  
+
+end
+
+if generalVariablesPlot2 %% plot general variables
+  figure
+   
+  subplot(1,3,1)%% pitch
+  for i=1:ns
+    plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(angles(i,1,:)));hold on
+    names(i)=[{strcat('sat',int2str(i))}];
+  end
+  for i=1:ns
+    plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(angles(i,2,:)));hold on
+  end
+  ylabel('pitch angle [deg]');xlabel('no. of orbits');grid on;hold off;
+  axis([-inf inf -10 190])
+  yticks([0 45 90 135 180])
+  legend(names);
+  
+  subplot(1,3,2)%%x
+  for i=1:ns
+    plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(sst(i,1,:)));hold on
+  end
+  ylabel('x [m]');xlabel('no. of orbits');grid on;hold off
+  axis([-inf inf -inf inf])  
+
+  subplot(1,3,3)%%z
   for i=1:ns
     plot(squeeze(cosmosTime(:,i)/2/pi*meanMotionRad),squeeze(sst(i,3,:)));hold on
   end

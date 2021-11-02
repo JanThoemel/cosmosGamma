@@ -13,3 +13,6 @@ telemetry/*.csv
 visualization/work/cache/**
 tempUML*
 *.zip
+*.x3d
+visualization/CubesatModel/asbCubeSat.slx
+visualization/ProjectTasks/CubeSatStoredValues.mat

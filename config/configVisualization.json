@@ -4,7 +4,7 @@
   "ParentCoordFolder": "COORD-runtime",
   "CoordFolder": "XYZ-RPY-scaled",
   
-  "VizScale": 150,
+  "VizScale": 400,
 
   "V0": 0,
   "KeplerStepSize": 1,
@@ -16,7 +16,7 @@
 
   "ModeXYZ": true,
   "TimeCompressionEnable": 0,
-  "TimeCompressionFactor": 50,
+  "TimeCompressionFactor": 10,
 
   "SmoothSatOrientationChanges": 1,
   "SmoothingDataSpan": 51,
