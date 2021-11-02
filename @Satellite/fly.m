@@ -125,7 +125,9 @@ if  not(plannedExperimentTime)
   end
 else %% do this if experiment time
   if plannedExperimentTime
-    %this.Orbit.R0
+  warning('this is outdated: in fly.m')
+
+      %this.Orbit.R0
     %this.Orbit.Altitude
     alpha=acosd((this.Orbit.R0- this.Orbit.Altitude)/this.Orbit.R0);
     beta=asind((this.Orbit.R0- this.Orbit.Altitude)/this.Orbit.R0);
