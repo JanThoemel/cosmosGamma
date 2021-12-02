@@ -4,11 +4,11 @@
   "ParentCoordFolder": "COORD-runtime",
   "CoordFolder": "XYZ-RPY-scaled",
 
-  "VizScale": 150,
+  "VizScale": 950,
   "VizTimeStep": 1,
   "V0": 0,
 
-  "SelectedCameraMode": 1,
+  "SelectedCameraMode": 2,
   "CameraModes": [
     "01-Behind-satellites",
     "02-Sideways-at-45deg",

@@ -54,6 +54,10 @@ classdef Navigation < handle
     function orbitCounter = getOrbitCounter(this)
       orbitCounter = this.OrbitCounter;
     end
+    
+    function resetOrbitCounter(this)
+      this.OrbitCounter = 0;
+    end
 
   end % Public methods.
 

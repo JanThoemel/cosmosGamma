@@ -1,6 +1,6 @@
 {
-  "SelectedFormationFlightMode": 10,
-  "NumberOfOrbitsForMode": 2,
+  "SelectedFormationFlightModes": [5, 6],
+  "NumberOfOrbitsForEachMode": [10, 10],
   "Modes": [
     {
       "ModeID": 1,
@@ -184,7 +184,7 @@
       "FFPSFolder": "SnTMissionTrailingMaintenance",
       "FFPSValues": [
         {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
-        {"ffp1": 0,"ffp2": -15,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+        {"ffp1": 0,"ffp2": -50,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
       ]
     }
 ,

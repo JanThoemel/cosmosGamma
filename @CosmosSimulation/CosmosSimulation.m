@@ -17,7 +17,9 @@ classdef CosmosSimulation < handle
     AccelFactor % Acceleration factor for the simulation.
 %!RW: Delete AllParams; not used anymore; test first
     %AllParams % Struct with all parameters set by the user.
+    AllModes % All existing formation flight modes.
     CommModules % Array of Communication objects.
+    CurrModeIDX % Current mode index.
     FlightControlModules % Array of FlightControl objects.
     GPSModules % Array of Navigation objects.
 %!RW: deleted param idx: replaced it by OrbitSectionNow
@@ -29,7 +31,7 @@ classdef CosmosSimulation < handle
     NumOrbitSections % Total number of orbit sections.
     NumSatellites % Total number of satellites in the formation.
     Orbits % Array of Orbit objects.
-    OrbitSections % Array of orbit sections with defined angle step [deg].
+    %%OrbitSections % Array of orbit sections with defined angle step [deg].
     OrbitSectionInitial % Initial orbit section ID for the simulation.
     OrbitSectionNow % Current orbit section ID.
     OrbitSectionSize % Size of each orbit section [deg].
@@ -38,6 +40,7 @@ classdef CosmosSimulation < handle
     SatPositionsLengths % Length of the satellite positions vectors.
 %!RW: leave parameter status for later implementation.
     %Status % Simulation status.
+    SelectedModes % Selected formation flight modes.
     TelemetryPath %
     WindFactor %% switch on whether aerodynamics shall be simulated
     SolarFactor  %% switch on whether solar radiation pressure shall be simulated
@@ -50,11 +53,11 @@ classdef CosmosSimulation < handle
 
   methods % Constructor.
     
-    function this = CosmosSimulation(maxNumOrbits, accelFactor, selectedModeID,...
+    function this = CosmosSimulation(selectedModes, maxNumOrbits, accelFactor, selectedModeID,...
       modeName, numSatellites, satMass, panelArea, panelQuantity,...
       attitudeResolutionDeg, initOrbitAltitude, sizeOrbitSection,...
       initOrbitSection, rMatrixDiagonal, autoResponse, availableGPS,...
-      availableTLE, initConditions, ffpsFolderName, ffpsValues)
+      availableTLE, initConditions, ffpsFolderName, ffpsValues, allmodes)
       %% Constructor for class CosmosSimulation
       %
       % Input:
@@ -64,22 +67,37 @@ classdef CosmosSimulation < handle
       % - Object of class Simulation.
       
 %!RW: attitudeResolutionDeg -> former deltaAngle
+
+      this.AllModes = allmodes;
       
       % Set simulation parameters.
+      this.SelectedModes = selectedModes;
       this.AccelFactor = accelFactor;
-      this.MaxNumOrbits = maxNumOrbits;
-      this.ModeName = modeName;
-      this.NumSatellites = numSatellites;
+      
+      % Parameters for each mode.
+      this.MaxNumOrbits = zeros(size(selectedModes));
+      this.ModeName = zeros(size(selectedModes));
+      this.NumSatellites = selectedModes(1).NumSatellites;
+      this.InitConditions = selectedModes(1).InitialConditions;
+      %this.OrbitSections = 
+      this.OrbitSectionInitial = zeros(size(selectedModes));
+      this.OrbitSectionNow = selectedModes(1).OrbitInitSectionID;
+      this.OrbitSectionSize = zeros(size(selectedModes));
+      this.NumOrbitSections = zeros(size(selectedModes));
+      
+      for i = 1:length(selectedModes)
+        this.MaxNumOrbits(i) = maxNumOrbits(i);
+        %this.ModeName(i) = selectedModes(i).ModeName
+        %this.OrbitSections(i) = selectedModes(i).OrbitSectionSizeDeg:selectedModes(i).OrbitSectionSizeDeg:360
+        this.OrbitSectionInitial(i) = selectedModes(i).OrbitInitSectionID;
+        this.OrbitSectionSize(i) = selectedModes(i).OrbitSectionSizeDeg;
+        this.NumOrbitSections(i) = length(selectedModes(i).OrbitSectionSizeDeg:selectedModes(i).OrbitSectionSizeDeg:360);
+      end
       
 %!RW: Parameters still in simulation, later transfer to FlightControl.
-      this.InitConditions = initConditions;
-      this.OrbitSections = sizeOrbitSection:sizeOrbitSection:360;
-      this.OrbitSectionInitial = initOrbitSection;
-      this.OrbitSectionNow = initOrbitSection;
-      this.OrbitSectionSize = sizeOrbitSection;
-      this.NumOrbitSections = length(this.OrbitSections);
       
       % Create array for objects of class Satellite.
+      numSatellites = this.NumSatellites;
       this.Satellites = Satellite.empty(numSatellites,0);
       
       % Create arrays for aliases of Satellite children objects.
@@ -158,6 +176,10 @@ classdef CosmosSimulation < handle
     function setIDX(this, value)
 %     this.IDX = value;
       this.OrbitSectionNow = value;
+    end
+    
+    function setCurrModeIDX(this, value)
+      this.CurrModeIDX = value;
     end
     
     plotting(this, ns, meanMotionRad)
