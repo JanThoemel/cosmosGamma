@@ -1,2 +1,5 @@
 % Force close all figures with the 'HandleVisibility' property set to 'off'.
 delete(findall(0));
+
+% Clear all cached data.
+try proj = currentProject; close(proj); catch; end; close all; clear all;

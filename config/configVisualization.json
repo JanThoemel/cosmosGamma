@@ -4,7 +4,7 @@
   "ParentCoordFolder": "COORD-runtime",
   "CoordFolder": "XYZ-RPY-scaled",
 
-  "VizScale": 950,
+  "VizScale": 1950,
   "VizTimeStep": 1,
   "V0": 0,
 
