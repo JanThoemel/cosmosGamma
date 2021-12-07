@@ -1,8 +1,5 @@
 %% File to open visualization for Cosmos Beta in MATLAB Simulink
 
-% Bring command window to front.
-commandwindow;
-
 %% Constants
 % Earth rotation velocity around Z-axis.
 EARTH_ROT = (2*pi/86164); % [rad/s]
@@ -59,6 +56,9 @@ else
     fprintf('%s\n\n',proj.RootFolder);
   end
 end
+
+% Bring command window to front.
+commandwindow;
 
 % Set timer start time.
 timeScriptStart = posixtime(datetime('now')); % Posixtime [seconds].
