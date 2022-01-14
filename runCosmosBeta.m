@@ -164,7 +164,8 @@ csim.createListCustomClasses(filepath, workspaceFileName);
 %% Autorun 3D visualization
 if(configSim.AutoOpen3DVisualization)
   % Confirmation inside openvis:
-  run('openvis.m');
+  %run(strcat('..',filesep,'openvis.m'));
+  run('openvis.m');  
 end
 
 %% End
