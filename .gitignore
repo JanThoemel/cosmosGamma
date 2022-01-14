@@ -13,3 +13,5 @@ telemetry/*.csv
 tempUML*
 visualization/work/cache/**
 *.zip
+*.avi
+*.log
