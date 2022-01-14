@@ -1,6 +1,6 @@
 {
-  "SelectedFormationFlightMode": 10,
-  "NumberOfOrbitsForMode": 2,
+  "SelectedFormationFlightModes": [17, 17],
+  "NumberOfOrbitsForEachMode": [3, 3],
   "Modes": [
     {
       "ModeID": 1,
@@ -179,12 +179,12 @@
       "AvailableTLE": false,
       "InitialConditions": [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [-10, 0, 0, 0, 0, 0, 0, 0, 0]
+        [10000, 10000, 10000,10000, 10000, 10000, 10000, 10000,10000]
       ],
       "FFPSFolder": "SnTMissionTrailingMaintenance",
       "FFPSValues": [
         {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
-        {"ffp1": 0,"ffp2": -15,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+        {"ffp1": 0,"ffp2": -50,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
       ]
     }
 ,
@@ -549,6 +549,93 @@
       "FFPSValues": [
         {"ffp1": 0,"ffp2": 0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
         {"ffp1": 0,"ffp2": 0,"ffp3": -1000,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+      ]
+    }
+
+,
+    {
+      "ModeID": 17,
+      "ModeName": "VeryLargeFlyingTelescope",
+      "NumSatellites": 12,
+      "SatelliteMass": 2,
+      "PanelArea": 0.01,
+      "PanelQuantity": [0, 0, 14],
+      "AttitudeResolutionDeg": 45,
+      "OrbitInitAltitude": 520e3,
+      "OrbitInclinationDeg": 10,
+      "OrbitLANDeg": 90,
+      "OrbitSectionSizeDeg": 2,
+      "OrbitInitSectionID": 1,
+      "RMatrixDiagonal": [1e15, 1e15, 1e15],
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [400, 0, 0, 0, 0, 0, 0, 0, 0],
+        [300, 0, 0, 0, 0, 0, 0, 0, 0],
+        [200, 0, 0, 0, 0, 0, 0, 0, 0],
+        [100, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-100, 100,  0, 0,-0.0039,0, 0, 0, 0],
+        [-110,-100, 0, 0, 0.0039, 0, 0, 0, 0],
+        [-200, 200,  0, 0,-0.0077,0, 0, 0, 0],
+        [-210,-200, 0, 0, 0.0077, 0, 0, 0, 0],
+        [-300, 300,  0, 0,-0.01,  0, 0, 0, 0],
+        [-310,-300, 0, 0, 0.01,   0, 0, 0, 0],
+        [-400, 400,  0, 0,-0.012, 0, 0, 0, 0],
+        [-410,-400, 0, 0, 0.012,  0, 0, 0, 0]
+      ],
+      "FFPSFolder": "VeryLargeFlyingTelescope",
+      "FFPSValues": [
+        {"ffp1": 0,"ffp2": 400,"ffp3":   0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 300,"ffp3":   0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 200,"ffp3":   0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": 100,"ffp3":   0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2":-100,"ffp3": 100,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2":-100,"ffp3":-100,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2":-200,"ffp3": 200,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2":-200,"ffp3":-200,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2":-300,"ffp3": 300,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2":-300,"ffp3":-300,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2":-400,"ffp3": 400,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2":-400,"ffp3":-400,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
+      ]
+    }
+
+,
+
+    {
+      "ModeID": 18,
+      "ModeName": "VeryLargeFlyingTelescopeTest",
+      "NumSatellites": 6,
+      "SatelliteMass": 2,
+      "PanelArea": 0.01,
+      "PanelQuantity": [0, 0, 14],
+      "AttitudeResolutionDeg": 45,
+      "OrbitInitAltitude": 520e3,
+      "OrbitInclinationDeg": 90,
+      "OrbitLANDeg": 90,
+      "OrbitSectionSizeDeg": 0.1,
+      "OrbitInitSectionID": 1,
+      "RMatrixDiagonal": [1e16, 1e16, 1e16],
+      "AutoResponse": true,
+      "AvailableGPS": true,
+      "AvailableTLE": false,
+      "InitialConditions": [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-100, 0, 0, 0, 0, 0, 0, 0, 0],
+        [-200, 99.9391, 0, 0,-0.0039,  0, 0, 0, 0],
+        [-300, 199.8782, 0, 0,-0.0077,  0, 0, 0, 0],
+        [-400, -99.9391, 0, 0, 0.0039,  0, 0, 0, 0],
+        [-500, -199.8782, 0, 0, 0.0077, 0, 0, 0, 0]
+      ],
+      "FFPSFolder": "VeryLargeFlyingTelescopeTest",
+      "FFPSValues": [
+        {"ffp1": 0,"ffp2": -0,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": -100,"ffp3": 0,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": -200,"ffp3": 100,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": -300,"ffp3": 200,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": -400,"ffp3": -100,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0},
+        {"ffp1": 0,"ffp2": -500,"ffp3": -200,"ffp4": 0,"ffp5": 0,"ffp6": 0,"ffp7": 0,"ffp8": 0}
       ]
     }
 

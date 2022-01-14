@@ -95,7 +95,7 @@ classdef Satellite < handle
 
     initialize(this, id, commChannel, iniConditions)
     
-    fly(this, currentOrbitSection, sizeOrbitSection, plannedExperimentTime)
+    fly(this, currentOrbitSection, sizeOrbitSection, plannedExperimentTime, ffps)
     % Public method called in:
     %   CosmosSimulation.startSimulation()
     % Properties of Satellite used:

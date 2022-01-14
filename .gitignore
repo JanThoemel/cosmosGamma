@@ -15,3 +15,5 @@ visualization/work/cache/**
 *.zip
 *.avi
 *.log
+*.mat
+*.slx

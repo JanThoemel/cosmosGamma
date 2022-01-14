@@ -127,7 +127,7 @@ classdef FlightControl < handle
     updateStateErrors(this, receivedStateErrors)
     stateErr = getStateError(this)
 
-    updateStateDesired(this, time, meanMotion)
+    updateStateDesired(this, time, meanMotion, ffps)
 
     function shiftState(this, shift)
       this.State(1:3) = this.State(1:3) + shift;

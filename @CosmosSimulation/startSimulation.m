@@ -105,6 +105,16 @@ spmd(this.NumSatellites)
   % for simulation output, set initial conditions
   sat.updSatStatesIni(uid, fc.State);
   
+  this.setCurrModeIDX(1);
+  imode = this.CurrModeIDX;
+  
+  currModeID = this.SelectedModes(imode).ModeID;
+  currModeName = this.AllModes(currModeID).ModeName;
+  msg = sprintf('Flight mode has been set to %s', currModeName);
+	comms.groundSend(msg);
+  
+  currModeFFPS = this.SelectedModes(imode).FFPSValues;
+  
 %-------------------------------------------------------------------------------
 %-------------------------------------------------------------------------------
   % Loop for each orbit.
@@ -136,24 +146,19 @@ spmd(this.NumSatellites)
     % pause( (this.OrbitSections(this.IDX) - gps.MeanAnomalyFromAN) / orbit.MeanMotionDeg / this.AccelFactor);
     % JT: OrbitSections and IDX should be renamed to OrbitSectionsMeanAnomalyFromAN and orbitSectionsID
     
-    timeStep = this.OrbitSectionSize / orbit.MeanMotionDeg;    
+    timeStep = this.OrbitSectionSize(imode) / orbit.MeanMotionDeg;
+    
+    currentOrbitSection = this.OrbitSectionSize(imode); % first orbit section
     
 %-------------------------------------------------------------------------------
     %% Start orbit loop
-		while this.OrbitSectionNow <= this.NumOrbitSections
+		while this.OrbitSectionNow <= this.NumOrbitSections(imode)
 			
 			% Determine start time of this cycle, in order to subtract the 
 			% total cycle duration from the pause time (pause #2).
 			timeStartSection = now();
 			
 			% Start flying on orbital loop.
-      % in which section (in degree) are we?
-%!RW: this.OrbitSectionNow holds the ID of the current orbit section, while the
-%variable currentOrbitSection holds the value in degrees. This implementation is
-%very confusing. Maybe change name of variables or the implemenation method to
-%be more clear and avoid bugs/errors later.
-
-      currentOrbitSection = this.OrbitSections(this.OrbitSectionNow);
       
       % run the formation flight algorithm
       %%% THIS SHOULD GO TO SATELLITE OR SATELLITE.FLIGHTCONTROL
@@ -175,7 +180,7 @@ spmd(this.NumSatellites)
         end
       end
 %}        
-      sat.fly(currentOrbitSection, this.OrbitSectionSize, plannedExperimentTime);
+      sat.fly(currentOrbitSection, this.OrbitSectionSize(imode), plannedExperimentTime, currModeFFPS(uid,:));
 
       %%%%%%%%THIS SHOULD GO TO AN ISL COM MODULE
       %% currently, the reference position change is communicated to the other sats
@@ -230,7 +235,16 @@ spmd(this.NumSatellites)
 			
 			%% Pause processing until satellite is in next section
       %% to this end: compute time of next section and subtract this section's computing time.
-			pause(this.OrbitSectionSize / orbit.MeanMotionDeg /this.AccelFactor - (now() - timeStartSection));
+			pause(this.OrbitSectionSize(imode) / orbit.MeanMotionDeg /this.AccelFactor - (now() - timeStartSection));
+      
+      % in which section (in degree) are we?
+%!RW: this.OrbitSectionNow holds the ID of the current orbit section, while the
+%variable currentOrbitSection holds the value in degrees. This implementation is
+%very confusing. Maybe change name of variables or the implemenation method to
+%be more clear and avoid bugs/errors later.
+
+      %currentOrbitSection = this.OrbitSections(this.OrbitSectionNow);
+      currentOrbitSection = currentOrbitSection + this.OrbitSectionSize(imode);
 			
 		end % While orbit loop
 %-------------------------------------------------------------------------------
@@ -250,12 +264,25 @@ spmd(this.NumSatellites)
 		end
 
     % If maximum number of orbits has been reached, turn off the satellite.
-		if orbit.OrbitCounter >= this.MaxNumOrbits
-% 			pause(2);
-			send(dq,['[sim] Maximum number of orbits reached! ','Killing [',sat.Name,']']);
-			sat.turnOff();
-		end
-		
+    if orbit.OrbitCounter >= this.MaxNumOrbits(imode)
+      if imode < length(this.SelectedModes)
+        this.setCurrModeIDX(imode + 1);
+        imode = this.CurrModeIDX;
+        gps.resetOrbitCounter();
+        
+        currModeID = this.SelectedModes(imode).ModeID;
+        currModeName = this.AllModes(currModeID).ModeName;
+        msg = sprintf('Flight mode has changed to %s', currModeName);
+        comms.groundSend(msg);
+        
+        currModeFFPS = this.SelectedModes(imode).FFPSValues;
+        
+      else
+        send(dq,['[sim] Maximum number of orbits reached! ','Killing [',sat.Name,']']);
+        sat.turnOff();
+      end
+    end
+    
 	end % While alive (main loop)
 %-------------------------------------------------------------------------------
 %-------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-function fly(this, currentOrbitSection, sizeOrbitSection, plannedExperimentTime)
+function fly(this, currentOrbitSection, sizeOrbitSection, plannedExperimentTime, ffps)
 %% Initialize flight control
 % ______________________________________________________________________________
 
@@ -51,7 +51,7 @@ end
 timeSinceEqCrossing = currentOrbitSection / this.Orbit.MeanMotionDeg;
 
 % Compute and update desired state for this satellite.
-this.FlightControl.updateStateDesired(timeSinceEqCrossing, this.Orbit.MeanMotionRad);
+this.FlightControl.updateStateDesired(timeSinceEqCrossing, this.Orbit.MeanMotionRad, ffps);
 
 % Get updated error between the current and desired states for this satellite.
 stateError = this.FlightControl.getStateError();

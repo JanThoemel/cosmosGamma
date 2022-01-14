@@ -1,4 +1,4 @@
-function updateStateDesired(this, time, meanMotionRad)
+function updateStateDesired(this, time, meanMotionRad, ffps)
 %% Update desired satellite state
 % ______________________________________________________________________________
 %
@@ -36,13 +36,13 @@ D=sqrt(3*SSC^2-2); %% if SSC==1 then D=1
 %ffp7 mean anomaly offset x,z [which dimension?]
 %ffp8 mean anomaly offset y   [which dimension?]
 
-sstDesired(1,:)= this.FFPS.ffp2 + B*meanMotionRad*this.FFPS.ffp6*time + this.FFPS.ffp1* cos( sqrt(2*SSC/A)*meanMotionRad* time + this.FFPS.ffp7/180*pi )                               - this.FFPS.ffp5 *sqrt(2*SSC*A)*   sin( sqrt(2*SSC/A)*meanMotionRad* time  + this.FFPS.ffp7/180*pi);
-sstDesired(2,:)=                                                        this.FFPS.ffp3* cos( D*meanMotionRad*             time + this.FFPS.ffp8/180*pi )                               + this.FFPS.ffp4 /D/meanMotionRad* sin( D*meanMotionRad*             time  + this.FFPS.ffp8/180*pi );
-sstDesired(3,:)= this.FFPS.ffp6                                       + this.FFPS.ffp5* cos( sqrt(2*SSC/A)*meanMotionRad* time + this.FFPS.ffp7/180*pi )                               + this.FFPS.ffp1 /sqrt(2*SSC*A)*   sin( sqrt(2*SSC/A)*meanMotionRad* time  + this.FFPS.ffp7/180*pi );
+sstDesired(1,:)= ffps.ffp2 + B*meanMotionRad*ffps.ffp6*time + ffps.ffp1* cos( sqrt(2*SSC/A)*meanMotionRad* time + ffps.ffp7/180*pi )                               - ffps.ffp5 *sqrt(2*SSC*A)*   sin( sqrt(2*SSC/A)*meanMotionRad* time  + ffps.ffp7/180*pi);
+sstDesired(2,:)=                                                        ffps.ffp3* cos( D*meanMotionRad*             time + ffps.ffp8/180*pi )                               + ffps.ffp4 /D/meanMotionRad* sin( D*meanMotionRad*             time  + ffps.ffp8/180*pi );
+sstDesired(3,:)= ffps.ffp6                                       + ffps.ffp5* cos( sqrt(2*SSC/A)*meanMotionRad* time + ffps.ffp7/180*pi )                               + ffps.ffp1 /sqrt(2*SSC*A)*   sin( sqrt(2*SSC/A)*meanMotionRad* time  + ffps.ffp7/180*pi );
 
-sstDesired(4,:)=                  B*meanMotionRad*this.FFPS.ffp6      - this.FFPS.ffp1* sin( sqrt(2*SSC/A)*meanMotionRad* time + this.FFPS.ffp7/180*pi ) *sqrt(2*SSC/A)*meanMotionRad  - this.FFPS.ffp5 *sqrt( 2*SSC*A)*  cos( sqrt(2*SSC/A)*meanMotionRad* time + this.FFPS.ffp7/180*pi ) *sqrt(2*SSC/A)*meanMotionRad;
-sstDesired(5,:)=                                                      - this.FFPS.ffp3* sin( D*meanMotionRad*             time + this.FFPS.ffp8/180*pi ) *D*meanMotionRad              + this.FFPS.ffp4 /D/meanMotionRad* cos( D*meanMotionRad*             time + this.FFPS.ffp8/180*pi ) *D*meanMotionRad;
-sstDesired(6,:)=                                                      - this.FFPS.ffp5* sin( sqrt(2*SSC/A)*meanMotionRad* time + this.FFPS.ffp7/180*pi ) *sqrt(2*SSC/A)*meanMotionRad  + this.FFPS.ffp1 /sqrt(2*SSC*A)*   cos( sqrt(2*SSC/A)*meanMotionRad* time + this.FFPS.ffp7/180*pi ) *sqrt(2*SSC/A)*meanMotionRad;
+sstDesired(4,:)=                  B*meanMotionRad*ffps.ffp6      - ffps.ffp1* sin( sqrt(2*SSC/A)*meanMotionRad* time + ffps.ffp7/180*pi ) *sqrt(2*SSC/A)*meanMotionRad  - ffps.ffp5 *sqrt( 2*SSC*A)*  cos( sqrt(2*SSC/A)*meanMotionRad* time + ffps.ffp7/180*pi ) *sqrt(2*SSC/A)*meanMotionRad;
+sstDesired(5,:)=                                                      - ffps.ffp3* sin( D*meanMotionRad*             time + ffps.ffp8/180*pi ) *D*meanMotionRad              + ffps.ffp4 /D/meanMotionRad* cos( D*meanMotionRad*             time + ffps.ffp8/180*pi ) *D*meanMotionRad;
+sstDesired(6,:)=                                                      - ffps.ffp5* sin( sqrt(2*SSC/A)*meanMotionRad* time + ffps.ffp7/180*pi ) *sqrt(2*SSC/A)*meanMotionRad  + ffps.ffp1 /sqrt(2*SSC*A)*   cos( sqrt(2*SSC/A)*meanMotionRad* time + ffps.ffp7/180*pi ) *sqrt(2*SSC/A)*meanMotionRad;
 
 %sstDesired
 

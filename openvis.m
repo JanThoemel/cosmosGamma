@@ -57,6 +57,9 @@ else
   end
 end
 
+% Bring command window to front.
+commandwindow;
+
 % Set timer start time.
 timeScriptStart = posixtime(datetime('now')); % Posixtime [seconds].
 
@@ -745,11 +748,14 @@ else
   uiwait(msgfig);
 end
 
+% Get list of all variables in workspace.
+allvars = whos;
+
 % Clear composites.
 % Needed to close active spmd.
 % See: https://nl.mathworks.com/matlabcentral/answers/223939-how-to-specify-the-number-of-labs-in-smpd
-clear a adeg aEarthDeg aEarthRad angPos angX c I lat localPitch localRoll localYaw long msg ...
-  normalOrbitVector normalVector pitchAngle pitchCorrection rodriguesQuat ...
-  rodriguesRotMatrix rollAngle rot rotEarthFix rotInc ...
-  sma time timeProcDuration timeProcStart timeProcStop u v1 v2 W x xyzUnit ...
-  y yawAngle z satellites parsat;
+for n = 1:length(allvars)
+  if strcmp(allvars(n).class,'Composite')
+    clear(allvars(n).name);
+  end
+end
