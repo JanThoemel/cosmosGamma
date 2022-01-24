@@ -159,6 +159,7 @@ classdef Orbit < handle
       % Use function fit() to calculate rho.
       this.F = fit(this.RhoArray(:,1),this.RhoArray(:,2),'exp1');
       this.Rho = this.F(altitude);
+      
 
       % Use constant atmospheric density from Ivanov's case.
 %     this.Rho = 1e-11; % [kg/m^3].
